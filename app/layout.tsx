@@ -34,12 +34,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <head />
-      <body
-        className={clsx(
-          "min-h-screen text-foreground bg-background font-sans antialiased",
-          fontSans.variable,
-        )}
-      >
+      <body>
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <ConvexClientProvider>
             <main>{children}</main>

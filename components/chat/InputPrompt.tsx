@@ -11,6 +11,7 @@ import { Tooltip } from "@heroui/tooltip";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 
 import PromptInput from "./sub/prompt-input";
+import UploadFiles from "./sub/upload-files";
 
 interface PromptInputProps {
   prompt: string;
@@ -71,14 +72,13 @@ export function PromptInputFullLineComponent({
   const [assets, setAssets] = useState<string[]>([]);
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       handleSubmit();
     },
-    [handleSubmit],
+    [handleSubmit]
   );
 
   const handleKeyDown = useCallback(
@@ -89,7 +89,7 @@ export function PromptInputFullLineComponent({
         handleSubmit();
       }
     },
-    [handleSubmit],
+    [handleSubmit]
   );
 
   const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
@@ -113,31 +113,6 @@ export function PromptInputFullLineComponent({
     }
   }, []);
 
-  const handleFileUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-
-      files.forEach((file) => {
-        if (file.type.startsWith("image/")) {
-          const reader = new FileReader();
-
-          reader.onload = () => {
-            const base64data = reader.result as string;
-
-            setAssets((prev) => [...prev, base64data]);
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // Reset input value to allow uploading the same file again
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    },
-    [],
-  );
-
   return (
     <Form
       className="flex w-full flex-col items-start gap-0  rounded-2xl bg-[#141415] border border-neutral-300/20 dark:bg[#141415]"
@@ -147,7 +122,7 @@ export function PromptInputFullLineComponent({
       <div
         className={cn(
           "group flex gap-2 pl-[20px] pr-3",
-          assets.length > 0 ? "pt-4" : "",
+          assets.length > 0 ? "pt-4" : ""
         )}
       >
         <PromptInputAssets
@@ -175,50 +150,7 @@ export function PromptInputFullLineComponent({
         onPaste={handlePaste}
         onValueChange={setPrompt}
       />
-      <div className="flex w-full flex-row items-center justify-between px-3 pb-3">
-        <Tooltip showArrow content="Attach Files">
-          <Button
-            isIconOnly
-            radius="full"
-            size="sm"
-            variant="light"
-            onPress={() => fileInputRef.current?.click()}
-          >
-            <Icon
-              className="text-default-500"
-              icon="solar:paperclip-outline"
-              width={24}
-            />
-            <VisuallyHidden>
-              <input
-                ref={fileInputRef}
-                multiple
-                accept="image/*"
-                type="file"
-                onChange={handleFileUpload}
-              />
-            </VisuallyHidden>
-          </Button>
-        </Tooltip>
-        <Button
-          isIconOnly
-          color={!prompt ? "default" : "primary"}
-          isDisabled={!prompt}
-          radius="full"
-          size="sm"
-          type="submit"
-          variant="solid"
-        >
-          <Icon
-            className={cn(
-              "[&>path]:stroke-[2px]",
-              !prompt ? "text-default-600" : "text-primary-foreground",
-            )}
-            icon="solar:arrow-up-linear"
-            width={20}
-          />
-        </Button>
-      </div>
+      <UploadFiles prompt={prompt} setAssets={setAssets} />
     </Form>
   );
 }
