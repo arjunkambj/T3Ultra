@@ -17,11 +17,31 @@ interface PromptInputProps {
   prompt: string;
   setPrompt: React.Dispatch<React.SetStateAction<string>>;
   handleSubmit: () => void;
+  stop: () => void;
+  status: any;
 }
 
 interface PromptInputAssetsProps {
   assets: string[];
   onRemoveAsset: (index: number) => void;
+}
+
+export default function PromptInputFullLine({
+  prompt,
+  setPrompt,
+  handleSubmit,
+  stop,
+  status,
+}: PromptInputProps) {
+  return (
+    <PromptInputFullLineComponent
+      handleSubmit={handleSubmit}
+      prompt={prompt}
+      setPrompt={setPrompt}
+      stop={stop}
+      status={status}
+    />
+  );
 }
 
 const PromptInputAssets = ({
@@ -68,6 +88,8 @@ export function PromptInputFullLineComponent({
   prompt,
   setPrompt,
   handleSubmit,
+  status,
+  stop,
 }: PromptInputProps) {
   const [assets, setAssets] = useState<string[]>([]);
 
@@ -152,19 +174,5 @@ export function PromptInputFullLineComponent({
       />
       <UploadFiles prompt={prompt} setAssets={setAssets} />
     </Form>
-  );
-}
-
-export default function PromptInputFullLine({
-  prompt,
-  setPrompt,
-  handleSubmit,
-}: PromptInputProps) {
-  return (
-    <PromptInputFullLineComponent
-      handleSubmit={handleSubmit}
-      prompt={prompt}
-      setPrompt={setPrompt}
-    />
   );
 }
