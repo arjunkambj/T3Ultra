@@ -1,4 +1,7 @@
+"use client";
+
 import { Spinner } from "@heroui/spinner";
+import { motion } from "motion/react";
 
 export default function AIThinkingSpinner({
   status,
@@ -70,8 +73,42 @@ export default function AIThinkingSpinner({
     shouldShowSpinner && (
       <div className="flex justify-start">
         <div className="flex items-center gap-3 px-4 py-2 rounded-lg">
-          <Spinner size="sm" />
-          <span className="text-sm text-default-500">{getStatusMessage()}</span>
+          <Spinner size="sm" color="white" />
+          <motion.div
+            className="text-sm relative"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {getStatusMessage()
+              .split("")
+              .map((char, index) => (
+                <motion.span
+                  key={`${char}-${index}`}
+                  className="inline-block relative"
+                  style={{
+                    minWidth: char === " " ? "0.15em" : "auto",
+                  }}
+                  initial={{ color: "rgb(113 113 122)" }} //
+                  animate={{
+                    color: [
+                      "rgb(113 113 122)",
+                      "rgb(255 255 255)",
+                      "rgb(113 113 122)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    delay: index * 0.05,
+                    repeat: Infinity,
+                    repeatDelay: 0.3,
+                    ease: "easeInOut",
+                  }}
+                >
+                  {char === " " ? "\u00A0" : char}
+                </motion.span>
+              ))}
+          </motion.div>
         </div>
       </div>
     )
