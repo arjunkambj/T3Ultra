@@ -39,7 +39,7 @@ export default function InputButtons({
     []
   );
   return (
-    <div className="flex w-full flex-row items-center justify-between px-3 pb-3">
+    <div className="flex w-full flex-row items-center  justify-between px-3 pb-3">
       <Tooltip showArrow content="Attach Files">
         <Button
           isIconOnly

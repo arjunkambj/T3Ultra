@@ -7,8 +7,8 @@ import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
 import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
-import PromptInput from "./sub/prompt-input";
-import InputButtons from "./sub/input-buttons";
+import PromptInput from "./prompt-input";
+import InputButtons from "./input-buttons";
 
 interface PromptInputProps {
   prompt: string;

@@ -74,7 +74,7 @@ const config = {
               DEFAULT: "#0830ac",
             },
             secondary: {
-              DEFAULT: "#ffffff",
+              DEFAULT: "#000000",
             },
             background: "#000000",
             foreground: "#ffffff",

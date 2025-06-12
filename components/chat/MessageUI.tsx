@@ -65,7 +65,7 @@ export default function MessageUI({
           if (hasTextContent) {
             return (
               <div key={item.id} className="flex justify-start">
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 w-full">
                   <AssiantaceMessage message={item.content} />
 
                   {/* Render sources if available */}
