@@ -3,7 +3,7 @@ import React, { memo } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypePrism from "rehype-prism-plus";
-import { Divider } from "@heroui/divider";
+
 import "@/styles/prism-vsc-dark-plus.css";
 import { CodeClipboard } from "./code-clipboard";
 

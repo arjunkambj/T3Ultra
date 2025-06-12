@@ -105,7 +105,7 @@ export default function UserProfile() {
             </DropdownItem>
             <DropdownItem
               key="logout"
-              className="pt-[4px]  text-default-800"
+              className="pt-[4px] text-default-800"
               onPress={() => signOut()}
             >
               Log Out
@@ -152,11 +152,11 @@ function AvatarDropdownIcon(props: IconSvgProps) {
 
 export function UserProfileSkeleton() {
   return (
-    <div className="max-w-[300px] w-full flex items-center gap-3">
+    <div className="flex w-full max-w-[300px] items-center gap-3">
       <div>
-        <Skeleton className="flex rounded-full w-12 h-12" />
+        <Skeleton className="flex h-12 w-12 rounded-full" />
       </div>
-      <div className="w-full flex flex-col gap-2">
+      <div className="flex w-full flex-col gap-2">
         <Skeleton className="h-3 w-3/5 rounded-lg" />
         <Skeleton className="h-3 w-4/5 rounded-lg" />
       </div>

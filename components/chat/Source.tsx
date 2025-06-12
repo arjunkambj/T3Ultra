@@ -10,19 +10,20 @@ export default function Source({ source }: { source: any[] }) {
         {source.map((item: any) => {
           const source = item.source || item;
           const favicon = item.favicon || source.favicon;
+
           return (
             <Tooltip
+              key={`source-${source.id}`}
               content={source.title || new URL(source.url).hostname}
               placement="top"
-              key={`source-${source.id}`}
             >
-              <Link href={source.url} target="_blank" rel="noopener noreferrer">
+              <Link href={source.url} rel="noopener noreferrer" target="_blank">
                 <Image
-                  src={favicon}
                   alt={source.title}
-                  width={16}
-                  height={16}
                   className="h-4 w-4"
+                  height={16}
+                  src={favicon}
+                  width={16}
                 />
               </Link>
             </Tooltip>

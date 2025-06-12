@@ -2,7 +2,6 @@ import { useChat } from "@ai-sdk/react";
 import { useCallback, useEffect, useState } from "react";
 import { useMutation } from "convex/react";
 import { addToast } from "@heroui/toast";
-import { useRouter } from "next/navigation";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useDisclosure } from "@heroui/modal";
 
@@ -76,6 +75,7 @@ export const useAI = ({
       if (!user) {
         onLoginModalOpen();
         setInput("");
+
         return;
       }
 
@@ -108,6 +108,7 @@ export const useAI = ({
         if (!user) {
           onLoginModalOpen();
           setInput("");
+
           return;
         }
 

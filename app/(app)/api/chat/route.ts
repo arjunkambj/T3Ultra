@@ -2,9 +2,11 @@ import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
+
+import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
+
 import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
-import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 

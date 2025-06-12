@@ -1,6 +1,5 @@
 import Sidebar from "@/components/chat/Sidebar";
 import SidebarToggle from "@/components/chat/sub/sidebar-toggle";
-import Upgrade from "@/components/pricing/Upgrade";
 
 export default async function AppLayout({
   children,

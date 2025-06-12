@@ -7,6 +7,7 @@ import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
 import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
+
 import PromptInput from "./prompt-input";
 import InputButtons from "./input-buttons";
 
@@ -43,14 +44,6 @@ const PromptInputAssets = ({
   onRemoveAsset,
 }: PromptInputAssetsProps) => {
   if (assets.length === 0) return null;
-
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
-  const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
   return (
     <>
@@ -95,6 +88,10 @@ export function PromptInputFullLineComponent({
   const [assets, setAssets] = useState<string[]>([]);
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [inputRef]);
 
   const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
     const items = Array.from(e.clipboardData.items);
@@ -150,9 +147,9 @@ export function PromptInputFullLineComponent({
         radius="lg"
         value={input}
         variant="flat"
+        onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
-        onChange={handleInputChange}
       />
       <InputButtons prompt={input} setAssets={setAssets} />
     </Form>

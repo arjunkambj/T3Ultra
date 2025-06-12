@@ -2,6 +2,7 @@
 
 import { motion } from "motion/react";
 import Lottie from "lottie-react";
+
 import spinner from "@/public/spinner.json";
 
 export default function AIThinkingSpinner({
@@ -16,6 +17,7 @@ export default function AIThinkingSpinner({
     messages && messages.length > 0
       ? (() => {
           const lastMessage = messages[messages.length - 1];
+
           if (lastMessage?.role === "assistant" && lastMessage?.parts) {
             return lastMessage.parts.some(
               (part: any) =>
@@ -25,6 +27,7 @@ export default function AIThinkingSpinner({
                 part.toolInvocation?.toolName === "googleSearch",
             );
           }
+
           return false;
         })()
       : false;
@@ -34,6 +37,7 @@ export default function AIThinkingSpinner({
     messages && messages.length > 0
       ? (() => {
           const lastMessage = messages[messages.length - 1];
+
           if (lastMessage?.role === "assistant") {
             // Check if there's any text content in the message
             if (lastMessage.content && lastMessage.content.trim().length > 0) {
@@ -49,6 +53,7 @@ export default function AIThinkingSpinner({
               );
             }
           }
+
           return false;
         })()
       : false;
@@ -67,6 +72,7 @@ export default function AIThinkingSpinner({
     if (isSearchingInternet) {
       return "Searching the internet...";
     }
+
     return "AI is thinking...";
   };
 
@@ -76,15 +82,15 @@ export default function AIThinkingSpinner({
         <div className="flex items-center gap-2 rounded-lg px-4 py-2">
           <Lottie
             animationData={spinner}
-            loop={true}
             autoplay={true}
+            loop={true}
             style={{ width: 24, height: 24 }}
           />
 
           <motion.div
+            animate={{ opacity: 1, y: 0 }}
             className="relative text-sm"
             initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
             {getStatusMessage()
@@ -92,17 +98,17 @@ export default function AIThinkingSpinner({
               .map((char, index) => (
                 <motion.span
                   key={`${char}-${index}`}
-                  className="relative inline-block"
-                  style={{
-                    minWidth: char === " " ? "0.25em" : "auto",
-                  }}
-                  initial={{ color: "rgb(113 113 122)" }} //
                   animate={{
                     color: [
                       "rgb(113 113 122)",
                       "rgb(255 255 255)",
                       "rgb(113 113 122)",
                     ],
+                  }}
+                  className="relative inline-block"
+                  initial={{ color: "rgb(113 113 122)" }} //
+                  style={{
+                    minWidth: char === " " ? "0.25em" : "auto",
                   }}
                   transition={{
                     duration: 0.8,

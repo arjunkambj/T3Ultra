@@ -9,6 +9,7 @@ export default function SharePage() {
 
   const handleCopyLink = () => {
     const link = `${window.location.origin}/share/${id}`;
+
     navigator.clipboard.writeText(link);
     addToast({
       title: "Link copied to clipboard",
@@ -22,8 +23,8 @@ export default function SharePage() {
       <div className="relative flex h-full w-full flex-col items-center justify-center rounded border border-neutral-600 bg-[#0F0F10]">
         <Button
           className="absolute right-5 top-5 text-neutral-100"
-          onPress={handleCopyLink}
           variant="flat"
+          onPress={handleCopyLink}
         >
           Copy Link
         </Button>

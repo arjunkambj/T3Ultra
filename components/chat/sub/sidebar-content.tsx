@@ -6,12 +6,15 @@ import { Spacer } from "@heroui/spacer";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { ScrollShadow } from "@heroui/scroll-shadow";
-import UserProfile from "../UserProfile";
-import { Logo } from "@/components/Logo";
-import ChatHistory from "./ChatHistory";
 import { useRouter } from "next/navigation";
-import { useSidebarToggle } from "@/atoms/sidebarState";
 import { Authenticated, Unauthenticated } from "convex/react";
+
+import UserProfile from "../UserProfile";
+
+import ChatHistory from "./ChatHistory";
+
+import { Logo } from "@/components/Logo";
+import { useSidebarToggle } from "@/atoms/sidebarState";
 import SidebarModel from "@/components/auth/SidebarModel";
 
 interface SidebarContentProps {

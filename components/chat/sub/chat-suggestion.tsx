@@ -65,10 +65,10 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
             {suggestions.map((suggestion) => (
               <Button
                 key={suggestion.id}
+                className="border border-neutral-800 bg-neutral-900"
                 radius="full"
                 size="sm"
                 variant="flat"
-                className="border border-neutral-800 bg-neutral-900"
                 onPress={() => handleSuggestionSelect(suggestion)}
               >
                 <Icon icon={suggestion.icon} />

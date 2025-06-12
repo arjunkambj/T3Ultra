@@ -1,13 +1,15 @@
 "use client";
 
 import type { ThemeProviderProps } from "next-themes";
+
 import { Provider as JotaiProvider } from "jotai";
 import * as React from "react";
 import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import { ConvexQueryCacheProvider } from "convex-helpers/react/cache/provider";
+
+import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 
 export interface ProvidersProps {
   children: React.ReactNode;

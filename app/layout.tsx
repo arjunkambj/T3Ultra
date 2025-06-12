@@ -1,9 +1,11 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Providers } from "../components/providers";
-import { siteConfig } from "@/config/site";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { ToastProvider } from "@heroui/toast";
+
+import { Providers } from "../components/providers";
+
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: {

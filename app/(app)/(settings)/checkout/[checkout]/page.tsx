@@ -22,8 +22,8 @@ export default async function CheckoutPage({ params }: Props) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-4xl text-black font-bold">
+    <div className="flex h-screen flex-col items-center justify-center">
+      <h1 className="text-4xl font-bold text-black">
         You did not select a plan
       </h1>
       <Button as={Link} className="mt-4" color="primary" href="/pricing">

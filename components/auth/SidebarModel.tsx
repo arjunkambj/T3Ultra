@@ -6,7 +6,6 @@ import {
   ModalBody,
   ModalFooter,
 } from "@heroui/modal";
-
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Icon } from "@iconify/react";
@@ -47,20 +46,20 @@ export default function SidebarModel() {
     <>
       <Button
         className="justify-start text-default-800"
-        variant="light"
         startContent={<Icon icon="solar:login-line-duotone" width={24} />}
+        variant="light"
         onPress={onOpen}
       >
         Login
       </Button>
       <Modal
-        isOpen={isOpen}
         backdrop="blur"
         className="max-w-sm shadow-none"
+        isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1 pt-8">
                 <div className="relative flex flex-col items-center space-y-3 text-center">

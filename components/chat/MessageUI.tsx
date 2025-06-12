@@ -1,7 +1,6 @@
 import UserMessage from "./UserMessage";
 import AssistanceMessage from "./AssistanceMessage";
 import AIThinkingSpinner from "./AIThinkingSpinner";
-import Source from "./Source";
 
 export default function MessageUI({
   messages,
@@ -24,7 +23,7 @@ export default function MessageUI({
         </div>
       ))}
 
-      <AIThinkingSpinner status={status} messages={messages} />
+      <AIThinkingSpinner messages={messages} status={status} />
     </div>
   );
 }

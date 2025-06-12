@@ -2,9 +2,7 @@ import { useCallback, useRef } from "react";
 import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { Icon } from "@iconify/react";
-import { cn } from "@heroui/theme";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { isAuthAction } from "@auth/core";
 
 export default function InputButtons({
   setAssets,
@@ -39,13 +37,14 @@ export default function InputButtons({
     },
     [],
   );
+
   return (
     <div className="flex w-full flex-row items-center justify-between px-3 pb-3">
       <Tooltip showArrow content="Attach Files">
         <Button
           isIconOnly
-          radius="md"
           className="p-1.5"
+          radius="md"
           size="sm"
           variant="flat"
           onPress={() => fileInputRef.current?.click()}
@@ -68,9 +67,9 @@ export default function InputButtons({
       </Tooltip>
       <Button
         isIconOnly
+        className={!prompt ? "bg-neutral-800" : "bg-neutral-200"}
         isDisabled={!prompt}
         radius="md"
-        className={!prompt ? "bg-neutral-800" : "bg-neutral-200"}
         size="sm"
         type="submit"
         variant="flat"
