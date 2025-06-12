@@ -2,6 +2,8 @@
 
 import { Spinner } from "@heroui/spinner";
 import { motion } from "motion/react";
+import Lottie from "lottie-react";
+import spinner from "@/public/spinner.json";
 
 export default function AIThinkingSpinner({
   status,
@@ -72,8 +74,14 @@ export default function AIThinkingSpinner({
   return (
     shouldShowSpinner && (
       <div className="flex justify-start">
-        <div className="flex items-center gap-3 px-4 py-2 rounded-lg">
-          <Spinner size="sm" color="white" />
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg">
+          <Lottie
+            animationData={spinner}
+            loop={true}
+            autoplay={true}
+            style={{ width: 24, height: 24 }}
+          />
+
           <motion.div
             className="text-sm relative"
             initial={{ opacity: 0, y: 10 }}
@@ -87,7 +95,7 @@ export default function AIThinkingSpinner({
                   key={`${char}-${index}`}
                   className="inline-block relative"
                   style={{
-                    minWidth: char === " " ? "0.15em" : "auto",
+                    minWidth: char === " " ? "0.25em" : "auto",
                   }}
                   initial={{ color: "rgb(113 113 122)" }} //
                   animate={{

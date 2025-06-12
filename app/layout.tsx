@@ -36,9 +36,7 @@ export default function RootLayout({
       <head />
       <body>
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <ConvexClientProvider>
-            <main>{children}</main>
-          </ConvexClientProvider>
+          <main>{children}</main>
         </Providers>
       </body>
     </html>

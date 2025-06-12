@@ -23,7 +23,7 @@ export default function ChatSection() {
       <div className="flex flex-col w-full items-center justify-start h-[calc(100dvh-160px)] overflow-y-auto">
         <MessageUI message={messages} status={status} />
       </div>
-      <div className="absolute bottom-6 w-full max-w-3xl mx-auto">
+      <div className="absolute z-50 bottom-6 w-full max-w-3xl mx-auto">
         <PromptInputFullLine
           handleSubmit={handleSubmit}
           prompt={input}

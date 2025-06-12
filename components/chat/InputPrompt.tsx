@@ -7,11 +7,8 @@ import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
 import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
-import { Tooltip } from "@heroui/tooltip";
-import { VisuallyHidden } from "@react-aria/visually-hidden";
-
 import PromptInput from "./sub/prompt-input";
-import UploadFiles from "./sub/upload-files";
+import InputButtons from "./sub/input-buttons";
 
 interface PromptInputProps {
   prompt: string;
@@ -172,7 +169,7 @@ export function PromptInputFullLineComponent({
         onPaste={handlePaste}
         onValueChange={setPrompt}
       />
-      <UploadFiles prompt={prompt} setAssets={setAssets} />
+      <InputButtons prompt={prompt} setAssets={setAssets} />
     </Form>
   );
 }

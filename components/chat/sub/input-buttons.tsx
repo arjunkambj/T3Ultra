@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 import { cn } from "@heroui/theme";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 
-export default function UploadFiles({
+export default function InputButtons({
   setAssets,
   prompt,
 }: {
@@ -43,15 +43,16 @@ export default function UploadFiles({
       <Tooltip showArrow content="Attach Files">
         <Button
           isIconOnly
-          radius="full"
+          radius="md"
+          className="p-1.5 "
           size="sm"
-          variant="light"
+          variant="flat"
           onPress={() => fileInputRef.current?.click()}
         >
           <Icon
-            className="text-default-500"
+            className="text-default-700"
             icon="solar:paperclip-outline"
-            width={24}
+            width={18}
           />
           <VisuallyHidden>
             <input
@@ -66,18 +67,15 @@ export default function UploadFiles({
       </Tooltip>
       <Button
         isIconOnly
-        color={!prompt ? "default" : "primary"}
         isDisabled={!prompt}
-        radius="full"
+        radius="md"
+        className={!prompt ? "bg-neutral-800" : "bg-neutral-200"}
         size="sm"
         type="submit"
-        variant="solid"
+        variant="flat"
       >
         <Icon
-          className={cn(
-            "[&>path]:stroke-[2px]",
-            !prompt ? "text-default-600" : "text-primary-foreground"
-          )}
+          className={!prompt ? "text-white" : "text-neutral-950"}
           icon="solar:arrow-up-linear"
           width={20}
         />
