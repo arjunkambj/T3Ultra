@@ -52,12 +52,12 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl py-8 flex flex-col w-full mb-24 pb-20">
+    <div className="pb-15 mb-24 flex w-full max-w-3xl flex-col py-8">
       {/* Main heading */}
       <div className="flex flex-col items-start gap-5">
         <div className="flex flex-col gap-5">
-          <h1 className="text-4xl text-neutral-200 font-bold">
-            How can I help you, Arjun?
+          <h1 className="text-3xl font-bold text-neutral-300">
+            Welcome to the T3 Ultra.
           </h1>
 
           {/* Action buttons */}
@@ -68,7 +68,7 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
                 radius="full"
                 size="sm"
                 variant="flat"
-                className="bg-neutral-900 border border-neutral-800"
+                className="border border-neutral-800 bg-neutral-900"
                 onPress={() => handleSuggestionSelect(suggestion)}
               >
                 <Icon icon={suggestion.icon} />
@@ -79,14 +79,16 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
         </div>
 
         {/* Sample questions */}
-        <div className="space-y-3 pl-2 max-w-3xl w-full">
+        <div className="w-full max-w-3xl space-y-3 pl-2">
           {features.map((feature) => (
             <div key={feature.id}>
-              <div className="mb-2 px-2 text-neutral-300">{feature.label}</div>
+              <div className="mb-2 px-2 text-sm text-neutral-400">
+                {feature.label}
+              </div>
               <Divider className="bg-neutral-800" />
             </div>
           ))}
-          <div className="mb-2 px-2 text-neutral-300">
+          <div className="mb-2 px-2 text-sm text-neutral-400">
             - Auto Web Search, Crpto Tool, & Perplexity Search
           </div>
         </div>

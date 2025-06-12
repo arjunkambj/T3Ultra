@@ -1,7 +1,7 @@
 "use client";
 
 import { Icon } from "@iconify/react";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Badge } from "@heroui/badge";
 import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
@@ -11,11 +11,10 @@ import PromptInput from "./prompt-input";
 import InputButtons from "./input-buttons";
 
 interface PromptInputProps {
-  prompt: string;
-  setPrompt: React.Dispatch<React.SetStateAction<string>>;
-  handleSubmit: () => void;
-  stop: () => void;
-  status: any;
+  input: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 interface PromptInputAssetsProps {
@@ -24,19 +23,17 @@ interface PromptInputAssetsProps {
 }
 
 export default function PromptInputFullLine({
-  prompt,
-  setPrompt,
-  handleSubmit,
-  stop,
-  status,
+  input,
+  onSubmit,
+  handleInputChange,
+  handleKeyDown,
 }: PromptInputProps) {
   return (
     <PromptInputFullLineComponent
-      handleSubmit={handleSubmit}
-      prompt={prompt}
-      setPrompt={setPrompt}
-      stop={stop}
-      status={status}
+      handleInputChange={handleInputChange}
+      handleKeyDown={handleKeyDown}
+      input={input}
+      onSubmit={onSubmit}
     />
   );
 }
@@ -46,6 +43,14 @@ const PromptInputAssets = ({
   onRemoveAsset,
 }: PromptInputAssetsProps) => {
   if (assets.length === 0) return null;
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
   return (
     <>
@@ -82,34 +87,14 @@ const PromptInputAssets = ({
 };
 
 export function PromptInputFullLineComponent({
-  prompt,
-  setPrompt,
-  handleSubmit,
-  status,
-  stop,
+  input,
+  handleInputChange,
+  onSubmit,
+  handleKeyDown,
 }: PromptInputProps) {
   const [assets, setAssets] = useState<string[]>([]);
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
-
-  const onSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      handleSubmit();
-    },
-    [handleSubmit]
-  );
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-
-        handleSubmit();
-      }
-    },
-    [handleSubmit]
-  );
 
   const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
     const items = Array.from(e.clipboardData.items);
@@ -134,14 +119,14 @@ export function PromptInputFullLineComponent({
 
   return (
     <Form
-      className="flex w-full flex-col items-start gap-0  rounded-2xl bg-[#141415] border border-neutral-300/20 dark:bg[#141415]"
+      className="dark:bg[#141415] flex w-full max-w-3xl flex-col items-start gap-0 rounded-2xl border border-neutral-300/20 bg-[#141415]"
       validationBehavior="native"
       onSubmit={onSubmit}
     >
       <div
         className={cn(
           "group flex gap-2 pl-[20px] pr-3",
-          assets.length > 0 ? "pt-4" : ""
+          assets.length > 0 ? "pt-4" : "",
         )}
       >
         <PromptInputAssets
@@ -163,13 +148,13 @@ export function PromptInputFullLineComponent({
         minRows={2}
         name="content"
         radius="lg"
-        value={prompt}
+        value={input}
         variant="flat"
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
-        onValueChange={setPrompt}
+        onChange={handleInputChange}
       />
-      <InputButtons prompt={prompt} setAssets={setAssets} />
+      <InputButtons prompt={input} setAssets={setAssets} />
     </Form>
   );
 }

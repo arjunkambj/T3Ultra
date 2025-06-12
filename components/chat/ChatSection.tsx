@@ -5,46 +5,79 @@ import ChatInput from "./ChatInput";
 import { useAI } from "@/hooks/useAI";
 import { cn } from "@heroui/theme";
 import ChatSuggestions from "./sub/chat-suggestion";
+import { Spinner } from "@heroui/spinner";
+import LoginModel from "@/components/auth/LoginModel";
 
-export default function ChatSection() {
+export default function ChatSection({
+  chatId,
+  initialMessages,
+  isnewchat,
+}: {
+  chatId: string;
+  initialMessages: any[];
+  isnewchat: boolean;
+}) {
   const {
     messages,
     input,
     setInput,
-    handleSubmit,
+    handleInputChange,
+    onSubmit,
+    handleKeyDown,
     status,
-    experimental_resume,
-    stop,
-  } = useAI();
+    isLoading,
+    isLoginModalOpen,
+    onLoginModalOpenChange,
+    onLoginModalOpen,
+  } = useAI({ isnewchat, chatId });
 
-  const noInput = input.length && messages.length === 0 ? true : false;
-  console.log(noInput);
+  const hasInput = input.length > 0 ? true : false;
+  const hasMessages = messages.length > 0 ? true : false;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-dvh w-full items-center justify-center">
+        <Spinner color="secondary" />
+      </div>
+    );
+  }
 
   return (
-    <div
-      className={cn(
-        "relative flex flex-col items-center justify-center w-full h-dvh",
-        noInput ? "" : ""
-      )}
-    >
-      {noInput ? (
-        <div className="flex flex-col w-full items-center justify-start h-[calc(100dvh-160px)] px-3  overflow-y-auto">
-          <MessageUI message={messages} status={status} />
+    <>
+      <div
+        className={cn(
+          "relative flex h-dvh w-full flex-col items-center justify-center",
+          hasMessages ? "justify-start" : "",
+        )}
+      >
+        {hasInput || hasMessages ? (
+          <div className="flex h-[calc(100dvh-160px)] w-full flex-col items-center justify-center overflow-y-auto px-3 pb-10">
+            <MessageUI status={status} messages={messages} />
+          </div>
+        ) : (
+          <div className="flex w-full max-w-2xl flex-col items-center justify-center px-4 pb-24 md:px-0">
+            <ChatSuggestions setPrompt={setInput} />
+          </div>
+        )}
+        <div className="absolute bottom-8 z-50 flex w-full flex-col items-center justify-center px-3">
+          <div className="w-full max-w-3xl">
+            <ChatInput
+              handleInputChange={handleInputChange}
+              handleKeyDown={handleKeyDown}
+              input={input}
+              isLoading={isLoading}
+              isnewchat={isnewchat}
+              setInput={setInput}
+              onSubmit={onSubmit}
+            />
+          </div>
         </div>
-      ) : (
-        <div className="flex flex-col pb-24 items-center max-w-2xl justify-center px-4 md:px-2 w-full">
-          <ChatSuggestions setPrompt={setInput} />
-        </div>
-      )}
-      <div className="absolute z-50 bottom-8 w-full max-w-3xl px-3">
-        <ChatInput
-          handleSubmit={handleSubmit}
-          prompt={input}
-          setPrompt={setInput}
-          stop={stop}
-          status={status}
-        />
       </div>
-    </div>
+      <LoginModel
+        isOpen={isLoginModalOpen}
+        onOpenChange={onLoginModalOpenChange}
+        onOpen={onLoginModalOpen}
+      />
+    </>
   );
 }

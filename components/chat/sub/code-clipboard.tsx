@@ -32,7 +32,7 @@ const CodeClipboardComponent = ({ code }: CodeClipboardProps) => {
   return (
     <Button
       isIconOnly
-      className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+      className="opacity-0 transition-opacity duration-200 group-hover:opacity-100"
       size="sm"
       variant="light"
       onPress={handleCopy}

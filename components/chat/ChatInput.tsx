@@ -1,32 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 import { PromptInputFullLineComponent } from "./sub/InputPrompt";
 
 interface ChatInputProps {
-  prompt: string;
-  setPrompt: React.Dispatch<React.SetStateAction<string>>;
-  handleSubmit: () => void;
-  stop: () => void;
-  status: any;
+  input: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  isnewchat: boolean;
+  isLoading: boolean;
 }
 
 export default function ChatInput({
-  handleSubmit,
-  prompt,
-  setPrompt,
-  stop,
-  status,
+  input,
+  handleInputChange,
+  onSubmit,
+  handleKeyDown,
 }: ChatInputProps) {
   return (
     <div className="w-full">
       <PromptInputFullLineComponent
-        handleSubmit={handleSubmit}
-        prompt={prompt}
-        setPrompt={setPrompt}
-        stop={stop}
-        status={status}
+        handleInputChange={handleInputChange}
+        handleKeyDown={handleKeyDown}
+        input={input}
+        onSubmit={onSubmit}
       />
     </div>
   );

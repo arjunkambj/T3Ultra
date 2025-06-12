@@ -1,6 +1,5 @@
 "use client";
 
-import { Spinner } from "@heroui/spinner";
 import { motion } from "motion/react";
 import Lottie from "lottie-react";
 import spinner from "@/public/spinner.json";
@@ -23,7 +22,7 @@ export default function AIThinkingSpinner({
                 part.type === "tool-invocation" &&
                 (part.toolInvocation?.state === "call" ||
                   part.toolInvocation?.state === "partial-call") &&
-                part.toolInvocation?.toolName === "googleSearch"
+                part.toolInvocation?.toolName === "googleSearch",
             );
           }
           return false;
@@ -46,7 +45,7 @@ export default function AIThinkingSpinner({
                 (part: any) =>
                   part.type === "text" &&
                   part.text &&
-                  part.text.trim().length > 0
+                  part.text.trim().length > 0,
               );
             }
           }
@@ -74,7 +73,7 @@ export default function AIThinkingSpinner({
   return (
     shouldShowSpinner && (
       <div className="flex justify-start">
-        <div className="flex items-center gap-2 px-4 py-2 rounded-lg">
+        <div className="flex items-center gap-2 rounded-lg px-4 py-2">
           <Lottie
             animationData={spinner}
             loop={true}
@@ -83,7 +82,7 @@ export default function AIThinkingSpinner({
           />
 
           <motion.div
-            className="text-sm relative"
+            className="relative text-sm"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -93,7 +92,7 @@ export default function AIThinkingSpinner({
               .map((char, index) => (
                 <motion.span
                   key={`${char}-${index}`}
-                  className="inline-block relative"
+                  className="relative inline-block"
                   style={{
                     minWidth: char === " " ? "0.25em" : "auto",
                   }}

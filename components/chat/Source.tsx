@@ -4,7 +4,7 @@ import { Tooltip } from "@heroui/tooltip";
 
 export default function Source({ source }: { source: any[] }) {
   return (
-    <div className="flex gap-2 items-center px-3 rounded-lg border border-neutral-700/50 p-2">
+    <div className="flex items-center gap-2 rounded-lg border border-neutral-700/50 p-2 px-3">
       <div className="text-sm font-medium text-neutral-300">Sources:</div>
       <div className="flex flex-wrap gap-2">
         {source.map((item: any) => {
@@ -22,7 +22,7 @@ export default function Source({ source }: { source: any[] }) {
                   alt={source.title}
                   width={16}
                   height={16}
-                  className="w-4 h-4"
+                  className="h-4 w-4"
                 />
               </Link>
             </Tooltip>

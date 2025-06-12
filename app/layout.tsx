@@ -1,7 +1,9 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Providers } from "./providers";
+import { Providers } from "../components/providers";
 import { siteConfig } from "@/config/site";
+import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
+import { ToastProvider } from "@heroui/toast";
 
 export const metadata: Metadata = {
   title: {
@@ -27,13 +29,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning lang="en">
-      <head />
-      <body>
-        <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <main>{children}</main>
-        </Providers>
-      </body>
-    </html>
+    <ConvexAuthNextjsServerProvider>
+      <html suppressHydrationWarning lang="en">
+        <head />
+        <body>
+          <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+            <main>{children}</main>
+            <ToastProvider />
+          </Providers>
+        </body>
+      </html>
+    </ConvexAuthNextjsServerProvider>
   );
 }

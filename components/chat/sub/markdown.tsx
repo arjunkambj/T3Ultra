@@ -38,8 +38,8 @@ const components: Partial<Components> = {
 
     return (
       ///Code block
-      <div className="bg-default-50 rounded-lg border border-default-200 my-3 group relative overflow-hidden">
-        <div className="absolute top-2 right-2 z-10">
+      <div className="group relative my-3 overflow-hidden rounded-lg border border-default-200 bg-default-50">
+        <div className="absolute right-2 top-2 z-10">
           <CodeClipboard code={codeString} />
         </div>
         {/* Actual pre element with syntax highlighting */}
@@ -51,7 +51,7 @@ const components: Partial<Components> = {
   //ORDERED LISTS (1. 2. 3.)
   ol: ({ children, ...props }) => {
     return (
-      <ol className="list-decimal ml-5 my-2 space-y-1" {...props}>
+      <ol className="my-2 ml-5 list-decimal space-y-1" {...props}>
         {children}
       </ol>
     );
@@ -69,7 +69,7 @@ const components: Partial<Components> = {
   //UNORDERED LISTS (- or *)
   ul: ({ children, ...props }) => {
     return (
-      <ul className="list-disc ml-5 my-2 space-y-1" {...props}>
+      <ul className="my-2 ml-5 list-disc space-y-1" {...props}>
         {children}
       </ul>
     );
@@ -89,7 +89,7 @@ const components: Partial<Components> = {
     return (
       // @ts-expect-error - Next.js Link props don't perfectly match anchor props
       <Link
-        className="text-primary hover:text-primary-600 underline transition-colors"
+        className="text-primary underline transition-colors hover:text-primary-600"
         rel="noreferrer" // Security: prevent referrer leakage
         target="_blank" // Open in new tab to preserve chat context
         {...props}
@@ -103,7 +103,7 @@ const components: Partial<Components> = {
   p: ({ children, ...props }) => {
     return (
       <div>
-        <p className="leading-relaxed mb-3" {...props}>
+        <p className="mb-3 leading-relaxed" {...props}>
           {children}
         </p>
       </div>
@@ -114,7 +114,7 @@ const components: Partial<Components> = {
   blockquote: ({ children, ...props }) => {
     return (
       <blockquote
-        className="border-l-4 border-primary bg-default-50 pl-4 py-2 my-3 italic"
+        className="my-3 border-l-4 border-primary bg-default-50 py-2 pl-4 italic"
         {...props}
       >
         {children}
@@ -126,7 +126,7 @@ const components: Partial<Components> = {
   code: ({ children, ...props }) => {
     return (
       <code
-        className="bg-default-100 text-amber-300 px-1.5 py-0.5 rounded text-sm font-mono"
+        className="rounded bg-default-100 px-1.5 py-0.5 font-mono text-sm text-amber-300"
         {...props}
       >
         {children}
@@ -149,5 +149,5 @@ const NonMemoizedMarkdown = ({ children }: { children: string }) => {
 
 export const Markdown = memo(
   NonMemoizedMarkdown,
-  (prevProps, nextProps) => prevProps.children === nextProps.children
+  (prevProps, nextProps) => prevProps.children === nextProps.children,
 );

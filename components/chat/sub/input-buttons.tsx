@@ -4,6 +4,7 @@ import { Tooltip } from "@heroui/tooltip";
 import { Icon } from "@iconify/react";
 import { cn } from "@heroui/theme";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
+import { isAuthAction } from "@auth/core";
 
 export default function InputButtons({
   setAssets,
@@ -36,15 +37,15 @@ export default function InputButtons({
         fileInputRef.current.value = "";
       }
     },
-    []
+    [],
   );
   return (
-    <div className="flex w-full flex-row items-center  justify-between px-3 pb-3">
+    <div className="flex w-full flex-row items-center justify-between px-3 pb-3">
       <Tooltip showArrow content="Attach Files">
         <Button
           isIconOnly
           radius="md"
-          className="p-1.5 "
+          className="p-1.5"
           size="sm"
           variant="flat"
           onPress={() => fileInputRef.current?.click()}
