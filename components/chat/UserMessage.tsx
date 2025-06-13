@@ -1,9 +1,42 @@
-import React from "react";
+"use client";
 
-export default function UserMessage({ message }: { message: string }) {
+import UserToolkit from "./sub/UserToolkit";
+import { useState } from "react";
+import EditInput from "./sub/EditInput";
+
+export default function UserMessage({
+  message,
+  reload,
+}: {
+  message: string;
+  reload: () => void;
+}) {
+  const [isHovering, setIsHovering] = useState(false);
+  const [edit, setEdit] = useState(false);
+
   return (
-    <div className="flex flex-col gap-2 rounded-bl-xl rounded-tl-xl rounded-tr-xl bg-default-200 px-5 py-3">
-      <div className="flex flex-row gap-2">{message}</div>
+    <div
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+      className="relative flex flex-col gap-2"
+    >
+      <div className="flex flex-col gap-2 rounded-bl-xl rounded-tl-xl rounded-tr-xl bg-default-200 px-5 py-3">
+        {edit ? (
+          <EditInput />
+        ) : (
+          <div className="flex flex-row gap-2">{message}</div>
+        )}
+      </div>
+      {isHovering && (
+        <div className="absolute right-0 top-full z-10">
+          <UserToolkit
+            edit={edit}
+            message={message}
+            reload={reload}
+            setEdit={setEdit}
+          />
+        </div>
+      )}
     </div>
   );
 }

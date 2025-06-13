@@ -1,5 +1,5 @@
 import Sidebar from "@/components/chat/Sidebar";
-import SidebarToggle from "@/components/chat/sub/sidebar-toggle";
+import TopMenuBar from "@/components/chat/TopMenuBar";
 
 export default async function AppLayout({
   children,
@@ -10,7 +10,7 @@ export default async function AppLayout({
     <section className="relative flex max-h-dvh w-full overflow-hidden">
       <Sidebar />
       <main className="relative w-full">
-        <SidebarToggle className="absolute left-1 top-3 z-50" />
+        <TopMenuBar />
         {children}
       </main>
     </section>

@@ -1,13 +1,13 @@
 "use client";
 import { cn } from "@heroui/theme";
 import { Spinner } from "@heroui/spinner";
-
 import MessageUI from "./MessageUI";
 import ChatInput from "./ChatInput";
 import ChatSuggestions from "./sub/chat-suggestion";
-
 import { useAI } from "@/hooks/useAI";
 import LoginModel from "@/components/auth/LoginModel";
+import ShareModel from "./ShareModel";
+import { v4 as uuidv4 } from "uuid";
 
 export default function ChatSection({
   chatId,
@@ -28,10 +28,14 @@ export default function ChatSection({
     isLoginModalOpen,
     onLoginModalOpenChange,
     onLoginModalOpen,
+    experimental_resume,
+    stop,
   } = useAI({ isnewchat, chatId });
 
   const hasInput = input.length > 0 ? true : false;
   const hasMessages = messages.length > 0 ? true : false;
+  const shareId = uuidv4();
+  const shareLink = `http://localhost:3000/share/${shareId}`;
 
   if (isLoading) {
     return (
@@ -43,6 +47,13 @@ export default function ChatSection({
 
   return (
     <>
+      {hasMessages && (
+        <ShareModel
+          shareLink={shareLink}
+          shareId={shareId}
+          messages={messages}
+        />
+      )}
       <div
         className={cn(
           "relative flex h-dvh w-full flex-col items-center justify-center",
@@ -68,6 +79,9 @@ export default function ChatSection({
               isnewchat={isnewchat}
               setInput={setInput}
               onSubmit={onSubmit}
+              resume={experimental_resume}
+              stop={stop}
+              status={status}
             />
           </div>
         </div>

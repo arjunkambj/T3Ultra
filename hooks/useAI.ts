@@ -4,6 +4,8 @@ import { useMutation } from "convex/react";
 import { addToast } from "@heroui/toast";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useDisclosure } from "@heroui/modal";
+import { useAtom } from "jotai";
+import { aiModelAtom } from "@/atoms/aimodel";
 
 import { api } from "@/convex/_generated/api";
 
@@ -15,6 +17,7 @@ export const useAI = ({
   chatId: string;
 }) => {
   const user = useQuery(api.function.users.currentUser);
+  const [currentModelId] = useAtom(aiModelAtom);
   const [isLoading, setIsLoading] = useState(false);
   const {
     isOpen: isLoginModalOpen,
@@ -38,11 +41,13 @@ export const useAI = ({
     handleInputChange,
     handleSubmit,
     status,
+    experimental_resume,
   } = useChat({
     api: "/api/chat",
     body: {
       chatId,
       userId: user?._id,
+      modelId: currentModelId,
     },
   });
 
@@ -144,6 +149,7 @@ export const useAI = ({
     status,
     stop,
     reload,
+    experimental_resume,
     loadingUser: !user,
     loadingMessages: !isnewchat && !getMessages,
     isLoading,

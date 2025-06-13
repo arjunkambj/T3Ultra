@@ -51,8 +51,10 @@ export default function LoginModel({
   return (
     <>
       <Button
-        className="justify-start text-default-800"
-        startContent={<Icon icon="solar:login-line-duotone" width={24} />}
+        className="hidden justify-start text-default-800"
+        startContent={
+          <Icon className="" icon="solar:login-line-duotone" width={24} />
+        }
         variant="light"
         onPress={onOpen}
       >

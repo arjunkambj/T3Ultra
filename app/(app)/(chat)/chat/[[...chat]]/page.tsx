@@ -13,12 +13,7 @@ export default async function ChatPage({
 
   return (
     <section className="flex w-full flex-col items-center justify-center gap-4 bg-[#0F0F10]">
-      <ChatSection
-        key={chatId}
-        chatId={chatId}
-        initialMessages={[]}
-        isnewchat={isNewChat}
-      />
+      <ChatSection key={chatId} chatId={chatId} isnewchat={isNewChat} />
     </section>
   );
 }

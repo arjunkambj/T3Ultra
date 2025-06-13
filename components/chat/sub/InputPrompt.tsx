@@ -16,27 +16,14 @@ interface PromptInputProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  resume: () => void;
+  stop: () => void;
+  status: string;
 }
 
 interface PromptInputAssetsProps {
   assets: string[];
   onRemoveAsset: (index: number) => void;
-}
-
-export default function PromptInputFullLine({
-  input,
-  onSubmit,
-  handleInputChange,
-  handleKeyDown,
-}: PromptInputProps) {
-  return (
-    <PromptInputFullLineComponent
-      handleInputChange={handleInputChange}
-      handleKeyDown={handleKeyDown}
-      input={input}
-      onSubmit={onSubmit}
-    />
-  );
 }
 
 const PromptInputAssets = ({
@@ -84,6 +71,9 @@ export function PromptInputFullLineComponent({
   handleInputChange,
   onSubmit,
   handleKeyDown,
+  resume,
+  stop,
+  status,
 }: PromptInputProps) {
   const [assets, setAssets] = useState<string[]>([]);
 
@@ -151,7 +141,13 @@ export function PromptInputFullLineComponent({
         onKeyDown={handleKeyDown}
         onPaste={handlePaste}
       />
-      <InputButtons prompt={input} setAssets={setAssets} />
+      <InputButtons
+        prompt={input}
+        resume={resume}
+        setAssets={setAssets}
+        status={status}
+        stop={stop}
+      />
     </Form>
   );
 }

@@ -10,21 +10,19 @@ import {
 } from "@heroui/dropdown";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
-import { useQuery } from "convex-helpers/react/cache/hooks";
 import { Skeleton } from "@heroui/skeleton";
 import { useAuthActions } from "@convex-dev/auth/react";
 import Link from "next/link";
-
-import { api } from "@/convex/_generated/api";
 import { IconSvgProps } from "@/types";
+import { useUser } from "@/hooks/useUser";
 
 export default function UserProfile() {
-  const user = useQuery(api.function.users.currentUser);
+  const user = useUser();
   const { signOut } = useAuthActions();
 
   return (
     <div className="flex flex-col gap-4">
-      <Dropdown placement="bottom-end">
+      <Dropdown placement="bottom-end" shadow="none">
         <DropdownTrigger>
           {user ? (
             <Button

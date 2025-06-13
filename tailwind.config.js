@@ -87,7 +87,7 @@ const config = {
           layout: {},
           colors: {
             default: {
-              50: "#0E0E0E", /// Sidebar bg color - confirmed
+              50: "#0A0A0A", /// Sidebar bg color - confirmed
               100: "#1E1E1E", /// Chat Input bg color - confirmed
               200: "#2a2a2a", // User Chat bubble bg color
               300: "#323238",
@@ -98,7 +98,7 @@ const config = {
               800: "#d9d9da",
               900: "#ffffff",
               foreground: "#fff",
-              DEFAULT: "#171717",
+              DEFAULT: "#0F0F0F",
             },
             primary: {
               50: "#002147",
@@ -128,22 +128,22 @@ const config = {
               foreground: "#fff",
               DEFAULT: "#7828c8",
             },
-            background: "#0F0F10",
+            background: "#141415",
             foreground: "#ffffff",
             content1: {
               DEFAULT: "#171717", // Sidebar Menu bg color - confirmed
               foreground: "#fff",
             },
             content2: {
-              DEFAULT: "#2a2a2a", /// Loading Skeleton bg color - confirmed
+              DEFAULT: "#0a0a0a", /// Loading Skeleton bg color - confirmed
               foreground: "#fff",
             },
             content3: {
-              DEFAULT: "#323238",
+              DEFAULT: "#0a0a0a",
               foreground: "#fff",
             },
             content4: {
-              DEFAULT: "#3f3f46",
+              DEFAULT: "#0a0a0a",
               foreground: "#fff",
             },
 

@@ -42,6 +42,8 @@ const schema = defineSchema({
           type: v.union(v.literal("image"), v.literal("file")),
           url: v.string(),
           name: v.string(),
+          width: v.optional(v.number()),
+          height: v.optional(v.number()),
           size: v.number(),
           mimeType: v.string(),
         }),
@@ -62,16 +64,18 @@ const schema = defineSchema({
 
   share: defineTable({
     userId: v.id("users"),
+    shareId: v.string(),
     createdAt: v.number(),
-    role: v.union(v.literal("user"), v.literal("assistant")),
-    content: v.string(),
+    content: v.optional(v.any()),
     expiresAt: v.union(
       v.literal("1d"),
       v.literal("2d"),
-      v.literal("1m"),
+      v.literal("7d"),
       v.literal("never"),
     ),
-  }).index("byUserId", ["userId"]),
+  })
+    .index("byUserId", ["userId"])
+    .index("byShareId", ["shareId"]),
 });
 
 export default schema;

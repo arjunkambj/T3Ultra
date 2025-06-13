@@ -5,9 +5,11 @@ import AIThinkingSpinner from "./AIThinkingSpinner";
 export default function MessageUI({
   messages,
   status,
+  resume,
 }: {
   messages: any[];
   status: "submitted" | "streaming" | "ready" | "error";
+  resume: () => void;
 }) {
   return (
     <div className="flex h-full w-full max-w-3xl flex-col gap-2 space-y-5 px-3 pt-10">

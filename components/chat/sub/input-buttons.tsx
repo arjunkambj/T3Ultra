@@ -3,15 +3,29 @@ import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { Icon } from "@iconify/react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
+import { useAtom } from "jotai";
+import { isstreamingstop } from "@/atoms/streamingAtom";
 
 export default function InputButtons({
   setAssets,
   prompt,
+  resume,
+  stop,
+  status,
 }: {
   prompt: string;
   setAssets: React.Dispatch<React.SetStateAction<string[]>>;
+  resume: () => void;
+  stop: () => void;
+  status: string;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [, setIsStreamingStop] = useAtom(isstreamingstop);
+
+  const handleStop = useCallback(() => {
+    stop();
+    setIsStreamingStop(true);
+  }, [stop, setIsStreamingStop]);
 
   const handleFileUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,21 +79,36 @@ export default function InputButtons({
           </VisuallyHidden>
         </Button>
       </Tooltip>
-      <Button
-        isIconOnly
-        className={!prompt ? "bg-neutral-800" : "bg-neutral-200"}
-        isDisabled={!prompt}
-        radius="md"
-        size="sm"
-        type="submit"
-        variant="flat"
-      >
-        <Icon
-          className={!prompt ? "text-white" : "text-neutral-950"}
-          icon="solar:arrow-up-linear"
-          width={20}
-        />
-      </Button>
+
+      {status === "streaming" && (
+        <Button
+          isIconOnly
+          className="bg-neutral-300 p-1.5 text-neutral-900"
+          radius="md"
+          size="sm"
+          variant="flat"
+          onPress={handleStop}
+        >
+          <Icon icon="qlementine-icons:stop-24" width={18} />
+        </Button>
+      )}
+      {status !== "streaming" && (
+        <Button
+          isIconOnly
+          className={!prompt ? "bg-neutral-800" : "bg-neutral-200"}
+          isDisabled={!prompt}
+          radius="md"
+          size="sm"
+          type="submit"
+          variant="flat"
+        >
+          <Icon
+            className={!prompt ? "text-white" : "text-neutral-950"}
+            icon="solar:arrow-up-linear"
+            width={20}
+          />
+        </Button>
+      )}
     </div>
   );
 }
