@@ -2,7 +2,17 @@ import { Markdown } from "./sub/markdown";
 import AssistanceToolkit from "./sub/AssistanceToolkit";
 import { useState } from "react";
 
-export default function AssistanceMessage({ message }: { message: string }) {
+export default function AssistanceMessage({
+  message,
+  allmessages,
+  chatId,
+  isShared,
+}: {
+  message: any; // Full message object with id, content, role, etc.
+  allmessages: any[];
+  chatId: string;
+  isShared: boolean;
+}) {
   const [isHovering, setIsHovering] = useState(false);
 
   return (
@@ -12,11 +22,16 @@ export default function AssistanceMessage({ message }: { message: string }) {
       onMouseLeave={() => setIsHovering(false)}
     >
       <div className="w-full">
-        <Markdown>{message}</Markdown>
+        <Markdown>{message.content}</Markdown>
       </div>
       {isHovering && (
         <div className="absolute left-0 top-full z-10">
-          <AssistanceToolkit />
+          <AssistanceToolkit
+            message={message}
+            allmessages={allmessages}
+            chatId={chatId}
+            isShared={isShared}
+          />
         </div>
       )}
     </div>

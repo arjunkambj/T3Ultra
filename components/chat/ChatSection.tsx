@@ -7,7 +7,6 @@ import ChatSuggestions from "./sub/chat-suggestion";
 import { useAI } from "@/hooks/useAI";
 import LoginModel from "@/components/auth/LoginModel";
 import ShareModel from "./ShareModel";
-import { v4 as uuidv4 } from "uuid";
 
 export default function ChatSection({
   chatId,
@@ -30,12 +29,11 @@ export default function ChatSection({
     onLoginModalOpen,
     experimental_resume,
     stop,
+    reload,
   } = useAI({ isnewchat, chatId });
 
   const hasInput = input.length > 0 ? true : false;
   const hasMessages = messages.length > 0 ? true : false;
-  const shareId = uuidv4();
-  const shareLink = `http://localhost:3000/share/${shareId}`;
 
   if (isLoading) {
     return (
@@ -47,13 +45,7 @@ export default function ChatSection({
 
   return (
     <>
-      {hasMessages && (
-        <ShareModel
-          shareLink={shareLink}
-          shareId={shareId}
-          messages={messages}
-        />
-      )}
+      {hasMessages && <ShareModel chatId={chatId} />}
       <div
         className={cn(
           "relative flex h-dvh w-full flex-col items-center justify-center",
@@ -62,7 +54,14 @@ export default function ChatSection({
       >
         {hasInput || hasMessages ? (
           <div className="flex h-[calc(100dvh-160px)] w-full flex-col items-center justify-center overflow-y-auto px-3 pb-10">
-            <MessageUI messages={messages} status={status} />
+            <MessageUI
+              messages={messages}
+              resume={experimental_resume}
+              status={status}
+              reload={reload}
+              chatId={chatId}
+              isShared={false}
+            />
           </div>
         ) : (
           <div className="flex w-full max-w-2xl flex-col items-center justify-center px-4 pb-24 md:px-0">

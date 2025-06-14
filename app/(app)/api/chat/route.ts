@@ -2,9 +2,7 @@ import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
-
 import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
-
 import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
 import { openai } from "@ai-sdk/openai";

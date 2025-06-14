@@ -14,12 +14,22 @@ const schema = defineSchema({
 
     // Add your custom fields here
     isSubscribed: v.optional(v.boolean()),
+
     subscriptionTier: v.optional(
       v.union(v.literal("Free"), v.literal("Plus"), v.literal("Pro")),
     ),
     subscriptionEnds: v.optional(v.number()),
     subscriptionDate: v.optional(v.number()),
   }).index("email", ["email"]),
+
+  customizations: defineTable({
+    userId: v.id("users"),
+    whattocalluser: v.optional(v.string()),
+    whatuserdoes: v.optional(v.string()),
+    traitsforllm: v.optional(v.array(v.string())),
+    anythingelse: v.optional(v.string()),
+    preferencesofuser: v.optional(v.array(v.string())),
+  }).index("userId", ["userId"]),
 
   chats: defineTable({
     userId: v.id("users"),
@@ -29,53 +39,56 @@ const schema = defineSchema({
     updatedAt: v.optional(v.number()),
   })
     .index("byUserId", ["userId"])
-    .index("byChatId", ["chatId"]),
+    .index("byChatId", ["chatId"])
+    .index("byUserIdAndUpdated", ["userId", "updatedAt"]),
 
   messages: defineTable({
     chatId: v.string(),
     content: v.string(),
-    role: v.union(v.literal("user"), v.literal("assistant")),
+    role: v.union(
+      v.literal("user"),
+      v.literal("assistant"),
+      v.literal("system"),
+    ),
     updatedAt: v.optional(v.number()),
-    attachments: v.optional(
-      v.array(
-        v.object({
-          type: v.union(v.literal("image"), v.literal("file")),
-          url: v.string(),
-          name: v.string(),
-          width: v.optional(v.number()),
-          height: v.optional(v.number()),
-          size: v.number(),
-          mimeType: v.string(),
-        }),
-      ),
-    ),
-    source: v.optional(
-      v.object({
-        id: v.optional(v.string()),
-        name: v.optional(v.string()),
-        description: v.optional(v.string()),
-        url: v.optional(v.string()),
-        type: v.optional(v.union(v.literal("image"), v.literal("file"))),
-        favicon: v.optional(v.string()),
-        size: v.optional(v.number()),
-      }),
-    ),
   }).index("byChatId", ["chatId"]),
 
-  share: defineTable({
+  sharedChats: defineTable({
     userId: v.id("users"),
-    shareId: v.string(),
-    createdAt: v.number(),
-    content: v.optional(v.any()),
-    expiresAt: v.union(
-      v.literal("1d"),
-      v.literal("2d"),
-      v.literal("7d"),
-      v.literal("never"),
+    chatId: v.string(),
+    title: v.string(),
+    isPinned: v.boolean(),
+    updatedAt: v.optional(v.number()),
+    expiresAt: v.optional(
+      v.union(
+        v.literal("1d"),
+        v.literal("2d"),
+        v.literal("7d"),
+        v.literal("never"),
+      ),
     ),
   })
     .index("byUserId", ["userId"])
-    .index("byShareId", ["shareId"]),
+    .index("byChatId", ["chatId"]),
+
+  sharedMessages: defineTable({
+    chatId: v.string(),
+    content: v.string(),
+    role: v.union(
+      v.literal("user"),
+      v.literal("assistant"),
+      v.literal("system"),
+    ),
+    updatedAt: v.optional(v.number()),
+    expiresAt: v.optional(
+      v.union(
+        v.literal("1d"),
+        v.literal("2d"),
+        v.literal("7d"),
+        v.literal("never"),
+      ),
+    ),
+  }).index("byChatId", ["chatId"]),
 });
 
 export default schema;

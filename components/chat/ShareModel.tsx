@@ -15,6 +15,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@/hooks/useUser";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const expirationOptions = [
   { key: "1d", label: "1 Day", description: "Expires in 24 hours" },
@@ -23,44 +24,32 @@ const expirationOptions = [
   { key: "never", label: "Never", description: "Never expires" },
 ];
 
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-  attachments?: any[];
-  source?: any;
-}
-
-export default function ShareModel({
-  shareLink,
-  shareId,
-  messages,
-}: {
-  shareLink: string;
-  shareId: string;
-  messages?: any[];
-}) {
+export default function ShareModel({ chatId }: { chatId: string }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const user = useUser();
-  const createShare = useMutation(api.function.share.createShare);
+
   const [selectedExpiration, setSelectedExpiration] = useState<
     "1d" | "2d" | "7d" | "never"
   >("1d");
   const [isLoading, setIsLoading] = useState(false);
+  const createShare = useMutation(api.function.share.createShareChat);
 
   if (!user) {
     return null;
   }
+
+  const shareId = uuidv4();
+  const shareLink = `http://localhost:3000/share/${shareId}`;
 
   const handleShare = async () => {
     try {
       setIsLoading(true);
 
       await createShare({
+        chatId,
         userId: user._id,
-        shareId: shareId,
-        createdAt: Date.now(),
         expiresAt: selectedExpiration,
-        content: messages,
+        shareId,
       });
 
       await navigator.clipboard.writeText(shareLink);
@@ -73,7 +62,6 @@ export default function ShareModel({
 
       onClose();
     } catch (error) {
-      console.error("Error sharing chat:", error);
       addToast({
         title: "Error",
         description: "Failed to share chat. Please try again.",

@@ -7,9 +7,11 @@ import EditInput from "./sub/EditInput";
 export default function UserMessage({
   message,
   reload,
+  isShared,
 }: {
   message: string;
   reload: () => void;
+  isShared: boolean;
 }) {
   const [isHovering, setIsHovering] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -28,12 +30,13 @@ export default function UserMessage({
         )}
       </div>
       {isHovering && (
-        <div className="absolute right-0 top-full z-10">
+        <div className="absolute right-0 top-full z-10 pt-2">
           <UserToolkit
             edit={edit}
             message={message}
             reload={reload}
             setEdit={setEdit}
+            isShared={isShared}
           />
         </div>
       )}

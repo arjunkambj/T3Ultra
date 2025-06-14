@@ -1,55 +1,68 @@
 import { v } from "convex/values";
+import { mutation } from "../_generated/server";
+import { query } from "../_generated/server";
 
-import { mutation, query } from "../_generated/server";
-
-export const createShare = mutation({
+export const createShareChat = mutation({
   args: {
+    chatId: v.string(),
     userId: v.id("users"),
-    shareId: v.string(),
-    content: v.optional(v.any()),
-    createdAt: v.number(),
-    expiresAt: v.union(
-      v.literal("1d"),
-      v.literal("2d"),
-      v.literal("7d"),
-      v.literal("never"),
+    expiresAt: v.optional(
+      v.union(
+        v.literal("1d"),
+        v.literal("2d"),
+        v.literal("7d"),
+        v.literal("never"),
+      ),
     ),
+    shareId: v.string(),
   },
   handler: async (ctx, args) => {
-    const share = await ctx.db.insert("share", {
-      userId: args.userId,
-      shareId: args.shareId,
-      expiresAt: args.expiresAt,
-      content: args.content,
-      createdAt: args.createdAt,
+    const { chatId, userId, expiresAt, shareId } = args;
+
+    const originalMessages = await ctx.db
+      .query("messages")
+      .withIndex("byChatId", (q) => q.eq("chatId", chatId))
+      .collect();
+
+    const originalChat = await ctx.db
+      .query("chats")
+      .withIndex("byChatId", (q) => q.eq("chatId", chatId))
+      .first();
+
+    const createShare = await ctx.db.insert("sharedChats", {
+      chatId: shareId,
+      userId,
+      expiresAt,
+      title: originalChat?.title || "",
+      isPinned: false,
+      updatedAt: Date.now(),
     });
 
-    return share;
+    for (const message of originalMessages) {
+      await ctx.db.insert("sharedMessages", {
+        chatId: shareId,
+        content: message.content,
+        role: message.role,
+        updatedAt: Date.now(),
+        expiresAt,
+      });
+    }
+    return createShare;
   },
 });
 
-export const getShareByShareId = query({
+export const getSharedChatMessages = query({
   args: {
-    shareId: v.string(),
+    chatId: v.string(),
   },
-  handler: async (ctx, { shareId }) => {
-    const share = await ctx.db
-      .query("share")
-      .withIndex("byShareId", (q) => q.eq("shareId", shareId))
-      .first();
-    return share;
-  },
-});
+  handler: async (ctx, args) => {
+    const { chatId } = args;
 
-export const getShareByUserId = query({
-  args: {
-    userId: v.id("users"),
-  },
-  handler: async (ctx, { userId }) => {
-    const share = await ctx.db
-      .query("share")
-      .withIndex("byUserId", (q) => q.eq("userId", userId))
+    const sharedMessages = await ctx.db
+      .query("sharedMessages")
+      .withIndex("byChatId", (q) => q.eq("chatId", chatId))
       .collect();
-    return share;
+
+    return sharedMessages;
   },
 });

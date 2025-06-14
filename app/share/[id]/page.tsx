@@ -1,11 +1,19 @@
 "use client";
 
+import MessageUI from "@/components/chat/MessageUI";
+import { api } from "@/convex/_generated/api";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
+import { useQuery } from "convex/react";
 import { useParams } from "next/navigation";
+import { Spinner } from "@heroui/spinner";
 
 export default function SharePage() {
   const { id } = useParams();
+
+  const sharedMessages = useQuery(api.function.share.getSharedChatMessages, {
+    chatId: id as string,
+  });
 
   const handleCopyLink = () => {
     const link = `${window.location.origin}/share/${id}`;
@@ -28,7 +36,22 @@ export default function SharePage() {
         >
           Copy Link
         </Button>
-        <h1 className="text-3xl font-bold text-neutral-300">SharePage</h1>
+        <div className="flex h-full w-full flex-col items-center justify-center">
+          {sharedMessages ? (
+            <MessageUI
+              messages={sharedMessages || []}
+              status="ready"
+              resume={() => {}}
+              reload={() => {}}
+              chatId={id as string}
+              isShared={true}
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center">
+              <Spinner />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
