@@ -17,6 +17,7 @@ import type * as auth from "../auth.js";
 import type * as function_branch from "../function/branch.js";
 import type * as function_chats from "../function/chats.js";
 import type * as function_customizations from "../function/customizations.js";
+import type * as function_memory from "../function/memory.js";
 import type * as function_messages from "../function/messages.js";
 import type * as function_share from "../function/share.js";
 import type * as function_users from "../function/users.js";
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   "function/branch": typeof function_branch;
   "function/chats": typeof function_chats;
   "function/customizations": typeof function_customizations;
+  "function/memory": typeof function_memory;
   "function/messages": typeof function_messages;
   "function/share": typeof function_share;
   "function/users": typeof function_users;

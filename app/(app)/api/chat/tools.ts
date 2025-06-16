@@ -2,11 +2,10 @@ import { z } from "zod";
 import { tool } from "ai";
 import { DateTime } from "luxon";
 import Exa from "exa-js";
-import MemoryClient from "mem0ai";
-import dotenv from "dotenv";
-dotenv.config();
+import { api } from "@/convex/_generated/api";
+import { ConvexHttpClient } from "convex/browser";
 
-const memoryClient = new MemoryClient({ apiKey: process.env.MEM0_API_KEY! });
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export const getCurrentTime = tool({
   description:
@@ -65,15 +64,21 @@ export const InteractWithGoogleSearch = tool({
 
 export const addToMemory = tool({
   description:
-    "Adds a message to the memory of the user related to name, age, behavior, preferences or any other information that is relevant to the user. Useful for adding a message to the memory of the user.",
+    "ONLY use this tool to add NEW information about the user that is NOT already mentioned in the existing memory. Before using this tool, carefully check if the information already exists in the user's memory. Do not add duplicate or similar information. Only add truly new details about the user's name, age, behavior, preferences, or other relevant personal information.",
   parameters: z.object({
-    memory: z.string().describe("The memory to add."),
-    userID: z.string().describe("The user who is adding the message."),
+    memory: z
+      .string()
+      .describe(
+        "The NEW memory to add that doesn't already exist in user's memory.",
+      ),
+    userId: z.string().describe("The user who is adding the message."),
   }),
 
-  execute: async ({ memory, userID }) => {
-    memoryClient.add([{ role: "user", content: memory }], {
-      user_id: userID,
+  execute: async ({ memory, userId }) => {
+    await convex.mutation(api.function.memory.addMemory, {
+      userId: userId as any,
+      memory: memory,
+      category: "user",
     });
     console.log("Memory added");
     return true;

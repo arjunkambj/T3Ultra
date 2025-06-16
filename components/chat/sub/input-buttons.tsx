@@ -101,7 +101,7 @@ export default function InputButtons({
             onPress={handleSearch}
             variant="flat"
           >
-            Search
+            Web Search
           </Button>
         </Tooltip>
         {(status === "streaming" || status === "submitted") && (

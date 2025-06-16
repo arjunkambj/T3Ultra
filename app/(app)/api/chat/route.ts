@@ -7,11 +7,14 @@ import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
 import { openai } from "@ai-sdk/openai";
 import { addToMemory } from "./tools";
+import { perplexity } from "@ai-sdk/perplexity";
+import { xai } from "@ai-sdk/xai";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
-  const { messages, chatId, userId, modelId } = await req.json();
+  const { messages, chatId, userId, modelId, isSearchEnabled } =
+    await req.json();
 
   const isAuthenticated = await isAuthenticatedNextjs();
 
@@ -36,6 +39,17 @@ export async function POST(req: Request) {
     }
   }
 
+  const customizations = await convex.query(
+    api.function.customizations.getCustomization,
+    {
+      userId: userId as any,
+    },
+  );
+
+  const memory = await convex.query(api.function.memory.getMemory, {
+    userId: userId as any,
+  });
+
   const systemPrompt = `
   You are a helpful assistant that can answer questions. 
    Speak in humanly manner and use emojis to make it more engaging not more than 1 emoji per message.
@@ -43,7 +57,36 @@ export async function POST(req: Request) {
 
    Note: 
    userID: ${userId} for the addToMemory tool.
-
+   
+   EXISTING USER MEMORY: 
+   ${memory || "No existing memories found."}
+   
+   USER CUSTOMIZATIONS:
+   ${
+     customizations
+       ? `
+   - What to call user: ${customizations.whattocalluser || "Not specified"}
+   - What user does: ${customizations.whatuserdoes || "Not specified"}
+   - LLM traits: ${customizations.traitsforllm?.join(", ") || "Not specified"}
+   - User preferences: ${customizations.preferencesofuser?.join(", ") || "Not specified"}
+   - Additional notes: ${customizations.anythingelse || "Not specified"}
+   `
+       : "No customizations found."
+   }
+   
+   IMPORTANT MEMORY RULES:
+   - Use the existing memory above to personalize your responses
+   - ONLY use addToMemory tool if the user shares completely NEW information that is NOT already in their existing memory
+   - Before adding any memory, carefully check if similar information already exists in the existing memory above
+   - Do NOT add duplicate or redundant information to memory
+   - Only add truly new personal details, preferences, or important information about the user
+   
+   CUSTOMIZATION INSTRUCTIONS:
+   - Follow the user customizations above to tailor your responses
+   - Use the specified name/title when addressing the user
+   - Adapt your communication style based on the LLM traits specified
+   - Consider the user's preferences and what they do when providing responses
+   - Incorporate any additional notes from the customizations
    `;
 
   const userModel = [
@@ -60,7 +103,7 @@ export async function POST(req: Request) {
   const selectedModel = userModel[selectedModelIndex];
 
   const result = streamText({
-    model: selectedModel,
+    model: isSearchEnabled ? perplexity("sonar-pro") : selectedModel,
     system: systemPrompt,
     messages,
     maxSteps: 10,

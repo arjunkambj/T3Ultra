@@ -108,7 +108,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       {/* Logo and Close Button */}
       {logoSection}
 
-      <Spacer y={10} />
+      <Spacer y={6} />
 
       {/* New Chat Button */}
       <Button
@@ -119,7 +119,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         New Chat
       </Button>
 
-      <Spacer y={8} />
+      <Spacer y={6} />
 
       <div className="flex flex-col gap-1">
         <Button
