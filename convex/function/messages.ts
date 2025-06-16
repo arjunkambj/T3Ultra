@@ -7,7 +7,23 @@ export const addMessageToChat = mutation({
   args: {
     chatId: v.string(),
     content: v.string(),
-    role: v.union(v.literal("user"), v.literal("assistant")),
+    role: v.union(
+      v.literal("user"),
+      v.literal("assistant"),
+      v.literal("system"),
+      v.literal("data"),
+    ),
+    annotations: v.optional(v.array(v.any())),
+    parts: v.optional(v.array(v.any())),
+    experimental_attachments: v.optional(
+      v.array(
+        v.object({
+          name: v.optional(v.string()),
+          contentType: v.optional(v.string()),
+          url: v.string(),
+        }),
+      ),
+    ),
   },
   handler: async (ctx, args) => {
     // Validate content is not empty
@@ -19,7 +35,51 @@ export const addMessageToChat = mutation({
       chatId: args.chatId,
       content: args.content.trim(),
       role: args.role,
-      updatedAt: Date.now(),
+      annotations: args.annotations,
+      parts: args.parts,
+      experimental_attachments: args.experimental_attachments,
+    });
+
+    return messageId;
+  },
+});
+
+// Add UIMessage to chat with full structure support
+export const addUIMessageToChat = mutation({
+  args: {
+    chatId: v.string(),
+    content: v.string(),
+    role: v.union(
+      v.literal("user"),
+      v.literal("assistant"),
+      v.literal("system"),
+      v.literal("data"),
+    ),
+    annotations: v.optional(v.array(v.any())),
+    parts: v.optional(v.array(v.any())),
+    experimental_attachments: v.optional(
+      v.array(
+        v.object({
+          name: v.optional(v.string()),
+          contentType: v.optional(v.string()),
+          url: v.string(),
+        }),
+      ),
+    ),
+  },
+  handler: async (ctx, args) => {
+    // Validate content is not empty
+    if (!args.content.trim()) {
+      throw new Error("Message content cannot be empty");
+    }
+
+    const messageId = await ctx.db.insert("messages", {
+      chatId: args.chatId,
+      content: args.content.trim(),
+      role: args.role,
+      annotations: args.annotations,
+      parts: args.parts,
+      experimental_attachments: args.experimental_attachments,
     });
 
     return messageId;
@@ -38,7 +98,17 @@ export const getMessagesByChatId = query({
       .order("asc")
       .collect();
 
-    return messages;
+    // Transform to match UIMessage structure
+    return messages.map((message) => ({
+      id: message._id,
+      chatId: message.chatId,
+      content: message.content,
+      role: message.role,
+      updatedAt: message.updatedAt,
+      annotations: message.annotations || [],
+      parts: message.parts || [],
+      experimental_attachments: message.experimental_attachments || [],
+    }));
   },
 });
 

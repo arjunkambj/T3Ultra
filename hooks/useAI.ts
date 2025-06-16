@@ -60,20 +60,21 @@ export const useAI = ({
       setIsLoading(true);
     } else {
       setIsLoading(false);
-
+      console.log("this is running");
       // Set messages for existing chats
       if (getMessages && !isnewchat && messages.length === 0) {
         setMessages(
           getMessages.map((message) => ({
-            id: message._id,
+            id: message.id,
             role: message.role,
             content: message.content,
-            createdAt: new Date(message._creationTime),
           })),
         );
       }
+
+      console.log("this is running 2");
     }
-  }, [setMessages, getMessages, isnewchat, messages.length]);
+  }, [getMessages, isnewchat, setMessages]);
 
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {

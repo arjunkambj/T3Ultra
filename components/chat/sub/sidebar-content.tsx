@@ -16,6 +16,7 @@ import ChatHistory from "./ChatHistory";
 import { Logo } from "@/components/Logo";
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import SidebarModel from "@/components/auth/SidebarModel";
+import { Divider } from "@heroui/divider";
 
 interface SidebarContentProps {
   onClose: () => void;
@@ -34,7 +35,15 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
   };
 
   const handleCustomModels = () => {
-    router.push(`/create-agent`);
+    router.push(`/agent`);
+
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  const handleCreateProject = () => {
+    router.push(`/create-project`);
 
     if (onClose) {
       onClose();
@@ -121,16 +130,12 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
 
       <Spacer y={6} />
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-0">
         <Button
           fullWidth
-          className="flex justify-start rounded-full bg-transparent px-1 py-5 text-neutral-100"
+          className="flex justify-start rounded-full bg-transparent px-2 py-5 text-neutral-300 hover:text-neutral-100"
           startContent={
-            <Icon
-              icon="lets-icons:ito-light"
-              className="text-neutral-200"
-              width={24}
-            />
+            <Icon icon="mdi:robot" className="text-neutral-300" width={20} />
           }
           onPress={handleCustomModels}
         >
@@ -138,21 +143,21 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         </Button>
         <Button
           fullWidth
-          className="flex justify-start rounded-full bg-transparent px-1 py-5 text-neutral-100"
+          className="flex justify-start rounded-full bg-transparent px-2 py-5 text-neutral-300 hover:text-neutral-100"
           startContent={
             <Icon
-              icon="fluent:agents-32-regular"
-              className="text-neutral-200"
-              width={22}
+              icon="mdi:folder-plus"
+              className="text-neutral-300"
+              width={20}
             />
           }
-          onPress={handleCustomModels}
+          onPress={handleCreateProject}
         >
           Create Project
         </Button>
       </div>
 
-      <Spacer y={10} />
+      <Divider className="mb-6 mt-4 bg-neutral-900" />
 
       {/* Chat History */}
       <ScrollShadow hideScrollBar size={10} visibility="auto">

@@ -1,13 +1,10 @@
 "use client";
 import { useQuery } from "convex-helpers/react/cache/hooks";
-import { useMutation } from "convex/react";
-import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { addToast } from "@heroui/toast";
-
+import ChatHistoryDropdown from "./ChatHistoryDropdown";
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import { api } from "@/convex/_generated/api";
 
@@ -97,27 +94,29 @@ export default function ChatHistory() {
   const categorizedChats = categorizeChats(recentChats);
 
   const renderChatItem = (chat: any) => (
-    <div key={chat.chatId} className="w-full">
-      <Button
-        as={Link}
-        className={`group relative flex h-9 w-full cursor-pointer items-center justify-start gap-2.5 rounded-medium px-3 text-small outline-none transition-colors duration-100 hover:bg-default-100 hover:text-default-700 focus-visible:ring-2 focus-visible:ring-focus ${
+    <div
+      key={chat.chatId}
+      className="group relative flex w-full items-center rounded-medium hover:bg-default-100"
+    >
+      <Link
+        href={`/chat/${chat.chatId}`}
+        className={`group relative flex h-9 w-full cursor-pointer items-center justify-start rounded-medium px-3 text-small outline-none transition-colors duration-100 hover:bg-default-100 hover:text-default-700 focus-visible:ring-2 focus-visible:ring-default-200 focus-visible:ring-offset-2 focus-visible:ring-offset-default-100 ${
           isChatActive(chat.chatId)
             ? "rounded-xl bg-default-100 text-default-800"
             : "text-default-600"
         }`}
-        href={`/chat/${chat.chatId}`}
-        variant="light"
-        onPress={handleChatClick}
+        onClick={handleChatClick}
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex min-w-0 flex-1 items-center gap-2 truncate">
             <span className="truncate text-left">{chat.title}</span>
           </div>
-          <div className="ml-2 flex-shrink-0">
-            <PromptMenu chatId={chat.chatId} isPinned={chat.isPinned} />
-          </div>
         </div>
-      </Button>
+      </Link>
+
+      <div className="absolute right-2 z-10 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        <ChatHistoryDropdown chatId={chat.chatId} isPinned={chat.isPinned} />
+      </div>
     </div>
   );
 
@@ -200,72 +199,6 @@ export default function ChatHistory() {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function PromptMenu({
-  chatId,
-  isPinned,
-}: {
-  chatId: string;
-  isPinned: boolean;
-}) {
-  const pathname = usePathname();
-  const router = useRouter();
-  const deleteChat = useMutation(api.function.chats.deleteChatByChatId);
-  const updateChatIsPinned = useMutation(api.function.chats.updateChatIsPinned);
-
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      await deleteChat({ chatId });
-
-      if (pathname === `/chat/${chatId}`) {
-        router.push("/chat");
-      }
-    } catch (error) {
-      void error;
-      addToast({
-        title: "Error deleting chat",
-        description: "Please try again",
-        color: "danger",
-      });
-    }
-  };
-
-  const handlePin = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    try {
-      await updateChatIsPinned({ chatId, isPinned: !isPinned });
-    } catch (error) {
-      void error;
-      addToast({
-        title: "Error",
-        description: "Something went wrong",
-        color: "danger",
-      });
-    }
-  };
-
-  return (
-    <div className="absolute right-2 top-1/2 z-10 flex -translate-y-1/2 items-center gap-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-      <Icon
-        className="cursor-pointer text-default-700 transition-colors duration-150 hover:text-default-900"
-        height={16}
-        icon={isPinned ? "solar:pin-bold" : "solar:pin-linear"}
-        width={16}
-        onClick={handlePin}
-      />
-      <Icon
-        className="cursor-pointer text-default-700 transition-colors duration-150 hover:text-danger"
-        height={16}
-        icon="material-symbols:delete-outline"
-        width={16}
-        onClick={handleDelete}
-      />
     </div>
   );
 }

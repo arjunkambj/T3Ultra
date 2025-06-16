@@ -39,7 +39,6 @@ const schema = defineSchema({
 
   projects: defineTable({
     userId: v.id("users"),
-    projectId: v.string(),
     model: v.string(),
     title: v.string(),
     description: v.optional(v.string()),
@@ -49,12 +48,15 @@ const schema = defineSchema({
     userId: v.id("users"),
     chatId: v.string(),
     title: v.string(),
+    projectId: v.optional(v.id("projects")),
     isPinned: v.boolean(),
+    isInProject: v.optional(v.boolean()),
     updatedAt: v.optional(v.number()),
   })
     .index("byUserId", ["userId"])
     .index("byChatId", ["chatId"])
-    .index("byUserIdAndUpdated", ["userId", "updatedAt"]),
+    .index("byUserIdAndUpdated", ["userId", "updatedAt"])
+    .index("byProjectId", ["projectId"]),
 
   messages: defineTable({
     chatId: v.string(),
@@ -63,8 +65,20 @@ const schema = defineSchema({
       v.literal("user"),
       v.literal("assistant"),
       v.literal("system"),
+      v.literal("data"),
     ),
     updatedAt: v.optional(v.number()),
+    annotations: v.optional(v.array(v.any())),
+    parts: v.optional(v.array(v.any())),
+    experimental_attachments: v.optional(
+      v.array(
+        v.object({
+          name: v.optional(v.string()),
+          contentType: v.optional(v.string()),
+          url: v.string(),
+        }),
+      ),
+    ),
   }).index("byChatId", ["chatId"]),
 
   sharedChats: defineTable({
@@ -92,8 +106,20 @@ const schema = defineSchema({
       v.literal("user"),
       v.literal("assistant"),
       v.literal("system"),
+      v.literal("data"),
     ),
     updatedAt: v.optional(v.number()),
+    annotations: v.optional(v.array(v.any())),
+    parts: v.optional(v.array(v.any())),
+    experimental_attachments: v.optional(
+      v.array(
+        v.object({
+          name: v.optional(v.string()),
+          contentType: v.optional(v.string()),
+          url: v.string(),
+        }),
+      ),
+    ),
     expiresAt: v.optional(
       v.union(
         v.literal("1d"),

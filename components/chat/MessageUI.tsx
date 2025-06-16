@@ -19,10 +19,10 @@ export default function MessageUI({
   isShared: boolean;
 }) {
   const [memory, setMemory] = useState<boolean>(false);
-  console.log(messages);
 
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
+
     if (lastMessage?.role === "assistant" && lastMessage.toolInvocations) {
       const memoryTool = lastMessage.toolInvocations.find(
         (tool: any) => tool.toolName === "addToMemory",
@@ -38,10 +38,7 @@ export default function MessageUI({
           timeout: 2000,
         });
       }
-
       setMemory(hasMemory);
-    } else {
-      setMemory(false);
     }
   }, [messages, memory]);
 
