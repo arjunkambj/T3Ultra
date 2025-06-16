@@ -27,11 +27,18 @@ export const createBranchChat = mutation({
     if (branchMessages.length === 0) {
       throw new Error("No messages to branch");
     }
+    const originalChat = await ctx.db
+      .query("chats")
+      .withIndex("byChatId", (q) => q.eq("chatId", originalChatId))
+      .first();
+    if (!originalChat) {
+      throw new Error("Original chat not found");
+    }
 
     const newChatDbId = await ctx.db.insert("chats", {
       userId: userId,
       chatId: newChatId,
-      title: "Branched Chat",
+      title: `B: ${originalChat.title}`,
       isPinned: false,
       updatedAt: Date.now(),
     });

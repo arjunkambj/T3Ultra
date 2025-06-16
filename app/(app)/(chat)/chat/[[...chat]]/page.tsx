@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
 import ChatSection from "@/components/chat/ChatSection";
+import TopMenuBar from "@/components/chat/TopMenuBar";
 
 export default async function ChatPage({
   params,
@@ -13,6 +14,7 @@ export default async function ChatPage({
 
   return (
     <section className="flex w-full flex-col items-center justify-center gap-4 bg-[#0F0F10]">
+      <TopMenuBar />
       <ChatSection key={chatId} chatId={chatId} isnewchat={isNewChat} />
     </section>
   );

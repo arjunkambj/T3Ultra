@@ -9,10 +9,7 @@ export default async function AppLayout({
   return (
     <section className="relative flex max-h-dvh w-full overflow-hidden">
       <Sidebar />
-      <main className="relative w-full">
-        <TopMenuBar />
-        {children}
-      </main>
+      <main className="relative w-full">{children}</main>
     </section>
   );
 }

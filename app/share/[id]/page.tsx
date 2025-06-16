@@ -7,6 +7,7 @@ import { addToast } from "@heroui/toast";
 import { useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { Spinner } from "@heroui/spinner";
+import { Icon } from "@iconify/react";
 
 export default function SharePage() {
   const { id } = useParams();
@@ -30,18 +31,18 @@ export default function SharePage() {
     <div className="flex h-dvh w-full flex-col items-center bg-[#0A0A0A] pl-20 pr-2 pt-8">
       <div className="relative flex h-full w-full flex-col items-center justify-center rounded border border-neutral-600 bg-[#0F0F10]">
         <Button
-          className="absolute right-5 top-5 text-neutral-100"
+          className="absolute right-9 top-5 bg-neutral-800 text-neutral-100"
           variant="flat"
           onPress={handleCopyLink}
         >
-          Copy Link
+          <Icon icon="solar:copy-bold" width={16} />
+          <span className="text-sm">Copy Link</span>
         </Button>
-        <div className="flex h-full w-full flex-col items-center justify-center">
+        <div className="flex h-full w-full flex-col items-center justify-center overflow-y-auto">
           {sharedMessages ? (
             <MessageUI
               messages={sharedMessages || []}
               status="ready"
-              resume={() => {}}
               reload={() => {}}
               chatId={id as string}
               isShared={true}

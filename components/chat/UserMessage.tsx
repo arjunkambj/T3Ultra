@@ -3,6 +3,7 @@
 import UserToolkit from "./sub/UserToolkit";
 import { useState } from "react";
 import EditInput from "./sub/EditInput";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 export default function UserMessage({
   message,

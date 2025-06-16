@@ -3,8 +3,7 @@
 import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
 import { Tooltip } from "@heroui/tooltip";
-import { useAtom } from "jotai";
-import { editMessage } from "@/atoms/editMessage";
+
 import { addToast } from "@heroui/toast";
 import { useUser } from "@/hooks/useUser";
 

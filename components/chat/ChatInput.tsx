@@ -12,7 +12,6 @@ interface ChatInputProps {
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   isnewchat: boolean;
   isLoading: boolean;
-  resume: () => void;
   stop: () => void;
   status: string;
 }
@@ -22,7 +21,6 @@ export default function ChatInput({
   handleInputChange,
   onSubmit,
   handleKeyDown,
-  resume,
   stop,
   status,
 }: ChatInputProps) {
@@ -33,7 +31,6 @@ export default function ChatInput({
         handleKeyDown={handleKeyDown}
         input={input}
         onSubmit={onSubmit}
-        resume={resume}
         stop={stop}
         status={status}
       />

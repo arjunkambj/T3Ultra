@@ -33,10 +33,18 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
     }
   };
 
+  const handleCustomModels = () => {
+    router.push(`/create-agent`);
+
+    if (onClose) {
+      onClose();
+    }
+  };
+
   const containerClasses = useMemo(
     () =>
-      `relative flex h-dvh max-w-[260px] flex-1 flex-col overflow-hidden transition-all duration-300 ease-in-out ${
-        isOpen ? "w-[260px] p-6" : "w-0 p-0"
+      `relative flex h-dvh max-w-[250px] flex-1 flex-col overflow-hidden transition-all border-r border-neutral-800 duration-300 ease-in-out ${
+        isOpen ? "w-[250px] p-6" : "w-0 p-0"
       }`,
     [isOpen],
   );
@@ -105,13 +113,46 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       {/* New Chat Button */}
       <Button
         fullWidth
-        className="rounded-full bg-neutral-800"
+        className="rounded-full bg-neutral-800 py-5"
         onPress={handleNewChat}
       >
         New Chat
       </Button>
 
-      <Spacer y={5} />
+      <Spacer y={8} />
+
+      <div className="flex flex-col gap-1">
+        <Button
+          fullWidth
+          className="flex justify-start rounded-full bg-transparent px-1 py-5 text-neutral-100"
+          startContent={
+            <Icon
+              icon="lets-icons:ito-light"
+              className="text-neutral-200"
+              width={24}
+            />
+          }
+          onPress={handleCustomModels}
+        >
+          Create Agent
+        </Button>
+        <Button
+          fullWidth
+          className="flex justify-start rounded-full bg-transparent px-1 py-5 text-neutral-100"
+          startContent={
+            <Icon
+              icon="fluent:agents-32-regular"
+              className="text-neutral-200"
+              width={22}
+            />
+          }
+          onPress={handleCustomModels}
+        >
+          Create Project
+        </Button>
+      </div>
+
+      <Spacer y={10} />
 
       {/* Chat History */}
       <ScrollShadow hideScrollBar size={10} visibility="auto">

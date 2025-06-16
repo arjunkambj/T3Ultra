@@ -53,10 +53,9 @@ export default function ChatSection({
         )}
       >
         {hasInput || hasMessages ? (
-          <div className="flex h-[calc(100dvh-160px)] w-full flex-col items-center justify-center overflow-y-auto px-3 pb-10">
+          <div className="flex h-[calc(100dvh-160px)] w-full flex-col items-center justify-center overflow-y-auto px-3">
             <MessageUI
               messages={messages}
-              resume={experimental_resume}
               status={status}
               reload={reload}
               chatId={chatId}
@@ -78,7 +77,6 @@ export default function ChatSection({
               isnewchat={isnewchat}
               setInput={setInput}
               onSubmit={onSubmit}
-              resume={experimental_resume}
               stop={stop}
               status={status}
             />

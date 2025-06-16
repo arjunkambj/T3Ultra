@@ -6,6 +6,7 @@ import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useDisclosure } from "@heroui/modal";
 import { useAtom } from "jotai";
 import { aiModelAtom } from "@/atoms/aimodel";
+import { searchAtom } from "@/atoms/searchState";
 
 import { api } from "@/convex/_generated/api";
 
@@ -19,6 +20,7 @@ export const useAI = ({
   const user = useQuery(api.function.users.currentUser);
   const [currentModelId] = useAtom(aiModelAtom);
   const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useAtom(searchAtom);
   const {
     isOpen: isLoginModalOpen,
     onOpen: onLoginModalOpen,
@@ -48,6 +50,7 @@ export const useAI = ({
       chatId,
       userId: user?._id,
       modelId: currentModelId,
+      search,
     },
   });
 
@@ -94,12 +97,14 @@ export const useAI = ({
         }
 
         handleSubmit();
+        setSearch(false);
       } catch (error) {
         void error;
         addToast({
           title: "Error",
           description: "Something went wrong",
           color: "danger",
+          timeout: 1500,
         });
       }
     },
@@ -126,6 +131,7 @@ export const useAI = ({
             });
           }
           handleSubmit();
+          setSearch(false);
         } catch (error) {
           void error;
           addToast({

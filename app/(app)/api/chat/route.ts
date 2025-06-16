@@ -6,6 +6,7 @@ import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
 import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
 import { openai } from "@ai-sdk/openai";
+import { addToMemory } from "./tools";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -39,12 +40,16 @@ export async function POST(req: Request) {
   You are a helpful assistant that can answer questions. 
    Speak in humanly manner and use emojis to make it more engaging not more than 1 emoji per message.
    if using tools, share messge with readable format.
+
+   Note: 
+   userID: ${userId} for the addToMemory tool.
+
    `;
 
   const userModel = [
     openai("gpt-4o-mini"),
     openai("gpt-4.1-mini"),
-    google("gemini-2.0-flash-001"),
+    google("gemini-2.5-flash-preview-04-17"),
   ];
 
   // Ensure modelId is within valid range
@@ -58,9 +63,11 @@ export async function POST(req: Request) {
     model: selectedModel,
     system: systemPrompt,
     messages,
+    maxSteps: 10,
     tools: {
       internetSearch: InteractWithGoogleSearch,
       getCurrentTime: getCurrentTime,
+      addToMemory: addToMemory,
     },
     onFinish: async (result) => {
       try {
@@ -87,8 +94,6 @@ export async function POST(req: Request) {
         console.error("Error saving assistant message:", error);
       }
     },
-
-    //
   });
 
   return result.toDataStreamResponse();

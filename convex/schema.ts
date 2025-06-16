@@ -31,6 +31,27 @@ const schema = defineSchema({
     preferencesofuser: v.optional(v.array(v.string())),
   }).index("userId", ["userId"]),
 
+  memory: defineTable({
+    userId: v.id("users"),
+    memory: v.optional(
+      v.array(
+        v.object({
+          memory: v.string(),
+          category: v.optional(v.string()),
+        }),
+      ),
+    ),
+  }).index("userId", ["userId"]),
+
+  projects: defineTable({
+    userId: v.id("users"),
+    projectId: v.string(),
+    model: v.string(),
+    title: v.string(),
+    description: v.optional(v.string()),
+    createdAt: v.optional(v.number()),
+  }).index("userId", ["userId"]),
+
   chats: defineTable({
     userId: v.id("users"),
     chatId: v.string(),

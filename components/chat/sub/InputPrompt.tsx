@@ -16,7 +16,6 @@ interface PromptInputProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  resume: () => void;
   stop: () => void;
   status: string;
 }
@@ -71,7 +70,6 @@ export function PromptInputFullLineComponent({
   handleInputChange,
   onSubmit,
   handleKeyDown,
-  resume,
   stop,
   status,
 }: PromptInputProps) {
@@ -143,7 +141,6 @@ export function PromptInputFullLineComponent({
       />
       <InputButtons
         prompt={input}
-        resume={resume}
         setAssets={setAssets}
         status={status}
         stop={stop}

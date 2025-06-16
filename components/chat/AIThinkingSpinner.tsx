@@ -12,7 +12,6 @@ export default function AIThinkingSpinner({
   status: "submitted" | "streaming" | "ready" | "error";
   messages?: any[];
 }) {
-  // Check if there are any Google search tool calls in the last message
   const isSearchingInternet =
     messages && messages.length > 0
       ? (() => {

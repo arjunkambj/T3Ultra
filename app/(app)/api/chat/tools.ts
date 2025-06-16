@@ -2,6 +2,11 @@ import { z } from "zod";
 import { tool } from "ai";
 import { DateTime } from "luxon";
 import Exa from "exa-js";
+import MemoryClient from "mem0ai";
+import dotenv from "dotenv";
+dotenv.config();
+
+const memoryClient = new MemoryClient({ apiKey: process.env.MEM0_API_KEY! });
 
 export const getCurrentTime = tool({
   description:
@@ -55,5 +60,22 @@ export const InteractWithGoogleSearch = tool({
     };
 
     return formattedResult;
+  },
+});
+
+export const addToMemory = tool({
+  description:
+    "Adds a message to the memory of the user related to name, age, behavior, preferences or any other information that is relevant to the user. Useful for adding a message to the memory of the user.",
+  parameters: z.object({
+    memory: z.string().describe("The memory to add."),
+    userID: z.string().describe("The user who is adding the message."),
+  }),
+
+  execute: async ({ memory, userID }) => {
+    memoryClient.add([{ role: "user", content: memory }], {
+      user_id: userID,
+    });
+    console.log("Memory added");
+    return true;
   },
 });

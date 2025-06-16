@@ -1,28 +1,56 @@
 import UserMessage from "./UserMessage";
 import AssistanceMessage from "./AssistanceMessage";
 import AIThinkingSpinner from "./AIThinkingSpinner";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useState, useEffect } from "react";
+import { addToast } from "@heroui/toast";
 
 export default function MessageUI({
   messages,
   status,
-  resume,
   reload,
   chatId,
   isShared,
 }: {
   messages: any[];
   status: "submitted" | "streaming" | "ready" | "error";
-  resume: () => void;
   reload: () => void;
   chatId: string;
   isShared: boolean;
 }) {
+  const [memory, setMemory] = useState<boolean>(false);
+  console.log(messages);
+
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.role === "assistant" && lastMessage.toolInvocations) {
+      const memoryTool = lastMessage.toolInvocations.find(
+        (tool: any) => tool.toolName === "addToMemory",
+      );
+      const hasMemory = !!memoryTool;
+
+      // Show toast when memory changes from false to true
+      if (!memory && hasMemory) {
+        addToast({
+          title: "Memory Saved",
+          icon: <Icon icon="flowbite:brain-solid" width={16} />,
+          color: "default",
+          timeout: 2000,
+        });
+      }
+
+      setMemory(hasMemory);
+    } else {
+      setMemory(false);
+    }
+  }, [messages, memory]);
+
   return (
-    <div className="flex h-full w-full max-w-3xl flex-col gap-10 space-y-5 px-3 pt-10">
+    <div className="flex h-full w-full max-w-3xl flex-col px-3 pt-16">
       {messages?.map((message) => (
-        <div className="pb-16" key={message.id}>
+        <div className="pb-12" key={message.id}>
           {message.role === "user" ? (
-            <div className="flex w-full justify-end">
+            <div key={message.id} className="flex w-full justify-end">
               <UserMessage
                 isShared={isShared}
                 message={message.content}
@@ -41,7 +69,6 @@ export default function MessageUI({
           )}
         </div>
       ))}
-
       <AIThinkingSpinner messages={messages} status={status} />
     </div>
   );
