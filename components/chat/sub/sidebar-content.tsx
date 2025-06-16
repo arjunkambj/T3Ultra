@@ -52,7 +52,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
 
   const containerClasses = useMemo(
     () =>
-      `relative flex h-dvh max-w-[250px] flex-1 flex-col overflow-hidden transition-all border-r border-neutral-800 duration-300 ease-in-out ${
+      `relative flex h-dvh max-w-[250px] flex-1 flex-col overflow-hidden transition-all bg-[#0A0A0A] duration-300 ease-in-out ${
         isOpen ? "w-[250px] p-6" : "w-0 p-0"
       }`,
     [isOpen],
@@ -141,7 +141,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           }
           onPress={handleCustomModels}
         >
-          Create Agent
+          Manage Agents
         </Button>
         <Button
           fullWidth

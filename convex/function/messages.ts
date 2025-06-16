@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 import { mutation, query } from "../_generated/server";
 
@@ -26,6 +27,12 @@ export const addMessageToChat = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     // Validate content is not empty
     if (!args.content.trim()) {
       throw new Error("Message content cannot be empty");
@@ -68,6 +75,12 @@ export const addUIMessageToChat = mutation({
     ),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     // Validate content is not empty
     if (!args.content.trim()) {
       throw new Error("Message content cannot be empty");
@@ -92,6 +105,12 @@ export const getMessagesByChatId = query({
     chatId: v.string(),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     const messages = await ctx.db
       .query("messages")
       .withIndex("byChatId", (q) => q.eq("chatId", args.chatId))
@@ -118,6 +137,12 @@ export const deleteMessagesByChatId = mutation({
     chatId: v.string(),
   },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     const messages = await ctx.db
       .query("messages")
       .withIndex("byChatId", (q) => q.eq("chatId", args.chatId))

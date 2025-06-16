@@ -2,6 +2,7 @@ import { v } from "convex/values";
 
 import { mutation, query } from "../_generated/server";
 import { api } from "../_generated/api";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 // Creating Chat by ChatId
 export const createChatByChatId = mutation({
@@ -11,6 +12,12 @@ export const createChatByChatId = mutation({
   },
 
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     // Check if chat already exists
     const existingChat = await ctx.db
       .query("chats")
@@ -36,6 +43,12 @@ export const createChatByChatId = mutation({
 export const getChatsByUserId = query({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     const chats = await ctx.db
       .query("chats")
       .withIndex("byUserId", (q) => q.eq("userId", args.userId))
@@ -49,6 +62,12 @@ export const getChatsByUserId = query({
 export const getChatByChatId = query({
   args: { chatId: v.string() },
   handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     const chat = await ctx.db
       .query("chats")
       .withIndex("byChatId", (q) => q.eq("chatId", args.chatId))
@@ -65,6 +84,12 @@ export const updateChatTitle = mutation({
     title: v.string(),
   },
   handler: async (ctx, { chatId, title }) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     // Validate title is not empty
     if (!title.trim()) {
       throw new Error("Chat title cannot be empty");
@@ -94,6 +119,12 @@ export const deleteChatByChatId = mutation({
     chatId: v.string(),
   },
   handler: async (ctx, { chatId }) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     // Delete all messages in the chat using the optimized function
     await ctx.runMutation(api.function.messages.deleteMessagesByChatId, {
       chatId,
@@ -121,6 +152,12 @@ export const updateChatIsPinned = mutation({
     isPinned: v.boolean(),
   },
   handler: async (ctx, { chatId, isPinned }) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     const chat = await ctx.db
       .query("chats")
       .withIndex("byChatId", (q) => q.eq("chatId", chatId))
@@ -141,6 +178,12 @@ export const updateChatUpdatedAt = mutation({
     chatId: v.string(),
   },
   handler: async (ctx, { chatId }) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     const chat = await ctx.db
       .query("chats")
       .withIndex("byChatId", (q) => q.eq("chatId", chatId))

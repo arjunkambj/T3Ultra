@@ -100,6 +100,7 @@ const schema = defineSchema({
     .index("byChatId", ["chatId"]),
 
   sharedMessages: defineTable({
+    messageId: v.optional(v.string()),
     chatId: v.string(),
     content: v.string(),
     role: v.union(

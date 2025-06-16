@@ -1,14 +1,20 @@
 import { v } from "convex/values";
 import { mutation } from "../_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const createBranchChat = mutation({
   args: {
     messageId: v.id("messages"),
     originalChatId: v.string(),
     newChatId: v.string(),
-    userId: v.id("users"),
   },
-  handler: async (ctx, { messageId, originalChatId, newChatId, userId }) => {
+  handler: async (ctx, { messageId, originalChatId, newChatId }) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
     const allMessages = await ctx.db
       .query("messages")
       .withIndex("byChatId", (q) => q.eq("chatId", originalChatId))

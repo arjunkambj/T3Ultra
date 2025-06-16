@@ -64,7 +64,7 @@ export const InteractWithGoogleSearch = tool({
 
 export const addToMemory = tool({
   description:
-    "ONLY use this tool to add NEW information about the user that is NOT already mentioned in the existing memory. Before using this tool, carefully check if the information already exists in the user's memory. Do not add duplicate or similar information. Only add truly new details about the user's name, age, behavior, preferences, or other relevant personal information.",
+    "ONLY use this tool to add NEW information/memory about the user that is NOT already mentioned in the existing memory. Only new details about the user's name, age, behavior, preferences, work, liking, disliking, or other relevant personal information.",
   parameters: z.object({
     memory: z
       .string()

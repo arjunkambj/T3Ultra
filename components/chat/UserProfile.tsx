@@ -15,10 +15,17 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import Link from "next/link";
 import { IconSvgProps } from "@/types";
 import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 export default function UserProfile() {
   const user = useUser();
   const { signOut } = useAuthActions();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/chat");
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -104,7 +111,7 @@ export default function UserProfile() {
             <DropdownItem
               key="logout"
               className="pt-[4px] text-default-800"
-              onPress={() => signOut()}
+              onPress={handleLogout}
             >
               Log Out
             </DropdownItem>

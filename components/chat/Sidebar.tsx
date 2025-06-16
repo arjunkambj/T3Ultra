@@ -54,12 +54,17 @@ const Sidebar = React.memo(() => {
   return (
     <>
       <section className="h-full border-default-100 bg-[#0A0A0A]">
-        {!isMobile && sidebarContent}
+        {!isMobile && (
+          <div className="border-r border-neutral-800">{sidebarContent}</div>
+        )}
 
         {isMobile && (
           <Drawer
             hideCloseButton
             backdrop="transparent"
+            classNames={{
+              base: "bg-[#0A0A0A]",
+            }}
             className={drawerClasses}
             isOpen={isOpen}
             placement="left"

@@ -1,3 +1,5 @@
+"use client";
+
 import UserMessage from "./UserMessage";
 import AssistanceMessage from "./AssistanceMessage";
 import AIThinkingSpinner from "./AIThinkingSpinner";
@@ -45,14 +47,13 @@ export default function MessageUI({
   return (
     <div className="flex h-full w-full max-w-3xl flex-col px-3 pt-16">
       {messages?.map((message) => (
-        <div className="pb-12" key={message.id}>
+        <div className="pb-12" key={isShared ? message.messageId : message.id}>
           {message.role === "user" ? (
-            <div key={message.id} className="flex w-full justify-end">
+            <div className="flex w-full justify-end">
               <UserMessage
                 isShared={isShared}
                 message={message.content}
                 reload={reload}
-                key={message.id}
               />
             </div>
           ) : (
@@ -61,7 +62,6 @@ export default function MessageUI({
               message={message}
               allmessages={messages}
               chatId={chatId}
-              key={message.id}
             />
           )}
         </div>

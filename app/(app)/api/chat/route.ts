@@ -92,7 +92,7 @@ export async function POST(req: Request) {
   const userModel = [
     openai("gpt-4o-mini"),
     openai("gpt-4.1-mini"),
-    google("gemini-2.0-flash-exp"),
+    google("gemini-2.5-flash-preview-04-17"),
     google("gemini-2.5-flash-preview-04-17"),
     xai("grok-3-mini"),
   ];

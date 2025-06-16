@@ -96,7 +96,7 @@ export default function AIThinkingSpinner({
               .split("")
               .map((char, index) => (
                 <motion.span
-                  key={`${char}-${index}`}
+                  key={index}
                   animate={{
                     color: [
                       "rgb(113 113 122)",

@@ -16,6 +16,14 @@ export default function SharePage() {
     chatId: id as string,
   });
 
+  if (!sharedMessages) {
+    return (
+      <div className="flex h-dvh w-full flex-col items-center justify-center">
+        <Spinner variant="dots" />
+      </div>
+    );
+  }
+
   const handleCopyLink = () => {
     const link = `${window.location.origin}/share/${id}`;
 
@@ -39,19 +47,13 @@ export default function SharePage() {
           <span className="text-sm">Copy Link</span>
         </Button>
         <div className="flex h-full w-full flex-col items-center justify-center overflow-y-auto">
-          {sharedMessages ? (
-            <MessageUI
-              messages={sharedMessages || []}
-              status="ready"
-              reload={() => {}}
-              chatId={id as string}
-              isShared={true}
-            />
-          ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center">
-              <Spinner />
-            </div>
-          )}
+          <MessageUI
+            messages={sharedMessages}
+            status="ready"
+            reload={() => {}}
+            chatId={id as string}
+            isShared={true}
+          />
         </div>
       </div>
     </div>
