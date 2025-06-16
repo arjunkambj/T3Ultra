@@ -14,17 +14,19 @@ import { addToast } from "@heroui/toast";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@/hooks/useUser";
-import { useState } from "react";
+import { useState, useMemo, memo } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { Divider } from "@heroui/divider";
+import { RadioGroup, Radio } from "@heroui/radio";
 
 const expirationOptions = [
-  { key: "1d", label: "1 Day", description: "Expires in 24 hours" },
-  { key: "2d", label: "2 Days", description: "Expires in 48 hours" },
-  { key: "7d", label: "7 Days", description: "Expires in 1 week" },
-  { key: "never", label: "Never", description: "Never expires" },
+  { key: "1d", label: "1 Day" },
+  { key: "2d", label: "2 Days" },
+  { key: "7d", label: "7 Days" },
+  { key: "never", label: "Never" },
 ];
 
-export default function ShareModel({ chatId }: { chatId: string }) {
+const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const user = useUser();
 
@@ -32,13 +34,14 @@ export default function ShareModel({ chatId }: { chatId: string }) {
     "1d" | "2d" | "7d" | "never"
   >("1d");
   const [isLoading, setIsLoading] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
   const createShare = useMutation(api.function.share.createShareChat);
 
   if (!user) {
     return null;
   }
 
-  const shareId = uuidv4();
+  const shareId = useMemo(() => uuidv4(), []);
   const shareLink = `http://localhost:3000/share/${shareId}`;
 
   const handleShare = async () => {
@@ -58,6 +61,7 @@ export default function ShareModel({ chatId }: { chatId: string }) {
         title: "Copied to clipboard",
         description: "Share link copied to clipboard",
         color: "success",
+        timeout: 2000,
       });
 
       onClose();
@@ -66,10 +70,16 @@ export default function ShareModel({ chatId }: { chatId: string }) {
         title: "Error",
         description: "Failed to share chat. Please try again.",
         color: "danger",
+        timeout: 3000,
       });
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareLink);
+    setIsCopied(true);
   };
 
   return (
@@ -84,66 +94,85 @@ export default function ShareModel({ chatId }: { chatId: string }) {
       </Button>
       <Modal
         backdrop="transparent"
-        className="max-w-xl shadow-none"
+        className="max-w-lg shadow-none"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
         <ModalContent>
           {() => (
             <>
-              <ModalHeader className="flex flex-col gap-1 pt-8">
+              <ModalHeader className="flex flex-col gap-1 pb-4 pt-5">
                 <div className="relative flex flex-col space-y-3">
                   <div>
-                    <h2 className="text-3xl font-semibold text-white">
+                    <h2 className="text-2xl font-semibold text-white">
                       Share Chat
                     </h2>
+                    <p className="mt-2 text-sm text-default-500">
+                      Create a shareable link for this conversation
+                    </p>
                   </div>
                 </div>
+                <Divider className="mb-1 mt-4" />
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className="pb-1 pt-1">
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-medium text-default-700">
                       Expiration
                     </label>
-                    <div className="flex max-w-sm gap-2">
+                    <RadioGroup
+                      orientation="horizontal"
+                      className="gap-2"
+                      value={selectedExpiration}
+                      defaultValue="1d"
+                      onValueChange={(value) => {
+                        setSelectedExpiration(
+                          value as "1d" | "2d" | "7d" | "never",
+                        );
+                      }}
+                    >
                       {expirationOptions.map((option) => (
-                        <Button
-                          key={option.key}
-                          variant={
-                            selectedExpiration === option.key
-                              ? "solid"
-                              : "bordered"
-                          }
-                          color={
-                            selectedExpiration === option.key
-                              ? "primary"
-                              : "default"
-                          }
-                          className="h-12 flex-1"
-                          onPress={() =>
-                            setSelectedExpiration(
-                              option.key as "1d" | "2d" | "7d" | "never",
-                            )
-                          }
-                        >
+                        <Radio key={option.key} value={option.key}>
                           {option.label}
-                        </Button>
+                        </Radio>
                       ))}
+                    </RadioGroup>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-medium text-default-700">
+                      Share Link
+                    </label>
+                    <div className="flex h-10 w-full gap-2">
+                      <Input value={shareLink} isReadOnly />
+                      <Button
+                        size="sm"
+                        className="h-10 w-12 bg-default-100 text-default-700 hover:text-default-900"
+                        variant="flat"
+                        onPress={handleCopyLink}
+                        isIconOnly
+                      >
+                        {isCopied ? (
+                          <Icon icon="tabler:copy-off" width={20} />
+                        ) : (
+                          <Icon icon="solar:copy-linear" width={20} />
+                        )}
+                      </Button>
                     </div>
                   </div>
-                  <Input value={shareLink} label="Share Link" isReadOnly />
                 </div>
               </ModalBody>
-              <ModalFooter>
-                <Button
-                  color="primary"
-                  onPress={handleShare}
-                  isLoading={isLoading}
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Sharing..." : "Share"}
-                </Button>
+              <ModalFooter className="my-2 flex flex-col gap-2">
+                <div className="flex justify-end gap-2">
+                  <Button
+                    color="primary"
+                    onPress={handleShare}
+                    isLoading={isLoading}
+                    disabled={isLoading}
+                    startContent={<Icon icon="solar:share-bold" width={16} />}
+                  >
+                    {isLoading ? "Creating Link..." : "Share Chat"}
+                  </Button>
+                </div>
               </ModalFooter>
             </>
           )}
@@ -151,4 +180,6 @@ export default function ShareModel({ chatId }: { chatId: string }) {
       </Modal>
     </>
   );
-}
+});
+
+export default ShareModel;

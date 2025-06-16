@@ -100,8 +100,8 @@ export default function ChatHistoryDropdown({
 
   return (
     <Dropdown>
-      <DropdownTrigger className="outline-none">
-        <Icon icon="mdi:dots-horizontal" width={20} />
+      <DropdownTrigger className="cursor-pointer outline-none hover:text-danger">
+        <Icon icon="mdi:dots-horizontal" width={24} />
       </DropdownTrigger>
       <DropdownMenu items={items}>
         {(item) => (
