@@ -23,7 +23,7 @@ export default function UserMessage({
       onMouseLeave={() => setIsHovering(false)}
       className="relative flex flex-col gap-2"
     >
-      <div className="flex flex-col gap-2 rounded-bl-xl rounded-tl-xl rounded-tr-xl bg-default-200 px-5 py-3">
+      <div className="flex flex-col gap-2 rounded-bl-2xl rounded-tl-2xl rounded-tr-2xl bg-default-100 px-6 py-3.5">
         {edit ? (
           <EditInput />
         ) : (

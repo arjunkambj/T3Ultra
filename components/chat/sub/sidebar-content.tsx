@@ -62,10 +62,12 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
     () => (
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-default-900">
-            <Logo className="text-background" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100">
+            <Logo className="text-neutral-950" />
           </div>
-          <span className="font-bold leading-6 text-default-900">T3Ultra</span>
+          <span className="font-semibold leading-6 text-neutral-100">
+            T3Ultra
+          </span>
         </div>
 
         {/* Close button - only visible on mobile */}
@@ -122,7 +124,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       {/* New Chat Button */}
       <Button
         fullWidth
-        className="rounded-full bg-neutral-800 py-5"
+        className="rounded-full bg-default-100 py-5"
         onPress={handleNewChat}
       >
         New Chat
