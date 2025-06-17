@@ -27,7 +27,7 @@ const projects = [
   },
 ];
 
-export default function Project() {
+export default function ProjectPage() {
   const router = useRouter();
 
   const handleCreateProject = () => {
@@ -37,7 +37,7 @@ export default function Project() {
   return (
     <div className="flex h-full w-full max-w-4xl flex-col gap-6 p-6 pt-16">
       {/* Header */}
-      <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-neutral-100">Projects</h1>
@@ -48,7 +48,7 @@ export default function Project() {
         </div>
 
         <Button
-          className="absolute right-6 top-6 bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
+          className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
           startContent={<Icon icon="mdi:plus" width={20} />}
           onPress={handleCreateProject}
         >

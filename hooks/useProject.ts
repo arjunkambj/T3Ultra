@@ -3,11 +3,11 @@ import { useQuery } from "convex-helpers/react/cache/hooks";
 
 import { api } from "@/convex/_generated/api";
 
-export const useAgent = () => {
+export const useProject = () => {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: "/api/agent",
+    api: "/api/project",
     body: {
-      agentId: "123",
+      projectId: "123",
       chatId: "123",
     },
   });

@@ -33,6 +33,9 @@ export const createChatByChatId = mutation({
       title: "New Chat",
       chatId: args.chatId,
       isPinned: false,
+      isProjectChat: false,
+      projectId: undefined,
+      updatedAt: Date.now(),
     });
 
     return chatId;

@@ -1,4 +1,4 @@
-import ProjectFoam from "@/components/project/ProjectFoam";
+import ProjectFoam from "@/components/project/CreateProjectFoam";
 
 export default function CreateProjectPage() {
   return (

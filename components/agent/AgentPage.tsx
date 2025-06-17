@@ -41,7 +41,7 @@ const agents = [
   },
 ];
 
-export default function Agent() {
+export default function AgentPage() {
   const router = useRouter();
 
   const handleCreateAgent = () => {
@@ -49,15 +49,8 @@ export default function Agent() {
   };
 
   return (
-    <div className="flex h-full max-w-4xl flex-col items-center gap-6 p-6 pt-10">
-      <Button
-        className="absolute right-6 top-6 bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
-        startContent={<Icon icon="mdi:robot-excited" width={20} />}
-        onPress={handleCreateAgent}
-      >
-        Create Agent
-      </Button>
-      <div className="mt-10 flex max-w-2xl flex-col items-center gap-3">
+    <div className="mt-10 flex h-full max-w-4xl flex-col items-center gap-6 p-6 pt-10">
+      <div className="flex max-w-2xl flex-col items-center gap-3">
         <h1 className="text-4xl font-bold text-neutral-100">Custom Agents</h1>
         <div className="flex flex-col items-center gap-1">
           <p className="text-md text-neutral-400">
@@ -68,22 +61,34 @@ export default function Agent() {
             CSVs, and they always retain the context they have extracted.
           </p>
         </div>
+
+        <Button
+          className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
+          fullWidth
+          startContent={<Icon icon="mdi:robot-excited" width={20} />}
+          onPress={handleCreateAgent}
+        >
+          Create New Agent
+        </Button>
       </div>
-      {agents.length > 0 ? (
-        <div className="flex-1">
-          <div className="flex flex-wrap gap-4">
-            {agents.map((agent) => (
-              <AgentCard key={agent.id} agent={agent} />
-            ))}
+
+      <div className="flex-1">
+        {agents.length > 0 ? (
+          <div className="">
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {agents.map((agent) => (
+                <AgentCard key={agent.id} agent={agent} />
+              ))}
+            </div>
           </div>
-        </div>
-      ) : (
-        <div className="flex-1">
-          <p className="text-md text-neutral-400">
-            Create your first agent to get started
-          </p>
-        </div>
-      )}
+        ) : (
+          <div className="flex-1">
+            <p className="text-md text-neutral-400">
+              Create your first agent to get started
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -48,6 +48,7 @@ const schema = defineSchema({
     userId: v.id("users"),
     chatId: v.string(),
     title: v.string(),
+    isProjectChat: v.optional(v.boolean()),
     projectId: v.optional(v.id("projects")),
     isPinned: v.boolean(),
     isInProject: v.optional(v.boolean()),

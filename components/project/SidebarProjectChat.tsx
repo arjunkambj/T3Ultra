@@ -12,7 +12,7 @@ interface ProjectListItemProps {
   updatedAt?: number;
 }
 
-export default function ProjectListItem({
+export default function SidebarProjectChat({
   title,
   chatId,
   isProject,

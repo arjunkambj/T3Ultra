@@ -7,18 +7,14 @@ import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { useRouter } from "next/navigation";
-import { Authenticated, Unauthenticated } from "convex/react";
 import { Divider } from "@heroui/divider";
-
-import UserProfile from "../UserProfile";
-
 import ChatHistory from "./ChatHistory";
-
-import ProjectsList from "@/components/project/ProjectsList";
-import AgentsList from "@/components/agent/AgentsList";
+import SidebarProjectsList from "@/components/project/SidebarProjectsList";
+import SidebarAgentsList from "@/components/agent/SidebarAgentsList";
 import { Logo } from "@/components/Logo";
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import SidebarModel from "@/components/auth/SidebarModel";
+import { Unauthenticated } from "convex/react";
 
 interface SidebarContentProps {
   onClose: () => void;
@@ -89,7 +85,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
 
   const footerButtons = useMemo(
     () => (
-      <div className="mt-auto flex flex-col gap-1">
+      <div className="flex flex-col">
         <Button
           as={Link}
           className="justify-start text-default-800"
@@ -105,9 +101,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         >
           Upgrade to Pro
         </Button>
-        <Authenticated>
-          <UserProfile />
-        </Authenticated>
+
         <Unauthenticated>
           <SidebarModel />
         </Unauthenticated>
@@ -121,23 +115,23 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       {/* Logo and Close Button */}
       {logoSection}
 
-      <Spacer y={6} />
+      <Spacer y={4} />
 
       {/* New Chat Button */}
       <Button
         fullWidth
-        className="rounded-full bg-default-100 py-5"
+        className="rounded-full bg-default-100 py-4"
         onPress={handleNewChat}
       >
         New Chat
       </Button>
 
-      <Spacer y={6} />
+      <Spacer y={4} />
 
       <div className="flex flex-col gap-0">
         <Button
           fullWidth
-          className="flex justify-start rounded-full bg-transparent px-2 py-5 text-neutral-300 hover:text-neutral-100"
+          className="flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:text-neutral-100"
           startContent={
             <Icon className="text-neutral-300" icon="mdi:robot" width={20} />
           }
@@ -145,9 +139,13 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         >
           Manage Agents
         </Button>
+        <SidebarAgentsList />
+
+        <Spacer y={3} />
+
         <Button
           fullWidth
-          className="flex justify-start rounded-full bg-transparent px-2 py-5 text-neutral-300 hover:text-neutral-100"
+          className="flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:text-neutral-100"
           startContent={
             <Icon
               className="text-neutral-300"
@@ -159,27 +157,20 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         >
           Create Project
         </Button>
+        <SidebarProjectsList />
       </div>
 
-      <Divider className="mb-6 mt-4 bg-neutral-900" />
-
-      <ProjectsList />
-
-      <Spacer y={5} />
-
-      <AgentsList />
-
-      <Spacer y={5} />
+      <Divider className="my-4 bg-neutral-900" />
 
       {/* Chat History */}
+
       <ScrollShadow hideScrollBar size={10} visibility="auto">
         <ChatHistory />
       </ScrollShadow>
 
-      <Spacer y={8} />
+      <Spacer y={3} />
 
-      {/* Footer Buttons */}
-      {footerButtons}
+      <div className="mt-auto">{footerButtons}</div>
     </div>
   );
 });
