@@ -39,10 +39,13 @@ const schema = defineSchema({
 
   projects: defineTable({
     userId: v.id("users"),
-    model: v.string(),
+    projectId: v.string(),
     title: v.string(),
-    description: v.optional(v.string()),
-  }).index("userId", ["userId"]),
+    description: v.string(),
+    instructions: v.string(),
+  })
+    .index("userId", ["userId"])
+    .index("projectId", ["projectId"]),
 
   chats: defineTable({
     userId: v.id("users"),

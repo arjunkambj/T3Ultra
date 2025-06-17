@@ -140,7 +140,11 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           Manage Agents
         </Button>
         <SidebarAgentsList />
+      </div>
 
+      {/* Chat History */}
+
+      <ScrollShadow hideScrollBar size={10} visibility="auto">
         <Spacer y={3} />
 
         <Button
@@ -157,14 +161,10 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         >
           Create Project
         </Button>
+
         <SidebarProjectsList />
-      </div>
 
-      <Divider className="my-4 bg-neutral-900" />
-
-      {/* Chat History */}
-
-      <ScrollShadow hideScrollBar size={10} visibility="auto">
+        <Divider className="my-4 bg-neutral-900" />
         <ChatHistory />
       </ScrollShadow>
 

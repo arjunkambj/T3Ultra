@@ -31,7 +31,7 @@ export default function UserProfile({ className }: { className?: string }) {
 
   return (
     <Dropdown placement="bottom-end" shadow="none">
-      <DropdownTrigger className="absolute right-1 top-2">
+      <DropdownTrigger className="absolute right-4 top-2">
         <Button
           fullWidth
           isIconOnly

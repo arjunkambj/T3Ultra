@@ -6,19 +6,22 @@ import { Button } from "@heroui/button";
 import SidebarProjectChat from "./SidebarProjectChat";
 
 interface Chat {
-  id: string;
+  _id: string;
+  chatId: string;
   title: string;
-  projectId: string;
-  updatedAt: number;
+  projectId?: string;
+  updatedAt?: number;
 }
 
 interface Project {
-  id: string;
+  _id: string;
+  projectId: string;
   title: string;
   description: string;
-  isExpanded: boolean;
-  isPinned: boolean;
+  instructions: string;
+  userId: string;
   chats: Chat[];
+  isExpanded?: boolean;
 }
 
 interface ProjectItemProps {
@@ -31,7 +34,7 @@ export default function SidebarProjectItem({
   onToggleExpansion,
 }: ProjectItemProps) {
   const handleToggleExpansion = () => {
-    onToggleExpansion(project.id);
+    onToggleExpansion(project._id);
   };
 
   return (
@@ -66,9 +69,9 @@ export default function SidebarProjectItem({
         <div className="ml-6 mt-1 flex flex-col gap-1 border-l border-neutral-800 pl-3">
           {project.chats.map((chat) => (
             <SidebarProjectChat
-              key={chat.id}
-              chatId={chat.id}
-              isProject={true}
+              key={chat._id}
+              chatId={chat.chatId}
+              projectId={project.projectId}
               title={chat.title}
               updatedAt={chat.updatedAt}
             />

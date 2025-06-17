@@ -19,6 +19,7 @@ import type * as function_chats from "../function/chats.js";
 import type * as function_customizations from "../function/customizations.js";
 import type * as function_memory from "../function/memory.js";
 import type * as function_messages from "../function/messages.js";
+import type * as function_project from "../function/project.js";
 import type * as function_share from "../function/share.js";
 import type * as function_users from "../function/users.js";
 import type * as http from "../http.js";
@@ -38,6 +39,7 @@ declare const fullApi: ApiFromModules<{
   "function/customizations": typeof function_customizations;
   "function/memory": typeof function_memory;
   "function/messages": typeof function_messages;
+  "function/project": typeof function_project;
   "function/share": typeof function_share;
   "function/users": typeof function_users;
   http: typeof http;

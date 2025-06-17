@@ -43,7 +43,7 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
   }
 
   const shareId = uuidv4();
-  const shareLink = `http://localhost:3000/share/${shareId}`;
+  const shareLink = `${process.env.NEXT_PUBLIC_URL}/share/${shareId}`;
 
   const handleShare = async () => {
     try {
@@ -87,7 +87,7 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
   return (
     <>
       <Button
-        className="absolute right-4 top-2 z-20 justify-start text-default-800 hover:text-default-900"
+        className="absolute right-12 top-2 z-20 justify-start text-default-800 hover:text-default-900"
         startContent={<Icon icon="solar:share-linear" width={20} />}
         variant="light"
         onPress={onOpen}
@@ -95,7 +95,7 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
         Share Chat
       </Button>
       <Modal
-        backdrop="transparent"
+        backdrop="blur"
         className="max-w-lg shadow-none"
         isOpen={isOpen}
         onOpenChange={onOpenChange}

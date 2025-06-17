@@ -4,28 +4,23 @@ import { Icon } from "@iconify/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-interface ProjectListItemProps {
+interface ProjectChatItemProps {
   title: string;
   chatId: string;
-  isProject: boolean;
-  projectId?: string;
+  projectId: string;
   updatedAt?: number;
 }
 
 export default function SidebarProjectChat({
   title,
   chatId,
-  isProject,
+  projectId,
   updatedAt,
-}: ProjectListItemProps) {
+}: ProjectChatItemProps) {
   const pathname = usePathname();
 
   const isActive = () => {
-    if (isProject) {
-      return pathname === `/project/${chatId}`;
-    }
-
-    return pathname === `/chat/${chatId}`;
+    return pathname === `/project/${projectId}/${chatId}`;
   };
 
   const formatTimeAgo = (timestamp?: number) => {
@@ -49,18 +44,10 @@ export default function SidebarProjectChat({
   };
 
   const getHref = () => {
-    if (isProject) {
-      return `/project/${chatId}`;
-    }
-
-    return `/chat/${chatId}`;
+    return `/project/${projectId}/${chatId}`;
   };
 
   const getIcon = () => {
-    if (isProject) {
-      return "mdi:folder";
-    }
-
     return "mdi:chat";
   };
 
@@ -76,16 +63,8 @@ export default function SidebarProjectChat({
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex min-w-0 flex-1 items-center gap-2 truncate">
-            <Icon
-              className={isProject ? "text-neutral-500" : "text-neutral-600"}
-              icon={getIcon()}
-              width={isProject ? 16 : 14}
-            />
-            <span
-              className={`truncate text-left ${isProject ? "font-medium" : "text-xs"}`}
-            >
-              {title}
-            </span>
+            <Icon className="text-neutral-600" icon={getIcon()} width={14} />
+            <span className="truncate text-left text-xs">{title}</span>
           </div>
           {updatedAt && (
             <div className="flex items-center gap-1 text-xs text-neutral-600">

@@ -45,7 +45,7 @@ const config = {
               800: "#003571",
               900: "#002147",
               foreground: "#fff",
-              DEFAULT: "#006fee",
+              DEFAULT: "#ff0000",
             },
             secondary: {
               50: "#eee4f8",

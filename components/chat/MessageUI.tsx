@@ -48,7 +48,7 @@ export default function MessageUI({
   return (
     <div className="flex h-full w-full max-w-3xl flex-col px-3 pt-16">
       {messages?.map((message) => (
-        <div key={isShared ? message.messageId : message.id} className="pb-12">
+        <div key={isShared ? message._id : message.id} className="pb-12">
           {message.role === "user" ? (
             <div className="flex w-full justify-end">
               <UserMessage
