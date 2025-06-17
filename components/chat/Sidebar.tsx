@@ -62,10 +62,10 @@ const Sidebar = React.memo(() => {
           <Drawer
             hideCloseButton
             backdrop="transparent"
+            className={drawerClasses}
             classNames={{
               base: "bg-[#0A0A0A]",
             }}
-            className={drawerClasses}
             isOpen={isOpen}
             placement="left"
             radius="none"

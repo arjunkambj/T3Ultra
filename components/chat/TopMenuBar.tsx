@@ -1,13 +1,15 @@
 "use client";
 
-import ModelSelector from "./sub/ai-model-selector";
 import { Button } from "@heroui/button";
-import SidebarToggle from "./sub/sidebar-toggle";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
-import { useAtom, useAtomValue } from "jotai";
-import { sidebarOpenAtom } from "@/atoms/sidebarState";
+import { useAtomValue } from "jotai";
 import { Tooltip } from "@heroui/tooltip";
+
+import SidebarToggle from "./sub/sidebar-toggle";
+import ModelSelector from "./sub/ai-model-selector";
+
+import { sidebarOpenAtom } from "@/atoms/sidebarState";
 
 export default function TopMenuBar() {
   const isOpen = useAtomValue(sidebarOpenAtom);
@@ -19,9 +21,9 @@ export default function TopMenuBar() {
       {!isOpen && (
         <Tooltip content="New Chat">
           <Button
-            className="px-0.5"
             isIconOnly
             as={Link}
+            className="px-0.5"
             href="/chat"
             variant="light"
           >

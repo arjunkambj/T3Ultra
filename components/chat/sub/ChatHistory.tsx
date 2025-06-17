@@ -4,7 +4,9 @@ import { Icon } from "@iconify/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+
 import ChatHistoryDropdown from "./ChatHistoryDropdown";
+
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import { api } from "@/convex/_generated/api";
 
@@ -99,12 +101,12 @@ export default function ChatHistory() {
       className="group relative flex w-full items-center rounded-medium hover:bg-default-100"
     >
       <Link
-        href={`/chat/${chat.chatId}`}
         className={`group relative flex h-9 w-full cursor-pointer items-center justify-start rounded-medium px-3 text-small outline-none transition-colors duration-100 hover:bg-default-100 hover:text-default-700 focus-visible:ring-2 focus-visible:ring-default-200 focus-visible:ring-offset-2 focus-visible:ring-offset-default-100 ${
           isChatActive(chat.chatId)
             ? "rounded-xl bg-default-100 text-default-800"
             : "text-default-600"
         }`}
+        href={`/chat/${chat.chatId}`}
         onClick={handleChatClick}
       >
         <div className="flex w-full items-center justify-between">

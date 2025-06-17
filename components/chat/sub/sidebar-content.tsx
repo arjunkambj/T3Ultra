@@ -8,15 +8,17 @@ import Link from "next/link";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { useRouter } from "next/navigation";
 import { Authenticated, Unauthenticated } from "convex/react";
+import { Divider } from "@heroui/divider";
 
 import UserProfile from "../UserProfile";
 
 import ChatHistory from "./ChatHistory";
 
+import ProjectsList from "@/components/project/ProjectsList";
+import AgentsList from "@/components/agent/AgentsList";
 import { Logo } from "@/components/Logo";
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import SidebarModel from "@/components/auth/SidebarModel";
-import { Divider } from "@heroui/divider";
 
 interface SidebarContentProps {
   onClose: () => void;
@@ -43,7 +45,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
   };
 
   const handleCreateProject = () => {
-    router.push(`/create-project`);
+    router.push(`/project`);
 
     if (onClose) {
       onClose();
@@ -137,7 +139,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           fullWidth
           className="flex justify-start rounded-full bg-transparent px-2 py-5 text-neutral-300 hover:text-neutral-100"
           startContent={
-            <Icon icon="mdi:robot" className="text-neutral-300" width={20} />
+            <Icon className="text-neutral-300" icon="mdi:robot" width={20} />
           }
           onPress={handleCustomModels}
         >
@@ -148,8 +150,8 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           className="flex justify-start rounded-full bg-transparent px-2 py-5 text-neutral-300 hover:text-neutral-100"
           startContent={
             <Icon
-              icon="mdi:folder-plus"
               className="text-neutral-300"
+              icon="mdi:folder-plus"
               width={20}
             />
           }
@@ -160,6 +162,14 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       </div>
 
       <Divider className="mb-6 mt-4 bg-neutral-900" />
+
+      <ProjectsList />
+
+      <Spacer y={5} />
+
+      <AgentsList />
+
+      <Spacer y={5} />
 
       {/* Chat History */}
       <ScrollShadow hideScrollBar size={10} visibility="auto">

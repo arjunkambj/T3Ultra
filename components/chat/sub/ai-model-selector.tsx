@@ -11,11 +11,13 @@ import {
 import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
 import { useAtom } from "jotai";
-import { Tooltip } from "@heroui/tooltip";
+import { useQuery } from "convex-helpers/react/cache/hooks";
+import { useMutation } from "convex/react";
 
 import { aiModelAtom } from "@/atoms/aimodel";
 import { models, type Model } from "@/config/ai-model";
-// Custom Badge component since Chip may not be available
+import { api } from "@/convex/_generated/api";
+
 function Badge({
   children,
   color = "default",
@@ -58,15 +60,40 @@ function Badge({
 export default function ModelSelector() {
   const [currentModelId, setCurrentModelId] = useAtom(aiModelAtom);
   const [selectedModel, setSelectedModel] = useState<Model>(models[0]);
+  const user = useQuery(api.function.users.currentUser);
+  const updateUserModel = useMutation(api.function.users.updateUserModel);
 
   // Update selected model when currentModelId changes
   useEffect(() => {
-    const model = models.find((m) => m.id === currentModelId);
+    if (user?.lastUsedModel) {
+      const model = models.find((m) => m.id === Number(user.lastUsedModel));
 
-    if (model) {
-      setSelectedModel(model);
+      if (model) {
+        setSelectedModel(model);
+        setCurrentModelId(model.id);
+      }
     }
-  }, [currentModelId]);
+
+    if (currentModelId) {
+      const model = models.find((m) => m.id === currentModelId);
+
+      if (model) {
+        setSelectedModel(model);
+      }
+    }
+  }, [currentModelId, user]);
+
+  const handleModelChange = (modelId: number) => {
+    setCurrentModelId(modelId);
+
+    if (user) {
+      updateUserModel({
+        data: {
+          lastUsedModel: modelId.toString(),
+        },
+      });
+    }
+  };
 
   return (
     <div className="w-full max-w-sm rounded-lg">
@@ -125,6 +152,7 @@ export default function ModelSelector() {
                     )}
                   </div>
                 }
+                onPress={() => handleModelChange(model.id)}
               >
                 <div className="mb-2 flex items-center">
                   <span className="mr-2">

@@ -1,11 +1,12 @@
 "use client";
 
-import UserMessage from "./UserMessage";
-import AssistanceMessage from "./AssistanceMessage";
-import AIThinkingSpinner from "./AIThinkingSpinner";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState, useEffect } from "react";
 import { addToast } from "@heroui/toast";
+
+import UserMessage from "./UserMessage";
+import AssistanceMessage from "./AssistanceMessage";
+import AIThinkingSpinner from "./AIThinkingSpinner";
 
 export default function MessageUI({
   messages,
@@ -47,7 +48,7 @@ export default function MessageUI({
   return (
     <div className="flex h-full w-full max-w-3xl flex-col px-3 pt-16">
       {messages?.map((message) => (
-        <div className="pb-12" key={isShared ? message.messageId : message.id}>
+        <div key={isShared ? message.messageId : message.id} className="pb-12">
           {message.role === "user" ? (
             <div className="flex w-full justify-end">
               <UserMessage
@@ -58,10 +59,10 @@ export default function MessageUI({
             </div>
           ) : (
             <AssistanceMessage
-              isShared={isShared}
-              message={message}
               allmessages={messages}
               chatId={chatId}
+              isShared={isShared}
+              message={message}
             />
           )}
         </div>

@@ -1,12 +1,14 @@
 "use client";
 import { cn } from "@heroui/theme";
 import { Spinner } from "@heroui/spinner";
+
 import MessageUI from "./MessageUI";
 import ChatInput from "./ChatInput";
 import ChatSuggestions from "./sub/chat-suggestion";
+import ShareModel from "./ShareModel";
+
 import { useAI } from "@/hooks/useAI";
 import LoginModel from "@/components/auth/LoginModel";
-import ShareModel from "./ShareModel";
 
 export default function ChatSection({
   chatId,
@@ -27,7 +29,6 @@ export default function ChatSection({
     isLoginModalOpen,
     onLoginModalOpenChange,
     onLoginModalOpen,
-    experimental_resume,
     stop,
     reload,
   } = useAI({ isnewchat, chatId });
@@ -55,11 +56,11 @@ export default function ChatSection({
         {hasInput || hasMessages ? (
           <div className="flex h-[calc(100dvh-160px)] w-full flex-col items-center justify-center overflow-y-auto px-3">
             <MessageUI
-              messages={messages}
-              status={status}
-              reload={reload}
               chatId={chatId}
               isShared={false}
+              messages={messages}
+              reload={reload}
+              status={status}
             />
           </div>
         ) : (
@@ -76,9 +77,9 @@ export default function ChatSection({
               isLoading={isLoading}
               isnewchat={isnewchat}
               setInput={setInput}
-              onSubmit={onSubmit}
-              stop={stop}
               status={status}
+              stop={stop}
+              onSubmit={onSubmit}
             />
           </div>
         </div>

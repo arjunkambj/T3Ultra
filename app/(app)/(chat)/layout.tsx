@@ -1,5 +1,4 @@
 import Sidebar from "@/components/chat/Sidebar";
-import TopMenuBar from "@/components/chat/TopMenuBar";
 
 export default async function AppLayout({
   children,
@@ -9,7 +8,7 @@ export default async function AppLayout({
   return (
     <section className="relative flex max-h-dvh w-full overflow-hidden">
       <Sidebar />
-      <main className="relative w-full">{children}</main>
+      <main className="relative w-full bg-[#0F0F10]">{children}</main>
     </section>
   );
 }

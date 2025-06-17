@@ -1,15 +1,15 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { addToast } from "@heroui/toast";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Button } from "@heroui/button";
 import {
   Dropdown,
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
 } from "@heroui/dropdown";
+
+import { api } from "@/convex/_generated/api";
 
 export default function ChatHistoryDropdown({
   chatId,
@@ -108,8 +108,8 @@ export default function ChatHistoryDropdown({
           <DropdownItem
             key={item.key}
             className={item.key === "delete" ? "text-danger" : ""}
-            startContent={item.icon}
             color={item.key === "delete" ? "danger" : "default"}
+            startContent={item.icon}
             onPress={item.onPress}
           >
             {item.label}

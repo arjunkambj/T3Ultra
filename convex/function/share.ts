@@ -1,7 +1,7 @@
 import { v } from "convex/values";
+
 import { mutation } from "../_generated/server";
 import { query } from "../_generated/server";
-import { v4 as uuidv4 } from "uuid";
 
 export const createShareChat = mutation({
   args: {
@@ -51,6 +51,7 @@ export const createShareChat = mutation({
         expiresAt,
       });
     }
+
     return createShare;
   },
 });

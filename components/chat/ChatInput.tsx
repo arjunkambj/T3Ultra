@@ -30,9 +30,9 @@ export default function ChatInput({
         handleInputChange={handleInputChange}
         handleKeyDown={handleKeyDown}
         input={input}
-        onSubmit={onSubmit}
-        stop={stop}
         status={status}
+        stop={stop}
+        onSubmit={onSubmit}
       />
     </div>
   );

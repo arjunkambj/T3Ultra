@@ -14,7 +14,7 @@ const schema = defineSchema({
 
     // Add your custom fields here
     isSubscribed: v.optional(v.boolean()),
-
+    lastUsedModel: v.optional(v.string()),
     subscriptionTier: v.optional(
       v.union(v.literal("Free"), v.literal("Plus"), v.literal("Pro")),
     ),

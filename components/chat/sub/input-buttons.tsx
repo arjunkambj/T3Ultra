@@ -4,8 +4,9 @@ import { Tooltip } from "@heroui/tooltip";
 import { Icon } from "@iconify/react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useAtom } from "jotai";
-import { searchAtom } from "@/atoms/searchState";
 import { addToast } from "@heroui/toast";
+
+import { searchAtom } from "@/atoms/searchState";
 
 export default function InputButtons({
   setAssets,
@@ -98,8 +99,8 @@ export default function InputButtons({
             className={`${search ? "bg-neutral-200 px-5 text-neutral-950" : "border border-neutral-800 bg-neutral-900 px-5 text-white"}`}
             radius="md"
             size="sm"
-            onPress={handleSearch}
             variant="flat"
+            onPress={handleSearch}
           >
             Web Search
           </Button>

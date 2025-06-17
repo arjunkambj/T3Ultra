@@ -6,14 +6,14 @@ import { Tooltip } from "@heroui/tooltip";
 import { v4 as uuidv4 } from "uuid";
 import { addToast } from "@heroui/toast";
 import { useRouter } from "next/navigation";
-import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
+
+import { api } from "@/convex/_generated/api";
 import { useUser } from "@/hooks/useUser";
 import { Id } from "@/convex/_generated/dataModel";
 
 export default function AssistanceToolkit({
   message,
-  allmessages,
   chatId,
   isShared,
 }: {
@@ -25,6 +25,10 @@ export default function AssistanceToolkit({
   const router = useRouter();
   const createBranchChat = useMutation(api.function.branch.createBranchChat);
   const user = useUser();
+
+  if (!user) {
+    return null;
+  }
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -43,18 +47,10 @@ export default function AssistanceToolkit({
     try {
       const newChatId = uuidv4();
 
-      console.log("Branch chat parameters:", {
-        messageId: message.id,
-        originalChatId: chatId,
-        newChatId: newChatId,
-        userId: user?._id,
-      });
-
       await createBranchChat({
         messageId: message.id as Id<"messages">,
         originalChatId: chatId,
         newChatId: newChatId,
-        userId: user?._id,
       });
 
       addToast({
@@ -65,7 +61,7 @@ export default function AssistanceToolkit({
 
       router.push(`/chat/${newChatId}`);
     } catch (error) {
-      console.error("Error creating branch chat:", error);
+      void error;
       addToast({
         color: "danger",
         description: "Failed to create branch chat",

@@ -1,8 +1,8 @@
 import { v } from "convex/values";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 import { mutation, query } from "../_generated/server";
 import { api } from "../_generated/api";
-import { getAuthUserId } from "@convex-dev/auth/server";
 
 // Creating Chat by ChatId
 export const createChatByChatId = mutation({

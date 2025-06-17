@@ -3,8 +3,8 @@
 import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
 import { Tooltip } from "@heroui/tooltip";
-
 import { addToast } from "@heroui/toast";
+
 import { useUser } from "@/hooks/useUser";
 
 export default function UserToolkit({
@@ -44,10 +44,10 @@ export default function UserToolkit({
       <Tooltip content="Copy">
         <Button
           isIconOnly
-          onPress={handleCopy}
           radius="md"
           size="sm"
           variant="flat"
+          onPress={handleCopy}
         >
           <Icon icon="solar:copy-outline" width={18} />
         </Button>
@@ -56,10 +56,10 @@ export default function UserToolkit({
         <Tooltip content="Edit">
           <Button
             isIconOnly
-            onPress={handleEdit}
             radius="md"
             size="sm"
             variant="flat"
+            onPress={handleEdit}
           >
             <Icon icon="tabler:edit" width={22} />
           </Button>
@@ -70,10 +70,10 @@ export default function UserToolkit({
         <Tooltip content="Retry">
           <Button
             isIconOnly
-            onPress={reload}
             radius="md"
             size="sm"
             variant="flat"
+            onPress={reload}
           >
             <Icon icon="pajamas:retry" width={18} />
           </Button>

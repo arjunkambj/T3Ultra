@@ -5,9 +5,9 @@ import { addToast } from "@heroui/toast";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useDisclosure } from "@heroui/modal";
 import { useAtom } from "jotai";
+
 import { aiModelAtom } from "@/atoms/aimodel";
 import { searchAtom } from "@/atoms/searchState";
-
 import { api } from "@/convex/_generated/api";
 
 export const useAI = ({
@@ -60,7 +60,6 @@ export const useAI = ({
       setIsLoading(true);
     } else {
       setIsLoading(false);
-      console.log("this is running");
       // Set messages for existing chats
       if (getMessages && !isnewchat && messages.length === 0) {
         setMessages(
@@ -71,8 +70,6 @@ export const useAI = ({
           })),
         );
       }
-
-      console.log("this is running 2");
     }
   }, [getMessages, isnewchat, setMessages]);
 

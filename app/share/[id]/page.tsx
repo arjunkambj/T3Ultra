@@ -1,13 +1,14 @@
 "use client";
 
-import MessageUI from "@/components/chat/MessageUI";
-import { api } from "@/convex/_generated/api";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 import { useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { Spinner } from "@heroui/spinner";
 import { Icon } from "@iconify/react";
+
+import { api } from "@/convex/_generated/api";
+import MessageUI from "@/components/chat/MessageUI";
 
 export default function SharePage() {
   const { id } = useParams();
@@ -48,11 +49,11 @@ export default function SharePage() {
         </Button>
         <div className="flex h-full w-full flex-col items-center justify-center overflow-y-auto">
           <MessageUI
-            messages={sharedMessages}
-            status="ready"
-            reload={() => {}}
             chatId={id as string}
             isShared={true}
+            messages={sharedMessages}
+            reload={() => {}}
+            status="ready"
           />
         </div>
       </div>

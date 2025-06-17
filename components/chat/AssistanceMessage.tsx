@@ -1,6 +1,7 @@
+import { useState } from "react";
+
 import { Markdown } from "./sub/markdown";
 import AssistanceToolkit from "./sub/AssistanceToolkit";
-import { useState } from "react";
 
 export default function AssistanceMessage({
   message,
@@ -27,10 +28,10 @@ export default function AssistanceMessage({
       {isHovering && (
         <div className="absolute left-0 top-full z-10">
           <AssistanceToolkit
-            message={message}
             allmessages={allmessages}
             chatId={chatId}
             isShared={isShared}
+            message={message}
           />
         </div>
       )}

@@ -1,6 +1,7 @@
 import { v } from "convex/values";
-import { mutation } from "../_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
+
+import { mutation } from "../_generated/server";
 
 export const createBranchChat = mutation({
   args: {
@@ -22,6 +23,7 @@ export const createBranchChat = mutation({
       .collect();
 
     const targetMessage = await ctx.db.get(messageId);
+
     if (!targetMessage) {
       throw new Error("Target message not found");
     }
@@ -37,6 +39,7 @@ export const createBranchChat = mutation({
       .query("chats")
       .withIndex("byChatId", (q) => q.eq("chatId", originalChatId))
       .first();
+
     if (!originalChat) {
       throw new Error("Original chat not found");
     }

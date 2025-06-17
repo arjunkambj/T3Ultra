@@ -13,9 +13,10 @@ import { Button } from "@heroui/button";
 import { Skeleton } from "@heroui/skeleton";
 import { useAuthActions } from "@convex-dev/auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { IconSvgProps } from "@/types";
 import { useUser } from "@/hooks/useUser";
-import { useRouter } from "next/navigation";
 
 export default function UserProfile() {
   const user = useUser();

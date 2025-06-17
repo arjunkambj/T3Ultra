@@ -2,8 +2,9 @@ import { z } from "zod";
 import { tool } from "ai";
 import { DateTime } from "luxon";
 import Exa from "exa-js";
-import { api } from "@/convex/_generated/api";
 import { ConvexHttpClient } from "convex/browser";
+
+import { api } from "@/convex/_generated/api";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -80,7 +81,7 @@ export const addToMemory = tool({
       memory: memory,
       category: "user",
     });
-    console.log("Memory added");
+
     return true;
   },
 });

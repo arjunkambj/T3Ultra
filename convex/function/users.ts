@@ -42,3 +42,18 @@ export const updateSubscribtion = mutation({
     });
   },
 });
+
+export const updateUserModel = mutation({
+  args: {
+    data: v.object({
+      lastUsedModel: v.string(),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    return await ctx.db.patch(userId!, {
+      lastUsedModel: args.data.lastUsedModel,
+    });
+  },
+});

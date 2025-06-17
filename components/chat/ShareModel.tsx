@@ -12,12 +12,13 @@ import { useDisclosure } from "@heroui/modal";
 import { Input } from "@heroui/input";
 import { addToast } from "@heroui/toast";
 import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { useUser } from "@/hooks/useUser";
-import { useState, useMemo, memo } from "react";
+import { useState, memo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Divider } from "@heroui/divider";
 import { RadioGroup, Radio } from "@heroui/radio";
+
+import { useUser } from "@/hooks/useUser";
+import { api } from "@/convex/_generated/api";
 
 const expirationOptions = [
   { key: "1d", label: "1 Day" },
@@ -41,7 +42,7 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
     return null;
   }
 
-  const shareId = useMemo(() => uuidv4(), []);
+  const shareId = uuidv4();
   const shareLink = `http://localhost:3000/share/${shareId}`;
 
   const handleShare = async () => {
@@ -66,6 +67,7 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
 
       onClose();
     } catch (error) {
+      void error;
       addToast({
         title: "Error",
         description: "Failed to share chat. Please try again.",
@@ -117,14 +119,17 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
               <ModalBody className="pb-1 pt-1">
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-default-700">
+                    <label
+                      className="text-sm font-medium text-default-700"
+                      htmlFor="expiration"
+                    >
                       Expiration
                     </label>
                     <RadioGroup
-                      orientation="horizontal"
                       className="gap-2"
-                      value={selectedExpiration}
                       defaultValue="1d"
+                      orientation="horizontal"
+                      value={selectedExpiration}
                       onValueChange={(value) => {
                         setSelectedExpiration(
                           value as "1d" | "2d" | "7d" | "never",
@@ -139,17 +144,20 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
                     </RadioGroup>
                   </div>
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium text-default-700">
+                    <label
+                      className="text-sm font-medium text-default-700"
+                      htmlFor="share-link"
+                    >
                       Share Link
                     </label>
                     <div className="flex h-10 w-full gap-2">
-                      <Input value={shareLink} isReadOnly />
+                      <Input isReadOnly value={shareLink} />
                       <Button
-                        size="sm"
+                        isIconOnly
                         className="h-10 w-12 bg-default-100 text-default-700 hover:text-default-900"
+                        size="sm"
                         variant="flat"
                         onPress={handleCopyLink}
-                        isIconOnly
                       >
                         {isCopied ? (
                           <Icon icon="tabler:copy-off" width={20} />
@@ -165,10 +173,10 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
                 <div className="flex justify-end gap-2">
                   <Button
                     color="primary"
-                    onPress={handleShare}
-                    isLoading={isLoading}
                     disabled={isLoading}
+                    isLoading={isLoading}
                     startContent={<Icon icon="solar:share-bold" width={16} />}
+                    onPress={handleShare}
                   >
                     {isLoading ? "Creating Link..." : "Share Chat"}
                   </Button>
