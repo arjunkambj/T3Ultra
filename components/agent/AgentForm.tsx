@@ -433,10 +433,7 @@ export default function AgentForm({ agentId }: AgentFormProps) {
 
               {/* Common Capabilities */}
               <div className="flex flex-col gap-2">
-                <label
-                  className="text-sm font-medium text-neutral-200"
-                  htmlFor="quick-add"
-                >
+                <label className="text-sm text-neutral-400" htmlFor="quick-add">
                   Quick add:
                 </label>
                 <div className="flex flex-wrap gap-2">
