@@ -65,9 +65,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100">
             <Logo className="text-neutral-950" />
           </div>
-          <span className="font-semibold leading-6 text-neutral-100">
-            T3Ultra
-          </span>
+          <span className="font-semibold leading-6 text-neutral-100">TGPT</span>
         </div>
 
         {/* Close button - only visible on mobile */}
