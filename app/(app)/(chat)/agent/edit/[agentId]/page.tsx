@@ -1,12 +1,10 @@
 import AgentForm from "@/components/agent/AgentForm";
 
-interface EditAgentPageProps {
-  params: {
-    agentId: string;
-  };
-}
-
-export default function EditAgentPage({ params }: EditAgentPageProps) {
+export default function EditAgentPage({
+  params,
+}: {
+  params: { agentId: string };
+}) {
   return (
     <div className="flex h-dvh justify-center gap-6 overflow-y-auto p-6 pt-10">
       <div className="flex flex-col gap-6">
