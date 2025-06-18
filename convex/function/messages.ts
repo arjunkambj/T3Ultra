@@ -26,12 +26,6 @@ export const addMessageToChat = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-
-    if (userId === null) {
-      return;
-    }
-
     const messageId = await ctx.db.insert("messages", {
       chatId: args.chatId,
       content: args.content.trim(),
@@ -69,12 +63,6 @@ export const addUIMessageToChat = mutation({
     ),
   },
   handler: async (ctx, args) => {
-    const userId = await getAuthUserId(ctx);
-
-    if (userId === null) {
-      return;
-    }
-
     if (!args.content.trim()) {
       throw new Error("Message content cannot be empty");
     }

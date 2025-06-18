@@ -87,13 +87,6 @@ export const updateChatTitle = mutation({
     title: v.string(),
   },
   handler: async (ctx, { chatId, title }) => {
-    const userId = await getAuthUserId(ctx);
-
-    if (userId === null) {
-      return;
-    }
-
-    // Validate title is not empty
     if (!title.trim()) {
       throw new Error("Chat title cannot be empty");
     }
