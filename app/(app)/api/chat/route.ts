@@ -31,10 +31,6 @@ export async function POST(req: Request) {
 
     if (lastMessage.role === "user") {
       try {
-        console.log("Saving user message:", {
-          chatId,
-          content: lastMessage.content,
-        });
         await convex.mutation(api.function.messages.addMessageToChat, {
           chatId,
           content: lastMessage.content,
@@ -43,8 +39,8 @@ export async function POST(req: Request) {
         await convex.mutation(api.function.chats.updateChatUpdatedAt, {
           chatId,
         });
-        console.log("User message saved successfully");
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Error saving user message:", error);
       }
     }
@@ -127,10 +123,6 @@ export async function POST(req: Request) {
     },
     onFinish: async (result) => {
       try {
-        console.log("Saving assistant message:", {
-          chatId,
-          content: result.text,
-        });
         // Save assistant message to database
         await convex.mutation(api.function.messages.addMessageToChat, {
           chatId,
@@ -138,21 +130,16 @@ export async function POST(req: Request) {
           role: "assistant",
         });
 
-        console.log("Assistant message saved successfully");
-
         // Update chat title if this is the first exchange
         if (messages.length === 1 && messages[0].role === "user") {
-          console.log("Generating title for new chat");
           const title = await generateTitleFromUserMessage({
             message: messages[0],
           });
 
-          console.log("Generated title:", title);
           await convex.mutation(api.function.chats.updateChatTitle, {
             chatId,
             title,
           });
-          console.log("Chat title updated successfully");
         }
       } catch (error) {
         // eslint-disable-next-line no-console

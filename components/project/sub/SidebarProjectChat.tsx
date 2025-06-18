@@ -12,14 +12,12 @@ interface ProjectChatItemProps {
   title: string;
   chatId: string;
   projectId: string;
-  updatedAt?: number;
 }
 
 export default function SidebarProjectChat({
   title,
   chatId,
   projectId,
-  updatedAt,
 }: ProjectChatItemProps) {
   const pathname = usePathname();
   const deleteChat = useMutation(api.function.chats.deleteChatByChatId);

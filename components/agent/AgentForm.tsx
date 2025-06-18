@@ -1,12 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/toast";
 import { Select, SelectItem } from "@heroui/select";
+import { useQuery } from "convex-helpers/react/cache/hooks";
+import { useMutation } from "convex/react";
+import axios from "axios";
+
+import { api } from "@/convex/_generated/api";
+import { useUser } from "@/hooks/useUser";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface AgentFormData {
   name: string;
@@ -58,11 +65,10 @@ interface AgentFormProps {
 export default function AgentForm({ agentId }: AgentFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingAgent, setIsLoadingAgent] = useState(!!agentId);
   const [formData, setFormData] = useState<AgentFormData>({
     name: "",
     description: "",
-    avatar: "🤖",
+    avatar: "",
     category: "",
     systemPrompt: "",
     capabilities: [],
@@ -71,67 +77,36 @@ export default function AgentForm({ agentId }: AgentFormProps) {
     maxTokens: 2000,
   });
   const [capabilityInput, setCapabilityInput] = useState("");
+  const user = useUser();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [avatar, setAvatar] = useState("🤖");
 
-  // Mock data for editing - replace with actual data from Convex
-  const mockAgents = [
-    {
-      id: "agent-1",
-      name: "Code Assistant",
-      description:
-        "Specialized in helping with programming tasks, debugging, and code reviews. Expert in multiple programming languages and frameworks.",
-      avatar: "🤖",
-      category: "development",
-      systemPrompt:
-        "You are a specialized coding assistant with expertise in multiple programming languages and frameworks. Help users with programming tasks, debugging, code reviews, and best practices. Always provide clear explanations and suggest improvements when possible.",
-      capabilities: ["coding", "debugging", "code-review"],
-      isPublic: true,
-      temperature: 0.3,
-      maxTokens: 2000,
-    },
-    {
-      id: "agent-2",
-      name: "Writing Coach",
-      description:
-        "Expert in creative writing, editing, and content creation. Helps improve writing style and grammar.",
-      avatar: "✍️",
-      category: "writing",
-      systemPrompt:
-        "You are a professional writing coach and editor. Help users improve their writing style, grammar, and overall content quality. Provide constructive feedback and suggestions for enhancement.",
-      capabilities: ["writing", "editing", "creativity"],
-      isPublic: false,
-      temperature: 0.7,
-      maxTokens: 2500,
-    },
-  ];
+  // Load existing agent data when editing
+  const existingAgent = useQuery(
+    api.function.agent.getAgentById,
+    agentId ? { agentId: agentId as Id<"agent"> } : "skip",
+  );
 
-  // Load agent data for editing
-  React.useEffect(() => {
-    if (agentId) {
-      const loadAgent = async () => {
-        setIsLoadingAgent(true);
-        await new Promise((resolve) => setTimeout(resolve, 500));
+  const createAgent = useMutation(api.function.agent.createAgent);
+  const updateAgent = useMutation(api.function.agent.updateAgent);
 
-        const agent = mockAgents.find((a) => a.id === agentId);
-
-        if (agent) {
-          setFormData({
-            name: agent.name,
-            description: agent.description,
-            avatar: agent.avatar,
-            category: agent.category,
-            systemPrompt: agent.systemPrompt,
-            capabilities: agent.capabilities,
-            isPublic: agent.isPublic,
-            temperature: agent.temperature,
-            maxTokens: agent.maxTokens,
-          });
-        }
-        setIsLoadingAgent(false);
-      };
-
-      loadAgent();
+  // Populate form with existing agent data when editing
+  useEffect(() => {
+    if (existingAgent && agentId) {
+      setFormData({
+        name: existingAgent.name || "",
+        description: existingAgent.description || "",
+        avatar: existingAgent.avatar || "",
+        category: existingAgent.category || "",
+        systemPrompt: existingAgent.instructions || "",
+        capabilities: existingAgent.capabilities || [],
+        isPublic: false, // This field doesn't exist in schema, keeping default
+        temperature: 0.7, // This field doesn't exist in schema, keeping default
+        maxTokens: 2000, // This field doesn't exist in schema, keeping default
+      });
+      setAvatar(existingAgent.avatar || "🤖");
     }
-  }, [agentId]);
+  }, [existingAgent, agentId]);
 
   const handleInputChange = (field: keyof AgentFormData, value: any) => {
     setFormData((prev) => ({
@@ -217,8 +192,29 @@ export default function AgentForm({ agentId }: AgentFormProps) {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      if (agentId) {
+        await updateAgent({
+          agentId: agentId as Id<"agent">,
+          name: formData.name,
+          description: formData.description,
+          avatar: formData.avatar,
+          category: formData.category,
+          instructions: formData.systemPrompt,
+          capabilities: formData.capabilities,
+          isPinned: false,
+        });
+      } else {
+        await createAgent({
+          name: formData.name,
+          description: formData.description,
+          avatar: formData.avatar,
+          category: formData.category,
+          instructions: formData.systemPrompt,
+          capabilities: formData.capabilities,
+          isPinned: false,
+          userId: user?._id as Id<"users">,
+        });
+      }
 
       addToast({
         title: agentId ? "Agent Updated" : "Agent Created",
@@ -228,11 +224,10 @@ export default function AgentForm({ agentId }: AgentFormProps) {
       });
 
       if (!agentId) {
-        // Reset form only for new agents
         setFormData({
           name: "",
           description: "",
-          avatar: "🤖",
+          avatar: "",
           category: "",
           systemPrompt: "",
           capabilities: [],
@@ -261,12 +256,15 @@ export default function AgentForm({ agentId }: AgentFormProps) {
     router.back();
   };
 
-  if (isLoadingAgent) {
+  // Show loading when submitting or when loading existing agent data for editing
+  if (isLoading || (agentId && existingAgent === undefined)) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-neutral-300" />
-          <p className="text-neutral-400">Loading agent...</p>
+          <p className="text-neutral-400">
+            {isLoading ? "Saving..." : "Loading agent..."}
+          </p>
         </div>
       </div>
     );
@@ -335,7 +333,36 @@ export default function AgentForm({ agentId }: AgentFormProps) {
                   }}
                   label="Upload Avatar"
                   type="file"
-                  onChange={(e) => handleInputChange("avatar", e.target.value)}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+
+                    if (file) {
+                      try {
+                        const response = await axios.post(
+                          `/api/upload/avatar?filename=${encodeURIComponent(file.name)}`,
+                          file,
+                          {
+                            headers: {
+                              "Content-Type": file.type,
+                            },
+                          },
+                        );
+                        const avatarUrl = response.data.url;
+
+                        setAvatar(avatarUrl);
+                        handleInputChange("avatar", avatarUrl);
+                      } catch (err) {
+                        void err;
+                        addToast({
+                          title: "Upload Error",
+                          description:
+                            "Failed to upload avatar. Please try again.",
+                          color: "danger",
+                          timeout: 3000,
+                        });
+                      }
+                    }
+                  }}
                 />
               </div>
             </div>

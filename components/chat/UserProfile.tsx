@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 import { useUser } from "@/hooks/useUser";
 
-export default function UserProfile({ className }: { className?: string }) {
+export default function UserProfile() {
   const user = useUser();
   const { signOut } = useAuthActions();
   const router = useRouter();

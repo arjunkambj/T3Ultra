@@ -47,8 +47,9 @@ export const createBranchChat = mutation({
     const newChatDbId = await ctx.db.insert("chats", {
       userId: userId,
       chatId: newChatId,
-      title: `B: ${originalChat.title}`,
+      title: originalChat.title,
       isPinned: false,
+      isBranchChat: true,
       updatedAt: Date.now(),
     });
 

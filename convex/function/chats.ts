@@ -249,3 +249,40 @@ export const createProjectChatByChatId = mutation({
     return chatId;
   },
 });
+
+export const createAgentChatByChatId = mutation({
+  args: {
+    userId: v.id("users"),
+    chatId: v.string(),
+    agentId: v.id("agent"),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
+    // Check if chat already exists
+    const existingChat = await ctx.db
+      .query("chats")
+      .withIndex("byChatId", (q) => q.eq("chatId", args.chatId))
+      .first();
+
+    if (existingChat) {
+      return existingChat._id;
+    }
+
+    const chatId = await ctx.db.insert("chats", {
+      userId: args.userId,
+      title: "New Agent Chat",
+      chatId: args.chatId,
+      isPinned: false,
+      isAgentChat: true,
+      agentId: args.agentId,
+      updatedAt: Date.now(),
+    });
+
+    return chatId;
+  },
+});

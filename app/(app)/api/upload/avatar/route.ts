@@ -20,12 +20,23 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   try {
-    const blob = await put(filename, request.body, {
+    // Add timestamp to filename to ensure uniqueness
+    const timestamp = Date.now();
+    const fileExtension = filename.includes(".")
+      ? filename.substring(filename.lastIndexOf("."))
+      : "";
+    const baseName = filename.includes(".")
+      ? filename.substring(0, filename.lastIndexOf("."))
+      : filename;
+    const uniqueFilename = `${baseName}-${timestamp}${fileExtension}`;
+
+    const blob = await put(uniqueFilename, request.body, {
       access: "public",
     });
 
     return NextResponse.json(blob);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error uploading file:", error);
 
     return NextResponse.json(

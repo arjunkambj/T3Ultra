@@ -4,16 +4,11 @@ import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter } from "@heroui/card";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-import { addToast } from "@heroui/toast";
 import { Avatar } from "@heroui/avatar";
+import { useMutation } from "convex/react";
 
-interface Agent {
-  id: string;
-  name: string;
-  description: string;
-  avatar: string;
-  isPinned: boolean;
-}
+import { Agent } from "@/types";
+import { api } from "@/convex/_generated/api";
 
 interface AgentCardProps {
   agent: Agent;
@@ -21,30 +16,26 @@ interface AgentCardProps {
 
 export default function AgentCard({ agent }: AgentCardProps) {
   const router = useRouter();
+  const deleteAgent = useMutation(api.function.agent.deleteAgent);
+  const handlePinAgent = useMutation(api.function.agent.handlePinAgent);
 
-  const handlePinAgent = () => {
-    addToast({
-      title: "Pin agent",
-      description: "Coming soon",
-      color: "default",
-      timeout: 2000,
+  const handlePinAgentMutation = () => {
+    handlePinAgent({
+      agentId: agent._id,
     });
   };
 
   const handleEditAgent = () => {
-    router.push(`/agent/edit/${agent.id}`);
+    router.push(`/agent/edit/${agent._id}`);
   };
 
   const handleChatWithAgent = () => {
-    router.push(`/agent/${agent.id}`);
+    router.push(`/agent/${agent._id}`);
   };
 
-  const handleDelete = () => {
-    addToast({
-      title: "Delete agent",
-      description: "Coming soon",
-      color: "default",
-      timeout: 2000,
+  const handleDelete = async () => {
+    await deleteAgent({
+      agentId: agent._id,
     });
   };
 
@@ -56,7 +47,13 @@ export default function AgentCard({ agent }: AgentCardProps) {
       <CardBody className="">
         <div className="flex items-center gap-4">
           <div>
-            <Avatar size="lg" src={agent.avatar} />
+            {agent.avatar ? (
+              <Avatar size="lg" src={agent.avatar} />
+            ) : (
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-800 text-neutral-300">
+                <Icon icon="mdi:robot" width={24} />
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-1">
             <h3 className="text-md font-medium text-neutral-100">
@@ -91,7 +88,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
             className="text-neutral-400 hover:text-neutral-200"
             size="sm"
             variant="flat"
-            onPress={handlePinAgent}
+            onPress={handlePinAgentMutation}
           >
             {agent.isPinned ? (
               <Icon icon="mdi:pin" width={16} />
@@ -102,7 +99,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
 
           <Button
             isIconOnly
-            className="text-neutral-400 hover:bg-danger-500 hover:text-white"
+            className="text-danger-500 hover:bg-danger hover:text-white"
             size="sm"
             variant="flat"
             onPress={handleDelete}

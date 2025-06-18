@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * Generated `api` utility.
  *
@@ -14,6 +13,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as auth from "../auth.js";
+import type * as function_agent from "../function/agent.js";
 import type * as function_branch from "../function/branch.js";
 import type * as function_chats from "../function/chats.js";
 import type * as function_customizations from "../function/customizations.js";
@@ -34,6 +34,7 @@ import type * as http from "../http.js";
  */
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "function/agent": typeof function_agent;
   "function/branch": typeof function_branch;
   "function/chats": typeof function_chats;
   "function/customizations": typeof function_customizations;

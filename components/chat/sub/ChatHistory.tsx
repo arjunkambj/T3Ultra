@@ -38,8 +38,22 @@ export default function ChatHistory() {
     };
   }, []);
 
-  const isChatActive = (chatId: string) => {
-    return pathname === `/chat/${chatId}`;
+  const isChatActive = (chat: any) => {
+    if (chat.isAgentChat && chat.agentId) {
+      // For agent chats, check if current path matches /agent/[agentId]/[chatId]
+      return pathname === `/agent/${chat.agentId}/${chat.chatId}`;
+    } else {
+      // For regular chats, check if current path matches /chat/[chatId]
+      return pathname === `/chat/${chat.chatId}`;
+    }
+  };
+
+  const getChatHref = (chat: any) => {
+    if (chat.isAgentChat && chat.agentId) {
+      return `/agent/${chat.agentId}/${chat.chatId}`;
+    } else {
+      return `/chat/${chat.chatId}`;
+    }
   };
 
   const handleChatClick = () => {
@@ -48,8 +62,9 @@ export default function ChatHistory() {
     }
   };
 
+  // Early return after all hooks have been called
   if (!chats) {
-    return;
+    return null;
   }
 
   // Separate pinned and unpinned chats
@@ -106,15 +121,31 @@ export default function ChatHistory() {
     >
       <Link
         className={`group relative flex h-9 w-full cursor-pointer items-center justify-start rounded-medium px-3 text-small outline-none transition-colors duration-100 hover:bg-default-100 hover:text-default-700 focus-visible:ring-2 focus-visible:ring-default-200 focus-visible:ring-offset-2 focus-visible:ring-offset-default-100 ${
-          isChatActive(chat.chatId)
+          isChatActive(chat)
             ? "rounded-xl bg-default-100 text-default-800"
             : "text-default-600"
         }`}
-        href={`/chat/${chat.chatId}`}
+        href={getChatHref(chat)}
         onClick={handleChatClick}
       >
         <div className="flex w-full items-center justify-between">
           <div className="flex min-w-0 flex-1 items-center gap-2 truncate">
+            {chat.isAgentChat && (
+              <Icon
+                className="flex-shrink-0 text-default-500"
+                height={14}
+                icon="solar:user-speak-rounded-bold"
+                width={14}
+              />
+            )}
+            {chat.isBranchChat && (
+              <Icon
+                className="flex-shrink-0 text-default-500"
+                height={14}
+                icon="solar:branch-bold"
+                width={14}
+              />
+            )}
             <span className="truncate text-left">{chat.title}</span>
           </div>
         </div>

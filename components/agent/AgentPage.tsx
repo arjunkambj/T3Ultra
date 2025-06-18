@@ -3,46 +3,20 @@
 import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
+import { useQuery } from "convex-helpers/react/cache/hooks";
 
-import AgentCard from "./AgentCard";
+import AgentCard from "./sub/AgentCard";
 
-const agents = [
-  {
-    id: "agent-1",
-    name: "Code Assistant",
-    description:
-      "Specialized in helping with programming tasks, debugging, and code reviews. Expert in multiple programming languages and frameworks.",
-    avatar: "/images/agent/agent-1.png",
-    isPinned: false,
-  },
-  {
-    id: "agent-2",
-    name: "UGC Video Script Generator",
-    description:
-      "Expert in creative writing, editing, and content creation. Helps improve writing style and grammar.",
-    avatar: "/images/agent/agent-2.png",
-    isPinned: true,
-  },
-  {
-    id: "agent-3",
-    name: "Data Analyst",
-    description:
-      "Specialized in data analysis, visualization, and statistical insights. Perfect for business intelligence tasks.",
-    avatar: "/images/agent/agent-3.png",
-    isPinned: true,
-  },
-  {
-    id: "agent-4",
-    name: "Language Tutor",
-    description:
-      "Helps with language learning and translation tasks. Supports multiple languages and cultural contexts.",
-    avatar: "/images/agent/agent-4.png",
-    isPinned: false,
-  },
-];
+import { useUser } from "@/hooks/useUser";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
 export default function AgentPage() {
   const router = useRouter();
+  const user = useUser();
+  const agents = useQuery(api.function.agent.getAgentByUserId, {
+    userId: user?._id as Id<"users">,
+  });
 
   const handleCreateAgent = () => {
     router.push("/agent/create");
@@ -72,12 +46,12 @@ export default function AgentPage() {
         </Button>
       </div>
 
-      <div className="flex-1">
-        {agents.length > 0 ? (
+      <div className="w-full flex-1">
+        {agents && agents.length > 0 ? (
           <div className="">
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               {agents.map((agent) => (
-                <AgentCard key={agent.id} agent={agent} />
+                <AgentCard key={agent._id} agent={agent} />
               ))}
             </div>
           </div>

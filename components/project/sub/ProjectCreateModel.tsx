@@ -37,6 +37,7 @@ const ProjectCreateModel = memo(function ProjectCreateModel() {
       setIsLoading(false);
       onClose();
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
       setIsLoading(false);
     }

@@ -12,14 +12,6 @@ import SidebarProjectChat from "./SidebarProjectChat";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
-interface Chat {
-  _id: string;
-  chatId: string;
-  title: string;
-  projectId?: string;
-  updatedAt?: number;
-}
-
 interface Project {
   _id: Id<"projects">;
   projectId?: string;
@@ -105,7 +97,6 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
               chatId={chat.chatId}
               projectId={project.projectId || ""}
               title={chat.title}
-              updatedAt={chat.updatedAt}
             />
           ))}
         </div>

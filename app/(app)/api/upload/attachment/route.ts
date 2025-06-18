@@ -26,6 +26,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(blob);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Error uploading file:", error);
 
     return NextResponse.json(

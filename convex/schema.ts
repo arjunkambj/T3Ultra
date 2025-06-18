@@ -37,6 +37,18 @@ const schema = defineSchema({
     category: v.optional(v.string()),
   }).index("userId", ["userId"]),
 
+  agent: defineTable({
+    userId: v.id("users"),
+    name: v.optional(v.string()),
+    avatar: v.optional(v.string()),
+    isPinned: v.optional(v.boolean()),
+    description: v.optional(v.string()),
+    category: v.optional(v.string()),
+    instructions: v.optional(v.string()),
+    capabilities: v.optional(v.array(v.string())),
+    updatedAt: v.optional(v.number()),
+  }).index("userId", ["userId"]),
+
   projects: defineTable({
     userId: v.id("users"),
     projectId: v.optional(v.string()),
@@ -52,6 +64,9 @@ const schema = defineSchema({
     chatId: v.string(),
     title: v.string(),
     isProjectChat: v.optional(v.boolean()),
+    isBranchChat: v.optional(v.boolean()),
+    isAgentChat: v.optional(v.boolean()),
+    agentId: v.optional(v.id("agent")),
     projectId: v.optional(v.string()),
     isPinned: v.boolean(),
     updatedAt: v.optional(v.number()),

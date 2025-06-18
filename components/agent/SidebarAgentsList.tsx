@@ -1,32 +1,25 @@
 "use client";
 
+import { useQuery } from "convex-helpers/react/cache/hooks";
+
 import SidebarAgent from "./SidebarAgent";
 
-// Mock data - replace with actual data from Convex
-const mockAgents = [
-  {
-    id: "agent-1",
-    name: "Code Assistant",
-    description:
-      "Specialized in helping with programming tasks, debugging, and code reviews",
-    avatar: "🤖",
-    isPinned: true,
-  },
-  {
-    id: "agent-2",
-    name: "Writing Coach",
-    description: "Expert in creative writing, editing, and content creation",
-    avatar: "✍️",
-    isPinned: true,
-  },
-];
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useUser } from "@/hooks/useUser";
 
 export default function SidebarAgentsList() {
+  const user = useUser();
+  const allAgents = useQuery(api.function.agent.getAgentByUserId, {
+    userId: user?._id as Id<"users">,
+  });
+
+  const agents = allAgents?.filter((agent) => agent.isPinned);
+
   return (
     <div className="flex w-full flex-col">
-      {mockAgents.map((agent) => (
-        <SidebarAgent key={agent.id} agent={agent} />
-      ))}
+      {agents &&
+        agents.map((agent) => <SidebarAgent key={agent._id} agent={agent} />)}
     </div>
   );
 }
