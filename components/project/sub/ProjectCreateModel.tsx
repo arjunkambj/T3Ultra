@@ -15,13 +15,8 @@ import { useState, memo } from "react";
 import { Input, Textarea } from "@heroui/input";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import { Id } from "@/convex/_generated/dataModel";
 
-const ProjectCreateModel = memo(function ProjectCreateModel({
-  userId,
-}: {
-  userId: Id<"users"> | null;
-}) {
+const ProjectCreateModel = memo(function ProjectCreateModel() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");

@@ -6,11 +6,14 @@ import { Drawer, DrawerContent, DrawerBody } from "@heroui/drawer";
 import SidebarContent from "./sub/sidebar-content";
 
 import { useSidebarToggle } from "@/atoms/sidebarState";
+import { usePathname } from "next/navigation";
 
 const Sidebar = React.memo(() => {
   const { isOpen, setIsOpen } = useSidebarToggle();
   const [isMobile, setIsMobile] = useState(false);
   const [isClient, setIsClient] = useState(false);
+
+  const pathname = usePathname();
 
   const handleClose = useCallback(() => {}, []);
 

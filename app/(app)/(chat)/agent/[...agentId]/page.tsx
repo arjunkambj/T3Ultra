@@ -1,18 +1,16 @@
 "use client";
-import ChatInput from "@/components/project/ChatInput";
+import ChatInput from "@/components/agent/ChatInput";
 import { useParams } from "next/navigation";
-import { useQuery } from "convex-helpers/react/cache/hooks";
-import { api } from "@/convex/_generated/api";
 import TopMenuBar from "@/components/chat/TopMenuBar";
 
-export default function ProjectPage() {
-  const { projectId } = useParams();
+export default function AgentPage() {
+  const { agentId } = useParams();
 
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 bg-[#0F0F10] py-10">
       <TopMenuBar />
       <div className="mb-10 flex h-full w-full max-w-3xl flex-col items-center justify-center gap-12 pb-10">
-        <h1 className="text-2xl font-bold">Project {projectId}</h1>
+        <h1 className="text-2xl font-bold">Agent {agentId}</h1>
         <ChatInput />
         <div className="flex w-full flex-col items-center justify-center gap-4">
           <h2 className="text-lg">Chats</h2>

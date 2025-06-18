@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@heroui/button";
 import { Id } from "@/convex/_generated/dataModel";
-import ProjectDeleteModel from "./ProjectDeleteModel";
+import ProjectDeleteModel from "./sub/ProjectDeleteModel";
 
 interface Project {
   _id: Id<"projects">;

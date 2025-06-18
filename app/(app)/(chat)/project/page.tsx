@@ -3,7 +3,7 @@
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { api } from "@/convex/_generated/api";
 import { Spinner } from "@heroui/spinner";
-import ProjectCreateModel from "@/components/project/ProjectCreateModel";
+import ProjectCreateModel from "@/components/project/sub/ProjectCreateModel";
 import ProjectList from "@/components/project/ProjectList";
 
 export default function ProjectPageComponent() {
@@ -20,7 +20,6 @@ export default function ProjectPageComponent() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       <div className="flex h-full w-full max-w-4xl flex-col gap-6 p-6 pt-16">
-        {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center justify-between">
             <div>
@@ -31,7 +30,7 @@ export default function ProjectPageComponent() {
             </div>
           </div>
 
-          <ProjectCreateModel userId={user._id} />
+          <ProjectCreateModel />
         </div>
 
         <ProjectList userId={user._id} />
