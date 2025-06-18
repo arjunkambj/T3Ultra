@@ -3,9 +3,14 @@
 import { Icon } from "@iconify/react";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
-import SidebarProjectChat from "./SidebarProjectChat";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useQuery } from "convex-helpers/react/cache/hooks";
+
+import SidebarProjectChat from "./SidebarProjectChat";
+
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface Chat {
   _id: string;
@@ -16,14 +21,12 @@ interface Chat {
 }
 
 interface Project {
-  _id: string;
-  projectId: string;
+  _id: Id<"projects">;
+  projectId?: string;
   title: string;
   description: string;
   instructions: string;
-  userId: string;
-  chats: Chat[];
-  isExpanded?: boolean;
+  userId: Id<"users">;
 }
 
 interface ProjectItemProps {
@@ -33,6 +36,10 @@ interface ProjectItemProps {
 export default function SidebarProjectItem({ project }: ProjectItemProps) {
   const router = useRouter();
   const pathname = usePathname();
+
+  const chats = useQuery(api.function.chats.getChatsByProjectId, {
+    projectId: project.projectId,
+  });
 
   const [expandedProject, setExpandedProject] = useState<boolean>(false);
 
@@ -54,7 +61,7 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
       {/* Project Header */}
       <div
         className={`group relative flex h-8 w-full items-center rounded-medium p-0 hover:bg-neutral-800/50 ${
-          isProjectActive(project.projectId)
+          isProjectActive(project.projectId || "")
             ? "rounded-xl bg-default-100 text-default-200"
             : "text-neutral-400"
         }`}
@@ -77,9 +84,9 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
         </Button>
         <Button
           isIconOnly
-          onPress={handleToggleExpansion}
-          variant="flat"
           className="grroup h-8 bg-transparent px-0 py-0 hover:bg-transparent"
+          variant="flat"
+          onPress={handleToggleExpansion}
         >
           <Icon
             className="text-neutral-400"
@@ -90,13 +97,13 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
       </div>
 
       {/* Expanded Chat List */}
-      {expandedProject && project.chats.length > 0 && (
-        <div className="ml-6 mt-1 flex flex-col gap-1 border-l border-neutral-800 pl-3">
-          {project.chats.map((chat) => (
+      {expandedProject && chats && chats.length > 0 && (
+        <div className="ml-4 mt-1 flex flex-col gap-0.5 border-l border-neutral-800 pl-1">
+          {chats?.map((chat) => (
             <SidebarProjectChat
               key={chat._id}
               chatId={chat.chatId}
-              projectId={project.projectId}
+              projectId={project.projectId || ""}
               title={chat.title}
               updatedAt={chat.updatedAt}
             />
@@ -105,7 +112,7 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
       )}
 
       {/* Empty State for Expanded Project */}
-      {expandedProject && project.chats.length === 0 && (
+      {expandedProject && chats?.length === 0 && (
         <div className="ml-6 mt-1 border-l border-neutral-800 pl-3">
           <div className="flex items-center gap-2 py-2 text-xs text-neutral-500">
             <Icon icon="mdi:chat-plus" width={14} />

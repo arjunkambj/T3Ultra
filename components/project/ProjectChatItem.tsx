@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-import ProjectChatDropdown from "./ProjectChatDropdown";
+import ProjectChatDropdown from "./sub/ProjectChatDropdown";
 
 interface Chat {
   id: string;

@@ -1,8 +1,8 @@
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { mutation, query } from "../_generated/server";
-import { api } from "../_generated/api";
 import { v4 as uuidv4 } from "uuid";
+
+import { mutation, query } from "../_generated/server";
 
 export const createProject = mutation({
   args: {
@@ -38,6 +38,7 @@ export const getProjects = query({
       .query("projects")
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .collect();
+
     return projects;
   },
 });

@@ -10,22 +10,23 @@ import {
 import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
 import { useDisclosure } from "@heroui/modal";
-import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
-import { Id } from "@/convex/_generated/dataModel";
 import { memo } from "react";
 
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+
 export default memo(function ProjectDeleteModel({
-  projectId,
+  id,
 }: {
-  projectId: Id<"projects">;
+  id: Id<"projects">;
 }) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   const deleteProject = useMutation(api.function.project.deleteProject);
 
   const handleDeleteProject = () => {
-    deleteProject({ _id: projectId });
+    deleteProject({ _id: id });
     onClose();
   };
 

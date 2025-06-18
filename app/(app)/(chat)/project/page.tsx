@@ -1,8 +1,9 @@
 "use client";
 
 import { useQuery } from "convex-helpers/react/cache/hooks";
-import { api } from "@/convex/_generated/api";
 import { Spinner } from "@heroui/spinner";
+
+import { api } from "@/convex/_generated/api";
 import ProjectCreateModel from "@/components/project/sub/ProjectCreateModel";
 import ProjectList from "@/components/project/ProjectList";
 
@@ -33,7 +34,7 @@ export default function ProjectPageComponent() {
           <ProjectCreateModel />
         </div>
 
-        <ProjectList userId={user._id} />
+        <ProjectList />
       </div>
     </div>
   );

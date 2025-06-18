@@ -30,14 +30,23 @@ export async function POST(req: Request) {
     const lastMessage = messages[messages.length - 1];
 
     if (lastMessage.role === "user") {
-      convex.mutation(api.function.messages.addMessageToChat, {
-        chatId,
-        content: lastMessage.content,
-        role: "user",
-      });
-      convex.mutation(api.function.chats.updateChatUpdatedAt, {
-        chatId,
-      });
+      try {
+        console.log("Saving user message:", {
+          chatId,
+          content: lastMessage.content,
+        });
+        await convex.mutation(api.function.messages.addMessageToChat, {
+          chatId,
+          content: lastMessage.content,
+          role: "user",
+        });
+        await convex.mutation(api.function.chats.updateChatUpdatedAt, {
+          chatId,
+        });
+        console.log("User message saved successfully");
+      } catch (error) {
+        console.error("Error saving user message:", error);
+      }
     }
   }
 
@@ -118,6 +127,10 @@ export async function POST(req: Request) {
     },
     onFinish: async (result) => {
       try {
+        console.log("Saving assistant message:", {
+          chatId,
+          content: result.text,
+        });
         // Save assistant message to database
         await convex.mutation(api.function.messages.addMessageToChat, {
           chatId,
@@ -125,16 +138,21 @@ export async function POST(req: Request) {
           role: "assistant",
         });
 
+        console.log("Assistant message saved successfully");
+
         // Update chat title if this is the first exchange
         if (messages.length === 1 && messages[0].role === "user") {
+          console.log("Generating title for new chat");
           const title = await generateTitleFromUserMessage({
             message: messages[0],
           });
 
+          console.log("Generated title:", title);
           await convex.mutation(api.function.chats.updateChatTitle, {
             chatId,
             title,
           });
+          console.log("Chat title updated successfully");
         }
       } catch (error) {
         // eslint-disable-next-line no-console

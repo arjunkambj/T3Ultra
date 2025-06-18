@@ -63,8 +63,8 @@ export default function AgentPage() {
         </div>
 
         <Button
-          className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
           fullWidth
+          className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
           startContent={<Icon icon="mdi:robot-excited" width={20} />}
           onPress={handleCreateAgent}
         >

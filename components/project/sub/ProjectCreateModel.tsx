@@ -13,8 +13,9 @@ import { useDisclosure } from "@heroui/modal";
 import { Divider } from "@heroui/divider";
 import { useState, memo } from "react";
 import { Input, Textarea } from "@heroui/input";
-import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
+
+import { api } from "@/convex/_generated/api";
 
 const ProjectCreateModel = memo(function ProjectCreateModel() {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -71,25 +72,25 @@ const ProjectCreateModel = memo(function ProjectCreateModel() {
               </ModalHeader>
               <ModalBody className="flex flex-col gap-4 pb-1 pt-1">
                 <Input
+                  required
                   label="Project Name"
                   placeholder="Enter project name"
-                  required
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                 />
                 <Textarea
+                  required
                   label="Project Description"
                   placeholder="Enter project description"
                   rows={1}
-                  required
                   value={projectDescription}
                   onChange={(e) => setProjectDescription(e.target.value)}
                 />
                 <Textarea
+                  required
                   label="Project Instructions"
                   placeholder="Enter project instructions"
                   rows={4}
-                  required
                   value={projectInstructions}
                   onChange={(e) => setProjectInstructions(e.target.value)}
                 />
@@ -98,8 +99,8 @@ const ProjectCreateModel = memo(function ProjectCreateModel() {
                 <Button
                   className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
                   isLoading={isLoading}
-                  onPress={handleCreateProject}
                   startContent={<Icon icon="mdi:folder-plus" width={16} />}
+                  onPress={handleCreateProject}
                 >
                   Create Project
                 </Button>

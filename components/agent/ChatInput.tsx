@@ -8,7 +8,6 @@ import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
 import { Tooltip } from "@heroui/tooltip";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { cn } from "@heroui/theme";
 
 import PromptInput from "./sub/prompt-input";
 
@@ -163,7 +162,6 @@ export function PromptInputFullLineComponent({
       </div>
       <PromptInput
         ref={inputRef}
-        autoFocus
         classNames={{
           innerWrapper: "relative",
           input: "text-medium h-auto w-full",

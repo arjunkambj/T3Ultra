@@ -1,8 +1,10 @@
 "use client";
 
 import { useQuery } from "convex-helpers/react/cache/hooks";
-import { api } from "@/convex/_generated/api";
+
 import SidebarProjectItem from "./sub/SidebarProjectItem";
+
+import { api } from "@/convex/_generated/api";
 
 export default function SidebarProjectsList() {
   const user = useQuery(api.function.users.currentUser);

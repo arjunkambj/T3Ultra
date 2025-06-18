@@ -39,7 +39,7 @@ const schema = defineSchema({
 
   projects: defineTable({
     userId: v.id("users"),
-    projectId: v.string(),
+    projectId: v.optional(v.string()),
     title: v.string(),
     description: v.string(),
     instructions: v.string(),
@@ -52,9 +52,8 @@ const schema = defineSchema({
     chatId: v.string(),
     title: v.string(),
     isProjectChat: v.optional(v.boolean()),
-    projectId: v.optional(v.id("projects")),
+    projectId: v.optional(v.string()),
     isPinned: v.boolean(),
-    isInProject: v.optional(v.boolean()),
     updatedAt: v.optional(v.number()),
   })
     .index("byUserId", ["userId"])

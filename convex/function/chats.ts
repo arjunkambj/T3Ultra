@@ -199,3 +199,60 @@ export const updateChatUpdatedAt = mutation({
     await ctx.db.patch(chat._id, { updatedAt: Date.now() });
   },
 });
+
+export const getChatsByProjectId = query({
+  args: { projectId: v.optional(v.string()) },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
+    const chats = await ctx.db
+      .query("chats")
+      .withIndex("byProjectId", (q) => q.eq("projectId", args.projectId))
+      .order("desc")
+      .collect();
+
+    return chats;
+  },
+});
+
+export const createProjectChatByChatId = mutation({
+  args: {
+    userId: v.id("users"),
+    chatId: v.string(),
+    projectId: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (userId === null) {
+      return;
+    }
+
+    // Check if chat already exists
+    const existingChat = await ctx.db
+      .query("chats")
+      .withIndex("byChatId", (q) => q.eq("chatId", args.chatId))
+      .first();
+
+    if (existingChat) {
+      return existingChat._id;
+    }
+
+    const chatId = await ctx.db.insert("chats", {
+      userId: args.userId,
+      title: "New Project Chat",
+      chatId: args.chatId,
+      isPinned: false,
+      isProjectChat: true,
+      projectId: args.projectId,
+      updatedAt: Date.now(),
+    });
+
+    return chatId;
+  },
+});

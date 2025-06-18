@@ -1,6 +1,7 @@
 "use client";
-import ChatInput from "@/components/agent/ChatInput";
 import { useParams } from "next/navigation";
+
+import ChatInput from "@/components/agent/ChatInput";
 import TopMenuBar from "@/components/chat/TopMenuBar";
 
 export default function AgentPage() {

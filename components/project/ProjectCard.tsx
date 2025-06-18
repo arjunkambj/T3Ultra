@@ -3,19 +3,20 @@
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@heroui/button";
-import { Id } from "@/convex/_generated/dataModel";
+
 import ProjectDeleteModel from "./sub/ProjectDeleteModel";
 
-interface Project {
-  _id: Id<"projects">;
-  projectId: string;
-  title: string;
-  description: string;
-  instructions: string;
-}
+import { Id } from "@/convex/_generated/dataModel";
 
 interface ProjectCardProps {
-  project: Project;
+  project: {
+    _id: Id<"projects">;
+    userId: Id<"users">;
+    projectId?: string;
+    title: string;
+    description: string;
+    instructions: string;
+  };
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
@@ -44,7 +45,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               <Icon icon="mdi:chat" width={16} />
               Start Chat
             </Button>
-            <ProjectDeleteModel projectId={project._id} />
+            <ProjectDeleteModel id={project._id} />
           </div>
         </div>
       </div>

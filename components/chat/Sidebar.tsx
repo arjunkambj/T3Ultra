@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Drawer, DrawerContent, DrawerBody } from "@heroui/drawer";
+import { usePathname } from "next/navigation";
 
 import SidebarContent from "./sub/sidebar-content";
 
 import { useSidebarToggle } from "@/atoms/sidebarState";
-import { usePathname } from "next/navigation";
 
 const Sidebar = React.memo(() => {
   const { isOpen, setIsOpen } = useSidebarToggle();

@@ -1,23 +1,17 @@
 "use client";
-import ProjectCard from "./ProjectCard";
 import { useQuery } from "convex-helpers/react/cache/hooks";
-import { api } from "@/convex/_generated/api";
-import { Spinner } from "@heroui/spinner";
-import { Id } from "@/convex/_generated/dataModel";
 
-export default function ProjectList({ userId }: { userId: Id<"users"> }) {
+import ProjectCard from "./ProjectCard";
+
+import { api } from "@/convex/_generated/api";
+
+export default function ProjectList() {
+  const user = useQuery(api.function.users.currentUser);
+
   const projects = useQuery(
     api.function.project.getProjects,
-    userId ? { userId: userId } : "skip",
+    user ? { userId: user._id } : "skip",
   );
-
-  if (!projects) {
-    return (
-      <div className="flex h-full w-full flex-col items-center justify-center">
-        <Spinner />
-      </div>
-    );
-  }
 
   return (
     <>
@@ -25,12 +19,14 @@ export default function ProjectList({ userId }: { userId: Id<"users"> }) {
         {projects && projects.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-1">
             {projects.map((project) => (
-              <ProjectCard key={project.projectId} project={project} />
+              <div key={project._id} className="flex flex-col gap-4">
+                <ProjectCard project={project} />
+              </div>
             ))}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center gap-4">
-            <p className="mt-10 text-neutral-400">
+            <p className="text-neutral-400">
               Create your first project to get started
             </p>
           </div>

@@ -3,7 +3,6 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 
 import { mutation, query } from "../_generated/server";
 
-// Using this funtion API route to add message to chat
 export const addMessageToChat = mutation({
   args: {
     chatId: v.string(),
@@ -33,11 +32,6 @@ export const addMessageToChat = mutation({
       return;
     }
 
-    // Validate content is not empty
-    if (!args.content.trim()) {
-      throw new Error("Message content cannot be empty");
-    }
-
     const messageId = await ctx.db.insert("messages", {
       chatId: args.chatId,
       content: args.content.trim(),
@@ -45,13 +39,13 @@ export const addMessageToChat = mutation({
       annotations: args.annotations,
       parts: args.parts,
       experimental_attachments: args.experimental_attachments,
+      updatedAt: Date.now(),
     });
 
     return messageId;
   },
 });
 
-// Add UIMessage to chat with full structure support
 export const addUIMessageToChat = mutation({
   args: {
     chatId: v.string(),
@@ -81,7 +75,6 @@ export const addUIMessageToChat = mutation({
       return;
     }
 
-    // Validate content is not empty
     if (!args.content.trim()) {
       throw new Error("Message content cannot be empty");
     }
@@ -93,13 +86,13 @@ export const addUIMessageToChat = mutation({
       annotations: args.annotations,
       parts: args.parts,
       experimental_attachments: args.experimental_attachments,
+      updatedAt: Date.now(),
     });
 
     return messageId;
   },
 });
 
-// Getting Messages by ChatId
 export const getMessagesByChatId = query({
   args: {
     chatId: v.string(),

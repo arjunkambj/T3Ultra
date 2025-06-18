@@ -8,13 +8,15 @@ import Link from "next/link";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { useRouter } from "next/navigation";
 import { Divider } from "@heroui/divider";
+import { Unauthenticated } from "convex/react";
+
 import ChatHistory from "./ChatHistory";
+
 import SidebarProjectsList from "@/components/project/SidebarProjectsList";
 import SidebarAgentsList from "@/components/agent/SidebarAgentsList";
 import { Logo } from "@/components/Logo";
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import SidebarModel from "@/components/auth/SidebarModel";
-import { Unauthenticated } from "convex/react";
 
 interface SidebarContentProps {
   onClose: () => void;

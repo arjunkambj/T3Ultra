@@ -12,7 +12,7 @@ import { api } from "@/convex/_generated/api";
 
 export default function ChatHistory() {
   const user = useQuery(api.function.users.currentUser);
-  const chats = useQuery(
+  const chatsIncludingProjectChats = useQuery(
     api.function.chats.getChatsByUserId,
     user ? { userId: user._id } : "skip",
   );
@@ -20,6 +20,10 @@ export default function ChatHistory() {
   const pathname = usePathname();
   const { setIsOpen } = useSidebarToggle();
   const [isMobile, setIsMobile] = useState(false);
+
+  const chats = chatsIncludingProjectChats?.filter(
+    (chat) => !chat.isProjectChat,
+  );
 
   useEffect(() => {
     const handleResize = () => {
