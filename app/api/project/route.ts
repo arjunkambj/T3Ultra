@@ -13,7 +13,7 @@ import { api } from "@/convex/_generated/api";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
-  const { messages, chatId, userId, modelId } = await req.json();
+  const { messages, chatId, userId, modelId, projectId } = await req.json();
 
   const isAuthenticated = await isAuthenticatedNextjs();
 
@@ -49,7 +49,36 @@ export async function POST(req: Request) {
     }
   }
 
-  const systemPrompt = "You are a helpful assistant that can answer questions.";
+  const projectContext = await convex.query(
+    api.function.project.getProjectById,
+    {
+      projectId,
+    },
+  );
+
+  let systemPrompt = "";
+
+  if (projectContext) {
+    systemPrompt = `
+    You are a project assistant for "${projectContext.title}" 🚀
+
+    PROJECT INSTRUCTIONS & BEHAVIOR:
+    ${projectContext.instructions || "You are a helpful assistant that can answer questions and provide assistance for this project."}
+
+    PROJECT CONTEXT:
+    - Project Title: ${projectContext.title || "Untitled Project"}
+    - Project Description: ${projectContext.description || "No description provided"}
+    - Project ID: ${projectContext.projectId || "No ID specified"}
+
+    BEHAVIOR GUIDELINES:
+    - Focus on helping with this specific project
+    - Follow the project instructions provided above
+    - Provide project-relevant assistance and guidance
+    `;
+  } else {
+    systemPrompt =
+      "You are a helpful project assistant that can answer questions.";
+  }
 
   const userModel = [
     openai("gpt-4o-mini"),

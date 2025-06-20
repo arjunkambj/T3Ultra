@@ -4,12 +4,10 @@ import { ConvexHttpClient } from "convex/browser";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
 import { openai } from "@ai-sdk/openai";
 import { xai } from "@ai-sdk/xai";
-
 import { getCurrentTime } from "./tools";
-
+import { addToMemory } from "../chat/tools";
 import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
-
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
@@ -49,22 +47,42 @@ export async function POST(req: Request) {
     }
   }
 
-  // Get agent data to use agent-specific instructions
-  let systemPrompt = "You are a helpful assistant that can answer questions.";
+  const agentContext = await convex.query(api.function.agent.getAgentById, {
+    agentId,
+  });
 
-  if (agentId) {
-    try {
-      const agent = await convex.query(api.function.agent.getAgentById, {
-        agentId,
-      });
+  let systemPrompt = "";
 
-      if (agent?.instructions) {
-        systemPrompt = agent.instructions;
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error("Error fetching agent instructions:", error);
-    }
+  if (agentContext) {
+    systemPrompt = `
+    You are an agent that can answer questions.
+
+You are ${agentContext.name || "a helpful AI agent"} 🤖
+
+${agentContext.description ? `AGENT DESCRIPTION: ${agentContext.description}` : ""}
+
+${agentContext.category ? `CATEGORY: ${agentContext.category}` : ""}
+
+${
+  agentContext.capabilities && agentContext.capabilities.length > 0
+    ? `CAPABILITIES: ${agentContext.capabilities.join(", ")}`
+    : ""
+}
+
+AGENT INSTRUCTIONS & BEHAVIOR:
+${agentContext.instructions || "You are a agent that can answer questions and provide assistance and follow the instructions provided below."}
+
+AGENT CONTEXT:
+- Agent Name: ${agentContext.name || "AI Assistant"}
+- Agent Role: ${agentContext.description || "General purpose assistant"}
+- Specialized In: ${agentContext.category || "General assistance"}
+- Key Abilities: ${agentContext.capabilities && agentContext.capabilities.length > 0 ? agentContext.capabilities.join(", ") : "General conversation and assistance"}
+- Updated: ${agentContext.updatedAt ? new Date(agentContext.updatedAt).toLocaleDateString() : "Recently"}
+    `;
+  } else {
+    systemPrompt = `
+You are a helpful AI assistant 🤖
+  `;
   }
 
   const userModel = [
@@ -88,6 +106,7 @@ export async function POST(req: Request) {
     maxSteps: 10,
     tools: {
       getCurrentTime: getCurrentTime,
+      addToMemory: addToMemory,
     },
     onFinish: async (result) => {
       try {
