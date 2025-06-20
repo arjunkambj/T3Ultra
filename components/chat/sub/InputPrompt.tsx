@@ -7,9 +7,11 @@ import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
 import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
+import { addToast } from "@heroui/toast";
+import { Message } from "ai";
 
-import PromptInput from "./prompt-input";
 import InputButtons from "./input-buttons";
+import PromptInput from "./prompt-input";
 
 interface PromptInputProps {
   input: string;
@@ -18,6 +20,7 @@ interface PromptInputProps {
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   stop: () => void;
   status: string;
+  append: (message: Message) => void;
 }
 
 interface PromptInputAssetsProps {
@@ -81,26 +84,58 @@ export function PromptInputFullLineComponent({
     inputRef.current?.focus();
   }, [inputRef]);
 
-  const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
-    const items = Array.from(e.clipboardData.items);
+  const handlePaste = useCallback(
+    async (e: React.ClipboardEvent) => {
+      const items = Array.from(e.clipboardData.items);
 
-    for (const item of items) {
-      if (item.type.indexOf("image") !== -1) {
-        const blob = item.getAsFile();
+      for (const item of items) {
+        if (item.type.indexOf("image") !== -1) {
+          const blob = item.getAsFile();
 
-        if (!blob) continue;
+          if (!blob) continue;
 
-        const reader = new FileReader();
+          try {
+            // Upload the pasted image using the same logic as input-buttons
+            const formData = new FormData();
 
-        reader.onload = () => {
-          const base64data = reader.result as string;
+            formData.append("file", blob, `pasted-image-${Date.now()}.png`);
 
-          setAssets((prev) => [...prev, base64data]);
-        };
-        reader.readAsDataURL(blob);
+            const response = await fetch("/api/upload", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+
+              throw new Error(errorData.error || "Upload failed");
+            }
+
+            const result = await response.json();
+
+            setAssets((prev) => [...prev, result.url]);
+
+            addToast({
+              title: "Image pasted and uploaded successfully",
+              color: "success",
+              variant: "solid",
+              timeout: 2000,
+            });
+          } catch (error) {
+            void error;
+            addToast({
+              title: "Error uploading pasted image",
+              description: "Please try again",
+              color: "danger",
+              variant: "solid",
+              timeout: 2000,
+            });
+          }
+        }
       }
-    }
-  }, []);
+    },
+    [setAssets],
+  );
 
   return (
     <Form

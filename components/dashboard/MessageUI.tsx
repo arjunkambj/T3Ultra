@@ -3,10 +3,13 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState, useEffect } from "react";
 import { addToast } from "@heroui/toast";
+import { motion } from "framer-motion";
 
 import UserMessage from "./UserMessage";
 import AssistanceMessage from "./AssistanceMessage";
 import AIThinkingSpinner from "./AIThinkingSpinner";
+
+import { useMessages } from "@/hooks/use-messages";
 
 export default function MessageUI({
   messages,
@@ -21,6 +24,15 @@ export default function MessageUI({
   chatId: string;
   isShared: boolean;
 }) {
+  const {
+    containerRef: messagesContainerRef,
+    endRef: messagesEndRef,
+    onViewportEnter,
+    onViewportLeave,
+  } = useMessages({
+    chatId,
+    status,
+  });
   const [memory, setMemory] = useState<boolean>(false);
 
   useEffect(() => {
@@ -46,7 +58,10 @@ export default function MessageUI({
   }, [messages, memory]);
 
   return (
-    <div className="flex h-full w-full max-w-3xl flex-col px-3 pt-16">
+    <div
+      ref={messagesContainerRef}
+      className="flex h-full w-full max-w-3xl flex-col px-3 pt-16"
+    >
       {messages?.map((message) => (
         <div key={isShared ? message._id : message.id} className="pb-12">
           {message.role === "user" ? (
@@ -57,17 +72,27 @@ export default function MessageUI({
                 reload={reload}
               />
             </div>
-          ) : (
+          ) : message.content.length > 0 ? (
             <AssistanceMessage
               allmessages={messages}
               chatId={chatId}
               isShared={isShared}
               message={message}
             />
-          )}
+          ) : null}
         </div>
       ))}
-      <AIThinkingSpinner messages={messages} status={status} />
+      {status === "submitted" &&
+        messages.length > 0 &&
+        messages[messages.length - 1].role === "user" && (
+          <AIThinkingSpinner messages={messages} status={status} />
+        )}
+      <motion.div
+        ref={messagesEndRef}
+        className="min-h-[24px] min-w-[24px] shrink-0"
+        onViewportEnter={onViewportEnter}
+        onViewportLeave={onViewportLeave}
+      />
     </div>
   );
 }

@@ -3,8 +3,9 @@ import { streamText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
 import { openai } from "@ai-sdk/openai";
-import { perplexity } from "@ai-sdk/perplexity";
 import { xai } from "@ai-sdk/xai";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { perplexity } from "@ai-sdk/perplexity";
 
 import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
 import { addToMemory } from "./tools";
@@ -13,6 +14,10 @@ import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 export async function POST(req: Request) {
   const { messages, chatId, userId, modelId, isSearchEnabled } =
@@ -99,9 +104,14 @@ export async function POST(req: Request) {
   const userModel = [
     openai("gpt-4o-mini"),
     openai("gpt-4.1-mini"),
+    openai("gpt-4.1"),
     google("gemini-2.5-flash-preview-04-17"),
     google("gemini-2.5-flash-preview-04-17"),
     xai("grok-3-mini"),
+    xai("grok-3"),
+    openai("o3-mini-2025-01-31"),
+    openrouter("deepseek/deepseek-chat-v3-0324:free"),
+    openrouter("deepseek/deepseek-r1-0528:free"),
   ];
 
   // Ensure modelId is within valid range
@@ -116,6 +126,7 @@ export async function POST(req: Request) {
     system: systemPrompt,
     messages,
     maxSteps: 10,
+
     tools: {
       internetSearch: InteractWithGoogleSearch,
       getCurrentTime: getCurrentTime,
@@ -128,6 +139,7 @@ export async function POST(req: Request) {
           chatId,
           content: result.text,
           role: "assistant",
+          modelUsed: modelId.toString(),
         });
 
         // Update chat title if this is the first exchange
@@ -148,5 +160,8 @@ export async function POST(req: Request) {
     },
   });
 
-  return result.toDataStreamResponse();
+  return result.toDataStreamResponse({
+    sendReasoning: true,
+    sendSources: true,
+  });
 }

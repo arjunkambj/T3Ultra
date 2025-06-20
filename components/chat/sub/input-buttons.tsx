@@ -1,10 +1,13 @@
+"use client";
+
 import { useCallback, useRef } from "react";
 import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { Icon } from "@iconify/react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useAtom } from "jotai";
-import { addToast } from "@heroui/toast";
+
+// Removed @vercel/blob/client import since we're using custom API route
 
 import { searchAtom } from "@/atoms/searchState";
 
@@ -53,86 +56,87 @@ export default function InputButtons({
 
   const handleSearch = useCallback(() => {
     setSearch(!search);
-    addToast({
-      title: "Perplexity Search is now " + (search ? "OFF" : "ON"),
-      description: "You can now search the web with Perplexity",
-      color: search ? "warning" : "success",
-      timeout: 1000,
-    });
   }, [search, setSearch]);
 
   return (
     <div className="flex w-full flex-row items-center justify-between px-3 pb-3">
-      <Tooltip showArrow content="Attach Files">
-        <Button
-          isIconOnly
-          className="p-1.5"
-          radius="md"
-          size="sm"
-          variant="flat"
-          onPress={() => fileInputRef.current?.click()}
-        >
-          <Icon
-            className="text-default-700"
-            icon="solar:paperclip-outline"
-            width={18}
-          />
-          <VisuallyHidden>
-            <input
-              ref={fileInputRef}
-              multiple
-              accept="image/*"
-              type="file"
-              onChange={handleFileUpload}
-            />
-          </VisuallyHidden>
-        </Button>
-      </Tooltip>
-
       <div className="flex flex-row items-center gap-2">
-        <Tooltip
-          content={
-            search ? "Perplexity Search [ON]" : "Perplexity Search [OFF]"
-          }
-        >
+        <Tooltip closeDelay={0} content="Attach Files" delay={0}>
           <Button
-            className={`${search ? "bg-neutral-200 px-5 text-neutral-950" : "border border-neutral-800 bg-neutral-900 px-5 text-white"}`}
+            isIconOnly
+            className="border border-default-200 bg-default-100 p-1.5 text-default-800"
             radius="md"
             size="sm"
-            variant="flat"
+            onPress={() => fileInputRef.current?.click()}
+          >
+            <Icon
+              className="text-default-900"
+              icon="solar:paperclip-outline"
+              width={18}
+            />
+            <VisuallyHidden>
+              <input
+                ref={fileInputRef}
+                multiple
+                accept="image/jpeg,image/png,application/pdf,text/csv"
+                type="file"
+                onChange={handleFileUpload}
+              />
+            </VisuallyHidden>
+          </Button>
+        </Tooltip>
+        <Tooltip
+          closeDelay={0}
+          content={search ? "Turn off Web Search" : "Turn on Web Search"}
+          delay={0}
+        >
+          <Button
+            className={`${search ? "bg-neutral-200 px-5 text-neutral-950" : "border border-default-200 bg-default-100 px-5 text-white"}`}
+            radius="md"
+            size="sm"
             onPress={handleSearch}
           >
             Web Search
           </Button>
         </Tooltip>
+      </div>
+
+      <div className="flex flex-row items-center gap-2">
         {(status === "streaming" || status === "submitted") && (
-          <Button
-            isIconOnly
-            className="bg-neutral-300 p-1.5 text-neutral-900"
-            radius="md"
-            size="sm"
-            variant="flat"
-            onPress={handleStop}
-          >
-            <Icon icon="qlementine-icons:stop-24" width={18} />
-          </Button>
+          <Tooltip closeDelay={0} content="Stop Streaming" delay={0}>
+            <Button
+              isIconOnly
+              className="bg-neutral-300 p-1.5 text-neutral-900"
+              radius="md"
+              size="sm"
+              variant="flat"
+              onPress={handleStop}
+            >
+              <Icon icon="qlementine-icons:stop-24" width={18} />
+            </Button>
+          </Tooltip>
         )}
         {status !== "streaming" && status !== "submitted" && (
-          <Button
-            isIconOnly
-            className={!prompt ? "bg-neutral-800" : "bg-neutral-200"}
-            isDisabled={!prompt}
-            radius="md"
-            size="sm"
-            type="submit"
-            variant="flat"
-          >
-            <Icon
-              className={!prompt ? "text-white" : "text-neutral-950"}
-              icon="solar:arrow-up-linear"
-              width={20}
-            />
-          </Button>
+          <Tooltip closeDelay={0} content="Send Message" delay={0}>
+            <Button
+              isIconOnly
+              className={
+                !prompt
+                  ? "border border-default-200 bg-default-100"
+                  : "bg-neutral-200"
+              }
+              isDisabled={!prompt}
+              radius="md"
+              size="sm"
+              type="submit"
+            >
+              <Icon
+                className={!prompt ? "text-white" : "text-neutral-950"}
+                icon="solar:arrow-up-linear"
+                width={20}
+              />
+            </Button>
+          </Tooltip>
         )}
       </div>
     </div>

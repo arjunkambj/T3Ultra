@@ -1,5 +1,5 @@
-import Sidebar from "@/components/chat/Sidebar";
-import UserProfile from "@/components/chat/UserProfile";
+import Sidebar from "@/components/dashboard/Sidebar";
+import UserProfile from "@/components/dashboard/UserProfile";
 
 export default async function AppLayout({
   children,

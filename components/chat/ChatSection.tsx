@@ -2,10 +2,10 @@
 import { cn } from "@heroui/theme";
 import { Spinner } from "@heroui/spinner";
 
-import MessageUI from "./MessageUI";
+import MessageUI from "../dashboard/MessageUI";
+
 import ChatInput from "./ChatInput";
-import ChatSuggestions from "./sub/chat-suggestion";
-import ShareModel from "./ShareModel";
+import ChatSuggestions from "./ChatSuggestion";
 
 import { useAI } from "@/hooks/useAI";
 import LoginModel from "@/components/auth/LoginModel";
@@ -31,6 +31,7 @@ export default function ChatSection({
     onLoginModalOpen,
     stop,
     reload,
+    append,
   } = useAI({ isnewchat, chatId });
 
   const hasInput = input.length > 0 ? true : false;
@@ -46,7 +47,6 @@ export default function ChatSection({
 
   return (
     <>
-      {hasMessages && <ShareModel chatId={chatId} />}
       <div
         className={cn(
           "relative flex h-dvh w-full flex-col items-center justify-center",
@@ -71,6 +71,7 @@ export default function ChatSection({
         <div className="absolute bottom-8 z-50 flex w-full flex-col items-center justify-center px-3">
           <div className="w-full max-w-3xl">
             <ChatInput
+              append={append}
               handleInputChange={handleInputChange}
               handleKeyDown={handleKeyDown}
               input={input}

@@ -4,8 +4,8 @@ import React from "react";
 
 export const Logo: React.FC<IconSvgProps> = ({
   size = 32,
-  width,
-  height,
+  width = 32,
+  height = 32,
   ...props
 }) => (
   <svg

@@ -51,6 +51,9 @@ export const createBranchChat = mutation({
       isPinned: false,
       isBranchChat: true,
       updatedAt: Date.now(),
+      isAgentChat: originalChat.isAgentChat,
+      agentId: originalChat.agentId,
+      projectId: originalChat.projectId,
     });
 
     for (const message of branchMessages) {
@@ -59,6 +62,10 @@ export const createBranchChat = mutation({
         content: message.content,
         role: message.role,
         updatedAt: Date.now(),
+        modelUsed: message.modelUsed,
+        annotations: message.annotations,
+        parts: message.parts,
+        experimental_attachments: message.experimental_attachments,
       });
     }
 

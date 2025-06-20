@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
 import ChatSection from "@/components/chat/ChatSection";
-import TopMenuBar from "@/components/chat/TopMenuBar";
+import TopMenuBar from "@/components/dashboard/TopMenuBar";
 
 export default async function ChatPage({
   params,

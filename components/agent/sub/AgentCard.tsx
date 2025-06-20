@@ -51,7 +51,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
               <Avatar size="lg" src={agent.avatar} />
             ) : (
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-800 text-neutral-300">
-                <Icon icon="mdi:robot" width={24} />
+                <Icon icon="token:xai" width={30} />
               </div>
             )}
           </div>

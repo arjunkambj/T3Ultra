@@ -17,7 +17,7 @@ export default function SidebarAgentsList() {
   const agents = allAgents?.filter((agent) => agent.isPinned);
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex w-full flex-col gap-1">
       {agents &&
         agents.map((agent) => <SidebarAgent key={agent._id} agent={agent} />)}
     </div>

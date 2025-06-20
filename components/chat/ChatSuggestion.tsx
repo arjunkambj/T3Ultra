@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react";
 const suggestions = [
   {
     id: "code",
-    label: "Code",
+    label: "Write Code For",
     icon: "solar:code-linear",
   },
   {
@@ -20,7 +20,7 @@ const suggestions = [
   },
   {
     id: "make-plan",
-    label: "Make a plan",
+    label: "Make a Plan For",
     icon: "solar:checklist-linear",
   },
 ];
@@ -28,15 +28,16 @@ const suggestions = [
 const features = [
   {
     id: "1",
-    label: "- Attachtment, Image Support & Auto Web Search",
+    label:
+      "- Attachtment, Image Generation & Auto Web Search, Perplexity Search",
   },
   {
     id: "2",
-    label: "- Cool Markdown, Syntax Hightlight",
+    label: "- Cool Markdown, Syntax Hightlight, Agents & Projects",
   },
   {
     id: "3",
-    label: "- Stop, Resume Streams and sharing & Branching chats",
+    label: "- Stop, Branching & Sharing Chat",
   },
 ];
 
@@ -57,7 +58,7 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
       <div className="flex flex-col items-start gap-5">
         <div className="flex flex-col gap-5">
           <h1 className="text-3xl font-bold text-neutral-300">
-            Welcome to the T3 Ultra.
+            Welcome to the T1 GPT.
           </h1>
 
           {/* Action buttons */}
@@ -89,7 +90,7 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
             </div>
           ))}
           <div className="mb-2 px-2 text-sm text-neutral-400">
-            - Auto Web Search, Crpto Tool, & Perplexity Search
+            - Auto Memory, Source & Context
           </div>
         </div>
       </div>

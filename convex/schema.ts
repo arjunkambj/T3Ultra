@@ -37,6 +37,14 @@ const schema = defineSchema({
     category: v.optional(v.string()),
   }).index("userId", ["userId"]),
 
+  files: defineTable({
+    userId: v.id("users"),
+    storageId: v.id("_storage"),
+    filename: v.string(),
+    contentType: v.string(),
+    size: v.number(),
+  }).index("userId", ["userId"]),
+
   agent: defineTable({
     userId: v.id("users"),
     name: v.optional(v.string()),
@@ -79,6 +87,7 @@ const schema = defineSchema({
   messages: defineTable({
     chatId: v.string(),
     content: v.string(),
+    modelUsed: v.optional(v.string()),
     role: v.union(
       v.literal("user"),
       v.literal("assistant"),
@@ -119,6 +128,7 @@ const schema = defineSchema({
 
   sharedMessages: defineTable({
     messageId: v.optional(v.string()),
+    modelUsed: v.optional(v.string()),
     chatId: v.string(),
     content: v.string(),
     role: v.union(

@@ -1,6 +1,6 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "TGPT - A t3 hackathon project",
-  description: "TGPT is a chatbot for THEO's Hackathon",
+  name: "T1GPT - A T3 Hackathon Project",
+  description: "T1GPT is a chatbot for THEO's Hackathon",
 };

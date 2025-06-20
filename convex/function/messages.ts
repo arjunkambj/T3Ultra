@@ -13,6 +13,7 @@ export const addMessageToChat = mutation({
       v.literal("system"),
       v.literal("data"),
     ),
+    modelUsed: v.optional(v.string()),
     annotations: v.optional(v.array(v.any())),
     parts: v.optional(v.array(v.any())),
     experimental_attachments: v.optional(
@@ -30,6 +31,7 @@ export const addMessageToChat = mutation({
       chatId: args.chatId,
       content: args.content.trim(),
       role: args.role,
+      modelUsed: args.modelUsed,
       annotations: args.annotations,
       parts: args.parts,
       experimental_attachments: args.experimental_attachments,
@@ -50,6 +52,7 @@ export const addUIMessageToChat = mutation({
       v.literal("system"),
       v.literal("data"),
     ),
+    modelUsed: v.optional(v.string()),
     annotations: v.optional(v.array(v.any())),
     parts: v.optional(v.array(v.any())),
     experimental_attachments: v.optional(
@@ -70,6 +73,7 @@ export const addUIMessageToChat = mutation({
     const messageId = await ctx.db.insert("messages", {
       chatId: args.chatId,
       content: args.content.trim(),
+      modelUsed: args.modelUsed,
       role: args.role,
       annotations: args.annotations,
       parts: args.parts,
@@ -108,6 +112,7 @@ export const getMessagesByChatId = query({
       annotations: message.annotations || [],
       parts: message.parts || [],
       experimental_attachments: message.experimental_attachments || [],
+      modelUsed: message.modelUsed,
     }));
   },
 });
@@ -133,5 +138,16 @@ export const deleteMessagesByChatId = mutation({
     await Promise.all(messages.map((message) => ctx.db.delete(message._id)));
 
     return { deletedCount: messages.length };
+  },
+});
+
+export const deleteMessageByMessageId = mutation({
+  args: {
+    messageId: v.id("messages"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.delete(args.messageId);
+
+    return true;
   },
 });

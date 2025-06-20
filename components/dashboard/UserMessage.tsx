@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import UserToolkit from "./sub/UserToolkit";
-import EditInput from "./sub/EditInput";
+import EditInput from "./EditInputMessage";
 
 export default function UserMessage({
   message,

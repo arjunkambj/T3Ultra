@@ -126,18 +126,6 @@ export default function ModelSelector() {
             {models.map((model) => (
               <DropdownItem
                 key={model.id}
-                className="py-3"
-                description={
-                  <div className="space-y-2">
-                    <div className="flex flex-wrap gap-1">
-                      {model.capabilities.map((capability, index) => (
-                        <Badge key={index} color="default" size="sm">
-                          {capability}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                }
                 endContent={
                   <div className="flex items-center gap-1">
                     {model.isNew && (
@@ -154,11 +142,13 @@ export default function ModelSelector() {
                 }
                 onPress={() => handleModelChange(model.id)}
               >
-                <div className="mb-2 flex items-center">
-                  <span className="mr-2">
-                    <Icon icon={model.icon} width={18} />
-                  </span>
-                  <span className="font-medium">{model.name}</span>
+                <div className="flex min-h-6 items-center gap-2">
+                  <Icon
+                    className="text-neutral-100"
+                    icon={model.icon}
+                    width={18}
+                  />
+                  <span>{model.name}</span>
                 </div>
               </DropdownItem>
             ))}

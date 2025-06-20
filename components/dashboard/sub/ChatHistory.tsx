@@ -161,10 +161,10 @@ export default function ChatHistory() {
     <div className="w-full">
       {/* Pinned Section */}
       {pinnedChats.length > 0 && (
-        <div className="mb-4">
-          <div className="mb-2 flex items-center gap-2 py-0 pl-[10px] text-small text-default-800">
+        <div className="mb-3">
+          <div className="mb-1 flex items-center gap-2 py-0 pl-[6px] text-small text-neutral-100">
             <Icon
-              className="text-default-700"
+              className="text-neutral-100"
               height={14}
               icon="solar:pin-bold"
               width={14}
@@ -179,8 +179,8 @@ export default function ChatHistory() {
 
       {/* Today Section */}
       {categorizedChats.today.length > 0 && (
-        <div className="mb-4">
-          <div className="mb-2 py-0 pl-[10px] text-small text-default-800">
+        <div className="mb-3">
+          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
             Today
           </div>
           <div className="flex flex-col gap-1">
@@ -191,8 +191,8 @@ export default function ChatHistory() {
 
       {/* Yesterday Section */}
       {categorizedChats.yesterday.length > 0 && (
-        <div className="mb-4">
-          <div className="mb-2 py-0 pl-[10px] text-small text-default-800">
+        <div className="mb-3">
+          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
             Yesterday
           </div>
           <div className="flex flex-col gap-1">
@@ -203,8 +203,8 @@ export default function ChatHistory() {
 
       {/* Previous 7 Days Section */}
       {categorizedChats.previous7Days.length > 0 && (
-        <div className="mb-4">
-          <div className="mb-2 py-0 pl-[10px] text-small text-default-800">
+        <div className="mb-3">
+          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
             Previous 7 days
           </div>
           <div className="flex flex-col gap-1">
@@ -215,8 +215,8 @@ export default function ChatHistory() {
 
       {/* Previous 30 Days Section */}
       {categorizedChats.previous30Days.length > 0 && (
-        <div className="mb-4">
-          <div className="mb-2 py-0 pl-[10px] text-small text-default-800">
+        <div className="mb-3">
+          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
             Previous 30 days
           </div>
           <div className="flex flex-col gap-1">
@@ -227,8 +227,8 @@ export default function ChatHistory() {
 
       {/* Older Section */}
       {categorizedChats.older.length > 0 && (
-        <div className="mb-4">
-          <div className="mb-2 py-0 pl-[10px] text-small text-default-800">
+        <div className="mb-3">
+          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
             Older
           </div>
           <div className="flex flex-col gap-1">

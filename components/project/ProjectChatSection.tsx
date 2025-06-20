@@ -4,10 +4,10 @@ import { Spinner } from "@heroui/spinner";
 import { cn } from "@heroui/theme";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 
-import TopMenuBar from "../chat/TopMenuBar";
-import MessageUI from "../chat/MessageUI";
+import TopMenuBar from "../dashboard/TopMenuBar";
+import MessageUI from "../dashboard/MessageUI";
 import LoginModel from "../auth/LoginModel";
-import ShareModel from "../chat/ShareModel";
+import ShareModel from "../dashboard/ShareModel";
 
 import ChatInput from "./ChatInput";
 

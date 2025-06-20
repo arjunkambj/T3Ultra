@@ -7,7 +7,7 @@ import { useAtomValue } from "jotai";
 import { Tooltip } from "@heroui/tooltip";
 
 import SidebarToggle from "./sub/sidebar-toggle";
-import ModelSelector from "./sub/ai-model-selector";
+import ModelSelector from "./ai-model-selector";
 
 import { sidebarOpenAtom } from "@/atoms/sidebarState";
 

@@ -8,7 +8,7 @@ import { Spinner } from "@heroui/spinner";
 import { Icon } from "@iconify/react";
 
 import { api } from "@/convex/_generated/api";
-import MessageUI from "@/components/chat/MessageUI";
+import MessageUI from "@/components/dashboard/MessageUI";
 
 export default function SharePage() {
   const { id } = useParams();

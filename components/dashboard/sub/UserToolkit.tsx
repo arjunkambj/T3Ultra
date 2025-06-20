@@ -21,13 +21,13 @@ export default function UserToolkit({
   isShared: boolean;
 }) {
   const user = useUser();
-
   const handleCopy = () => {
     navigator.clipboard.writeText(message);
     addToast({
-      color: "success",
+      color: "default",
       description: "Copied to clipboard",
       title: "Copied to clipboard",
+      timeout: 1500,
     });
   };
 
@@ -39,43 +39,60 @@ export default function UserToolkit({
     setEdit(!edit);
   };
 
+  const handleRetry = () => {
+    if (!user) {
+      return;
+    }
+    reload();
+  };
+
   return (
     <div className="flex flex-row items-center gap-0">
-      <Tooltip content="Copy">
+      <Tooltip showArrow closeDelay={0} content="Copy Text" placement="bottom">
         <Button
           isIconOnly
+          className="p-0 text-neutral-300"
           radius="md"
           size="sm"
-          variant="flat"
           onPress={handleCopy}
         >
-          <Icon icon="solar:copy-outline" width={18} />
+          <Icon icon="mynaui:copy" width={18} />
         </Button>
       </Tooltip>
       {!isShared && (
-        <Tooltip content="Edit">
+        <Tooltip
+          showArrow
+          closeDelay={0}
+          content="Edit & Send Again"
+          placement="bottom"
+        >
           <Button
             isIconOnly
+            className="p-0 text-neutral-300"
             radius="md"
             size="sm"
-            variant="flat"
             onPress={handleEdit}
           >
-            <Icon icon="tabler:edit" width={22} />
+            <Icon icon="mynaui:edit" width={18} />
           </Button>
         </Tooltip>
       )}
 
       {!isShared && (
-        <Tooltip content="Retry">
+        <Tooltip
+          showArrow
+          closeDelay={0}
+          content="Switch Model"
+          placement="bottom"
+        >
           <Button
             isIconOnly
+            className="p-0 text-neutral-300"
             radius="md"
             size="sm"
-            variant="flat"
-            onPress={reload}
+            onPress={handleRetry}
           >
-            <Icon icon="pajamas:retry" width={18} />
+            <Icon icon="mynaui:refresh" width={18} />
           </Button>
         </Tooltip>
       )}

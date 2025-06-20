@@ -48,61 +48,69 @@ export default function InputButtons({
 
   return (
     <div className="flex w-full flex-row items-center justify-between px-3 pb-3">
-      <Tooltip showArrow content="Attach Files">
-        <Button
-          isIconOnly
-          className="p-1.5"
-          radius="md"
-          size="sm"
-          variant="flat"
-          onPress={() => fileInputRef.current?.click()}
-        >
-          <Icon
-            className="text-default-700"
-            icon="solar:paperclip-outline"
-            width={18}
-          />
-          <VisuallyHidden>
-            <input
-              ref={fileInputRef}
-              multiple
-              accept="image/*"
-              type="file"
-              onChange={handleFileUpload}
+      <div className="flex flex-row items-center gap-2">
+        <Tooltip closeDelay={0} content="Attach Files" delay={0}>
+          <Button
+            isIconOnly
+            className="border border-default-200 bg-default-100 p-1.5 text-default-800"
+            radius="md"
+            size="sm"
+            onPress={() => fileInputRef.current?.click()}
+          >
+            <Icon
+              className="text-default-900"
+              icon="solar:paperclip-outline"
+              width={18}
             />
-          </VisuallyHidden>
-        </Button>
-      </Tooltip>
+            <VisuallyHidden>
+              <input
+                ref={fileInputRef}
+                multiple
+                accept="image/*"
+                type="file"
+                onChange={handleFileUpload}
+              />
+            </VisuallyHidden>
+          </Button>
+        </Tooltip>
+      </div>
 
       <div className="flex flex-row items-center gap-2">
         {(status === "streaming" || status === "submitted") && (
-          <Button
-            isIconOnly
-            className="bg-neutral-300 p-1.5 text-neutral-900"
-            radius="md"
-            size="sm"
-            variant="flat"
-            onPress={handleStop}
-          >
-            <Icon icon="qlementine-icons:stop-24" width={18} />
-          </Button>
+          <Tooltip closeDelay={0} content="Stop Streaming" delay={0}>
+            <Button
+              isIconOnly
+              className="bg-neutral-300 p-1.5 text-neutral-900"
+              radius="md"
+              size="sm"
+              variant="flat"
+              onPress={handleStop}
+            >
+              <Icon icon="qlementine-icons:stop-24" width={18} />
+            </Button>
+          </Tooltip>
         )}
         {status !== "streaming" && status !== "submitted" && (
-          <Button
-            isIconOnly
-            className={!prompt ? "bg-neutral-800" : "bg-neutral-200"}
-            isDisabled={!prompt}
-            radius="md"
-            size="sm"
-            type="submit"
-            variant="flat"
-          >
-            <Icon
-              className={!prompt ? "text-white" : "text-neutral-950"}
-              icon="solar:arrow-up-linear"
-              width={20}
-            />
-          </Button>
+          <Tooltip closeDelay={0} content="Send Message" delay={0}>
+            <Button
+              isIconOnly
+              className={
+                !prompt
+                  ? "border border-default-200 bg-default-100"
+                  : "bg-neutral-200"
+              }
+              isDisabled={!prompt}
+              radius="md"
+              size="sm"
+              type="submit"
+            >
+              <Icon
+                className={!prompt ? "text-white" : "text-neutral-950"}
+                icon="solar:arrow-up-linear"
+                width={20}
+              />
+            </Button>
+          </Tooltip>
         )}
       </div>
     </div>

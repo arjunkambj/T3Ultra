@@ -30,6 +30,16 @@ export default function AssistanceToolkit({
     return null;
   }
 
+  const models = {
+    1: "GPT-4o Mini",
+    2: "GPT-4.1 Mini",
+    3: "GPT-4.1",
+    4: "Gemini 2.0 Flash",
+    5: "Gemini 2.5 Flash",
+    6: "Grook 3 mini",
+    7: "Grook 3.5",
+  };
+
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
     addToast({
@@ -54,9 +64,10 @@ export default function AssistanceToolkit({
       });
 
       addToast({
-        color: "success",
+        color: "default",
         description: "Branch chat created successfully",
         title: "Branch Created",
+        timeout: 1500,
       });
 
       router.push(`/chat/${newChatId}`);
@@ -66,37 +77,49 @@ export default function AssistanceToolkit({
         color: "danger",
         description: "Failed to create branch chat",
         title: "Branch Error",
+        timeout: 1500,
       });
     }
   };
 
   return (
     <div className="flex flex-row items-center gap-0">
-      <Tooltip content="Copy">
+      <Tooltip showArrow closeDelay={0} content="Copy Text" placement="bottom">
         <Button
           isIconOnly
+          className="p-0 text-neutral-300"
           radius="md"
           size="sm"
-          variant="flat"
           onPress={handleCopy}
         >
-          <Icon icon="solar:copy-outline" width={18} />
+          <Icon icon="mynaui:copy" width={18} />
         </Button>
       </Tooltip>
 
       {!isShared && (
-        <Tooltip content="Branch Chat">
+        <Tooltip
+          showArrow
+          closeDelay={0}
+          content="Branch Chat"
+          placement="bottom"
+        >
           <Button
             isIconOnly
+            className="p-0 text-neutral-300"
             radius="md"
             size="sm"
-            variant="flat"
             onPress={() => handleBranchChat(message)}
           >
             <Icon icon="f7:arrow-branch" width={18} />
           </Button>
         </Tooltip>
       )}
+
+      {message.modelUsed !== undefined ? (
+        <div className="rounded-md bg-default-100 px-2 py-1 text-xs text-neutral-300">
+          {models[parseInt(message.modelUsed) as keyof typeof models]}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -7,8 +7,9 @@ import { Icon } from "@iconify/react";
 import Link from "next/link";
 import { ScrollShadow } from "@heroui/scroll-shadow";
 import { useRouter } from "next/navigation";
-import { Divider } from "@heroui/divider";
-import { Unauthenticated } from "convex/react";
+import { Unauthenticated, Authenticated } from "convex/react";
+import { usePathname } from "next/navigation";
+import { Tooltip } from "@heroui/tooltip";
 
 import ChatHistory from "./ChatHistory";
 
@@ -25,7 +26,7 @@ interface SidebarContentProps {
 const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
   const { isOpen } = useSidebarToggle();
   const router = useRouter();
-
+  const pathname = usePathname();
   const handleNewChat = () => {
     router.push(`/chat`);
 
@@ -65,10 +66,11 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100">
             <Logo className="text-neutral-950" />
           </div>
-          <span className="font-semibold leading-6 text-neutral-100">TGPT</span>
+          <span className="font-semibold leading-6 text-neutral-100">
+            T1 GPT
+          </span>
         </div>
 
-        {/* Close button - only visible on mobile */}
         <Button
           isIconOnly
           aria-label="Close sidebar"
@@ -129,16 +131,29 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       <Spacer y={4} />
 
       <div className="flex flex-col gap-0">
-        <Button
-          fullWidth
-          className="flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:text-neutral-100"
-          startContent={
-            <Icon className="text-neutral-300" icon="mdi:robot" width={20} />
-          }
-          onPress={handleCustomModels}
-        >
-          Manage Agents
-        </Button>
+        <Authenticated>
+          <Tooltip
+            showArrow
+            closeDelay={0}
+            content="Create and manage your AI agents"
+            placement="right"
+          >
+            <Button
+              fullWidth
+              className="mb-1 flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:bg-default-100 hover:text-neutral-100"
+              startContent={
+                <Icon
+                  className="text-neutral-300"
+                  icon="token:xai"
+                  width={22}
+                />
+              }
+              onPress={handleCustomModels}
+            >
+              Manage Agents
+            </Button>
+          </Tooltip>
+        </Authenticated>
         <SidebarAgentsList />
       </div>
 
@@ -147,24 +162,36 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       <ScrollShadow hideScrollBar size={10} visibility="auto">
         <Spacer y={3} />
 
-        <Button
-          fullWidth
-          className="flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:text-neutral-100"
-          startContent={
-            <Icon
-              className="text-neutral-300"
-              icon="mdi:folder-plus"
-              width={20}
-            />
-          }
-          onPress={handleCreateProject}
-        >
-          Create Project
-        </Button>
+        <Authenticated>
+          <Tooltip
+            showArrow
+            closeDelay={0}
+            content="Keep Chat orgnized with Projects"
+            placement="right"
+          >
+            <Button
+              fullWidth
+              className={`mb-1 flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:bg-default-100 hover:text-neutral-100 ${
+                pathname === "/project" ? "bg-default-100 text-neutral-100" : ""
+              }`}
+              startContent={
+                <Icon
+                  className="text-neutral-300"
+                  icon="mdi:folder-plus"
+                  width={20}
+                />
+              }
+              onPress={handleCreateProject}
+            >
+              Create Project
+            </Button>
+          </Tooltip>
+        </Authenticated>
 
         <SidebarProjectsList />
 
-        <Divider className="my-4 bg-neutral-900" />
+        <Spacer y={4} />
+
         <ChatHistory />
       </ScrollShadow>
 
