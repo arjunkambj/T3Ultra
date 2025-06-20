@@ -31,7 +31,6 @@ export default function ChatSection({
     onLoginModalOpen,
     stop,
     reload,
-    append,
   } = useAI({ isnewchat, chatId });
 
   const hasInput = input.length > 0 ? true : false;
@@ -71,7 +70,6 @@ export default function ChatSection({
         <div className="absolute bottom-8 z-50 flex w-full flex-col items-center justify-center px-3">
           <div className="w-full max-w-3xl">
             <ChatInput
-              append={append}
               handleInputChange={handleInputChange}
               handleKeyDown={handleKeyDown}
               input={input}

@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { Message } from "ai";
 
 import { PromptInputFullLineComponent } from "./sub/InputPrompt";
 
@@ -15,7 +14,6 @@ interface ChatInputProps {
   isLoading: boolean;
   stop: () => void;
   status: string;
-  append: (message: Message) => void;
 }
 
 export default function ChatInput({
@@ -25,12 +23,10 @@ export default function ChatInput({
   handleKeyDown,
   stop,
   status,
-  append,
 }: ChatInputProps) {
   return (
     <div className="w-full">
       <PromptInputFullLineComponent
-        append={append}
         handleInputChange={handleInputChange}
         handleKeyDown={handleKeyDown}
         input={input}

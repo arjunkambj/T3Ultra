@@ -8,7 +8,6 @@ import { cn } from "@heroui/theme";
 import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
 import { addToast } from "@heroui/toast";
-import { Message } from "ai";
 
 import InputButtons from "./input-buttons";
 import PromptInput from "./prompt-input";
@@ -20,7 +19,6 @@ interface PromptInputProps {
   handleKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   stop: () => void;
   status: string;
-  append: (message: Message) => void;
 }
 
 interface PromptInputAssetsProps {

@@ -87,7 +87,7 @@ export default function AssistanceToolkit({
       <Tooltip showArrow closeDelay={0} content="Copy Text" placement="bottom">
         <Button
           isIconOnly
-          className="p-0 text-neutral-300"
+          className="bg-transparent p-0 text-neutral-300"
           radius="md"
           size="sm"
           onPress={handleCopy}
@@ -105,7 +105,7 @@ export default function AssistanceToolkit({
         >
           <Button
             isIconOnly
-            className="p-0 text-neutral-300"
+            className="bg-transparent p-0 text-neutral-300"
             radius="md"
             size="sm"
             onPress={() => handleBranchChat(message)}

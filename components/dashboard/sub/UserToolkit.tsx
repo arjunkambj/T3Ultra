@@ -51,7 +51,7 @@ export default function UserToolkit({
       <Tooltip showArrow closeDelay={0} content="Copy Text" placement="bottom">
         <Button
           isIconOnly
-          className="p-0 text-neutral-300"
+          className="bg-transparent p-0 text-neutral-300"
           radius="md"
           size="sm"
           onPress={handleCopy}
@@ -63,12 +63,12 @@ export default function UserToolkit({
         <Tooltip
           showArrow
           closeDelay={0}
-          content="Edit & Send Again"
+          content="Edit & Send Again "
           placement="bottom"
         >
           <Button
             isIconOnly
-            className="p-0 text-neutral-300"
+            className="bg-transparent p-0 text-neutral-300"
             radius="md"
             size="sm"
             onPress={handleEdit}
@@ -87,7 +87,7 @@ export default function UserToolkit({
         >
           <Button
             isIconOnly
-            className="p-0 text-neutral-300"
+            className="bg-transparent p-0 text-neutral-300"
             radius="md"
             size="sm"
             onPress={handleRetry}
