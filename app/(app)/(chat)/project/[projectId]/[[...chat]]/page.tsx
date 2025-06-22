@@ -16,6 +16,7 @@ export default async function ProjectPage({
 
   return (
     <ProjectChatSection
+      key={`${projectId}-${chatId}`}
       chatId={chatId}
       isProjectOverview={isProjectOverview}
       isnewchat={isnewchat}

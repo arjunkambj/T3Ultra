@@ -1,11 +1,7 @@
-import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
-import { openai } from "@ai-sdk/openai";
-import { xai } from "@ai-sdk/xai";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { perplexity } from "@ai-sdk/perplexity";
 
 import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
 import { addToMemory } from "./tools";
@@ -85,16 +81,17 @@ export async function POST(req: Request) {
    `;
 
   const userModel = [
-    openai("gpt-4o-mini"),
-    openai("gpt-4.1-mini"),
-    openai("gpt-4.1"),
-    google("gemini-2.5-flash-preview-04-17"),
-    google("gemini-2.5-flash-preview-04-17"),
-    xai("grok-3-mini"),
-    xai("grok-3"),
-    openai("o3-mini-2025-01-31"),
-    openrouter("deepseek/deepseek-chat-v3-0324:free"),
-    openrouter("deepseek/deepseek-r1-0528:free"),
+    openrouter("openai/gpt-4o-mini"),
+    openrouter("openai/gpt-4.1-mini"),
+    openrouter("openai/gpt-4.1"),
+    openrouter("google/gemini-2.5-flash-preview-05-20"),
+    openrouter("google/gemini-2.5-pro-preview"),
+    openrouter("x-ai/grok-3-mini-beta"),
+    openrouter("x-ai/grok-3-beta"),
+    openrouter("openai/o3-mini"),
+    openrouter("deepseek/deepseek-chat-v3-0324"),
+    openrouter("deepseek/deepseek-r1-0528"),
+    openrouter("qwen/qwen3-235b-a22b"),
   ];
 
   // Ensure modelId is within valid range
@@ -105,7 +102,7 @@ export async function POST(req: Request) {
   const selectedModel = userModel[selectedModelIndex];
 
   const result = streamText({
-    model: isSearchEnabled ? perplexity("sonar-pro") : selectedModel,
+    model: isSearchEnabled ? openrouter("perplexity/sonar") : selectedModel,
     system: systemPrompt,
     messages,
     maxSteps: 10,

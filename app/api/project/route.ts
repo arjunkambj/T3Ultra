@@ -1,9 +1,7 @@
-import { google } from "@ai-sdk/google";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
-import { openai } from "@ai-sdk/openai";
-import { xai } from "@ai-sdk/xai";
 
 import { getCurrentTime } from "./tools";
 
@@ -11,6 +9,10 @@ import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
 export async function POST(req: Request) {
   const { messages, chatId, userId, modelId, projectId } = await req.json();
@@ -81,11 +83,17 @@ export async function POST(req: Request) {
   }
 
   const userModel = [
-    openai("gpt-4o-mini"),
-    openai("gpt-4.1-mini"),
-    google("gemini-2.5-flash-preview-04-17"),
-    google("gemini-2.5-flash-preview-04-17"),
-    xai("grok-3-mini"),
+    openrouter("openai/gpt-4o-mini"),
+    openrouter("openai/gpt-4.1-mini"),
+    openrouter("openai/gpt-4.1"),
+    openrouter("google/gemini-2.5-flash-preview-05-20"),
+    openrouter("google/gemini-2.5-pro-preview"),
+    openrouter("x-ai/grok-3-mini-beta"),
+    openrouter("x-ai/grok-3-beta"),
+    openrouter("openai/o3-mini"),
+    openrouter("deepseek/deepseek-chat-v3-0324"),
+    openrouter("deepseek/deepseek-r1-0528"),
+    openrouter("qwen/qwen3-235b-a22b"),
   ];
 
   const selectedModelIndex = Math.max(

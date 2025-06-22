@@ -26,12 +26,12 @@ export const models: Model[] = [
 
   {
     id: 4,
-    name: "Gemini 2.0 Flash",
+    name: "Gemini 2.5 Flash",
     icon: "ri:gemini-fill",
   },
   {
     id: 5,
-    name: "Gemini 2.5 Flash",
+    name: "Gemini 2.5 Pro",
     icon: "ri:gemini-fill",
     isNew: true,
   },
@@ -54,14 +54,20 @@ export const models: Model[] = [
   },
   {
     id: 9,
-    name: "DeepSeek Chat V3",
-    icon: "streamline-logos:deepseek-logo-solid",
-    isPro: true,
+    name: "DeepSeek V3",
+    icon: "simple-icons:deepgram",
   },
   {
     id: 10,
     name: "DeepSeek R1",
-    icon: "streamline-logos:deepseek-logo-solid",
+    icon: "simple-icons:deepgram",
     isPro: true,
+  },
+
+  {
+    id: 12,
+    name: "Qwen 3",
+    icon: "simple-icons:deepl",
+    isNew: true,
   },
 ];

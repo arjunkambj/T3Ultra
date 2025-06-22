@@ -9,10 +9,12 @@ export default function UserMessage({
   message,
   reload,
   isShared,
+  messageId,
 }: {
   message: string;
   reload: () => void;
   isShared: boolean;
+  messageId: string;
 }) {
   const [isHovering, setIsHovering] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -25,7 +27,11 @@ export default function UserMessage({
     >
       <div className="flex flex-col gap-2 rounded-bl-2xl rounded-tl-2xl rounded-tr-2xl bg-default-100 px-6 py-3.5">
         {edit ? (
-          <EditInput />
+          <EditInput
+            message={message}
+            messageId={messageId}
+            setEdit={setEdit}
+          />
         ) : (
           <div className="flex flex-row gap-2">{message}</div>
         )}

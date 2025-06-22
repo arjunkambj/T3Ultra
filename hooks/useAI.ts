@@ -5,6 +5,7 @@ import { addToast } from "@heroui/toast";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useDisclosure } from "@heroui/modal";
 import { useAtom } from "jotai";
+
 import { aiModelAtom } from "@/atoms/aimodel";
 import { searchAtom } from "@/atoms/searchState";
 import { api } from "@/convex/_generated/api";

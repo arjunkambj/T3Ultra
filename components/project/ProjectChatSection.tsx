@@ -13,14 +13,12 @@ import ChatInput from "./ChatInput";
 
 import { api } from "@/convex/_generated/api";
 import { useProject } from "@/hooks/useProject";
-
 interface ProjectChatSectionProps {
   projectId: string;
   chatId: string;
   isProjectOverview: boolean;
   isnewchat: boolean;
 }
-
 export default function ProjectChatSection({
   chatId,
   isProjectOverview,
@@ -85,20 +83,12 @@ export default function ProjectChatSection({
                 stop={stop}
                 onSubmit={onSubmit}
               />
-
-              <div className="flex w-full flex-col items-center justify-center gap-4">
-                <h2 className="text-lg">Project Chats</h2>
-                <p className="text-sm text-neutral-500">
-                  Start a new chat above or view existing chats here
-                </p>
-              </div>
             </div>
           </div>
         ) : (
           <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 bg-[#0F0F10]">
             <TopMenuBar />
             <div className="flex h-full w-full flex-col items-center justify-center">
-              {/* TODO: Implement ProjectChatSection component similar to ChatSection */}
               <div className="flex h-[calc(100dvh-160px)] w-full flex-col items-center justify-center overflow-y-auto px-3">
                 <MessageUI
                   chatId={chatId}

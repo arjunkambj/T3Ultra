@@ -37,7 +37,7 @@ export const tiers: Array<Tier> = [
     key: TiersEnum.Plus,
     title: "Plus",
     description: "For Everyday AI Joe",
-    href: "/checkout/plus",
+    href: "/chat",
     mostPopular: true,
     price: {
       monthly: "$15",
@@ -56,7 +56,7 @@ export const tiers: Array<Tier> = [
   {
     key: TiersEnum.Pro,
     title: "Pro",
-    href: "/checkout/pro",
+    href: "/chat",
     featured: true,
     mostPopular: false,
     description: "For Super Users",

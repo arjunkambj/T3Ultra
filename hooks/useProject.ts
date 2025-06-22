@@ -78,6 +78,14 @@ export const useProject = ({
     }
   }, [getMessages, isnewchat, setMessages]);
 
+  // Reset messages when starting a new chat (project overview)
+  useEffect(() => {
+    if (isnewchat) {
+      setMessages([]);
+      setInput("");
+    }
+  }, [isnewchat, chatId, setMessages, setInput]);
+
   const onSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();

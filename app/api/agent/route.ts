@@ -4,8 +4,11 @@ import { ConvexHttpClient } from "convex/browser";
 import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
 import { openai } from "@ai-sdk/openai";
 import { xai } from "@ai-sdk/xai";
-import { getCurrentTime } from "./tools";
+
 import { addToMemory } from "../chat/tools";
+
+import { getCurrentTime } from "./tools";
+
 import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);

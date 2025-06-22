@@ -69,6 +69,7 @@ export default function MessageUI({
               <UserMessage
                 isShared={isShared}
                 message={message.content}
+                messageId={message.id}
                 reload={reload}
               />
             </div>

@@ -3,6 +3,8 @@ import React, { memo } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypePrism from "rehype-prism-plus";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 import "@/styles/prism-vsc-dark-plus.css";
 import { CodeClipboard } from "./code-clipboard";
@@ -38,7 +40,7 @@ const components: Partial<Components> = {
 
     return (
       ///Code block
-      <div className="group relative my-3 overflow-hidden rounded-lg border border-default-200 bg-default-50">
+      <div className="group relative my-3 overflow-hidden rounded-lg border border-neutral-700 bg-neutral-900">
         <div className="absolute right-2 top-2 z-10">
           <CodeClipboard code={codeString} />
         </div>
@@ -138,9 +140,9 @@ const components: Partial<Components> = {
 const NonMemoizedMarkdown = ({ children }: { children: string }) => {
   return (
     <ReactMarkdown
-      components={components} // Use our custom component mappings
-      rehypePlugins={[rehypePrism]} // Add syntax highlighting to code blocks
-      remarkPlugins={[remarkGfm]} // Add GitHub Flavored Markdown support (tables, strikethrough, etc.)
+      components={components}
+      rehypePlugins={[rehypePrism, rehypeKatex]}
+      remarkPlugins={[remarkGfm, remarkMath]}
     >
       {children}
     </ReactMarkdown>
