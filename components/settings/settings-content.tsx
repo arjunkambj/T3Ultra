@@ -4,7 +4,10 @@ import { Tab, Tabs } from "@heroui/tabs";
 
 import ProfileSetting from "@/components/settings/profile-setting";
 import AppearanceSetting from "@/components/settings/appearance-setting";
+import CustomizationSetting from "@/components/settings/customization-setting";
 import BillingSetting from "@/components/settings/billing-setting";
+import MemorySetting from "@/components/settings/memory-setting";
+import ContactSetting from "@/components/settings/contact-setting";
 
 export default function SettingsContent() {
   return (
@@ -12,21 +15,27 @@ export default function SettingsContent() {
       classNames={{
         base: "",
         cursor: "bg-content1 dark:bg-content1",
-        panel: "w-full p-0 pt-4",
+        panel: "w-full p-0 pt-4 pb-8",
       }}
     >
       <Tab key="account" title="Account">
         <ProfileSetting />
       </Tab>
-      <Tab key="customization" title="Customization">
+      <Tab key="appearance" title="Appearance">
         <AppearanceSetting />
       </Tab>
-      <Tab key="model" title="Manage Model" />
-      <Tab key="memory" title="Memories" />
+      <Tab key="customization" title="AI Customization">
+        <CustomizationSetting />
+      </Tab>
+      <Tab key="memory" title="Memories">
+        <MemorySetting />
+      </Tab>
       <Tab key="billing" title="Billing">
         <BillingSetting />
       </Tab>
-      <Tab key="contact" title="Contact Us" />
+      <Tab key="contact" title="Contact Us">
+        <ContactSetting />
+      </Tab>
     </Tabs>
   );
 }

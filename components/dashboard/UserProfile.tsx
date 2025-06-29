@@ -63,7 +63,7 @@ export default function UserProfile() {
             key="my-plan"
             as={Link}
             className="py-[4px] text-default-800"
-            href="/settings"
+            href="/pricing"
           >
             My Plan
           </DropdownItem>
@@ -72,7 +72,7 @@ export default function UserProfile() {
             key="customize-acmeai"
             as={Link}
             className="py-[4px] text-default-800"
-            href="/settings"
+            href="/agent/create"
           >
             Customize AI
           </DropdownItem>
@@ -92,7 +92,7 @@ export default function UserProfile() {
             key="help-and-feedback"
             as={Link}
             className="py-[4px] text-default-800"
-            href="/settings"
+            href="/feedback"
           >
             Help & Feedback
           </DropdownItem>

@@ -34,3 +34,23 @@ export const getCustomization = query({
       .first();
   },
 });
+
+export const updateCustomization = mutation({
+  args: {
+    customizationId: v.id("customizations"),
+    whattocalluser: v.optional(v.string()),
+    whatuserdoes: v.optional(v.string()),
+    traitsforllm: v.optional(v.array(v.string())),
+    anythingelse: v.optional(v.string()),
+    preferencesofuser: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.patch(args.customizationId, {
+      whattocalluser: args.whattocalluser,
+      whatuserdoes: args.whatuserdoes,
+      traitsforllm: args.traitsforllm,
+      anythingelse: args.anythingelse,
+      preferencesofuser: args.preferencesofuser,
+    });
+  },
+});

@@ -32,6 +32,35 @@ export const getMemory = query({
   },
 });
 
+export const getAllMemories = query({
+  args: {
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const memories = await ctx.db
+      .query("memory")
+      .withIndex("userId", (q) => q.eq("userId", args.userId))
+      .order("desc")
+      .collect();
+
+    return memories;
+  },
+});
+
+export const updateMemory = mutation({
+  args: {
+    memoryId: v.id("memory"),
+    memory: v.string(),
+    category: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.memoryId, {
+      memory: args.memory,
+      category: args.category,
+    });
+  },
+});
+
 export const deleteMemory = mutation({
   args: {
     memoryId: v.id("memory"),
