@@ -65,7 +65,7 @@ const ContactSetting = React.memo(
             <Card key={option.title} className="bg-default-100" shadow="none">
               <CardBody className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-800/50">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-900/80">
                     <Icon
                       className="text-neutral-300"
                       icon={option.icon}
@@ -130,7 +130,7 @@ const ContactSetting = React.memo(
             <Card className="mt-4 bg-default-100" shadow="none">
               <CardBody className="p-4">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-800/50">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900/80">
                     <Icon
                       className="text-neutral-300"
                       icon="mdi:headset"
@@ -205,7 +205,7 @@ const ContactSetting = React.memo(
                       please email us at{" "}
                       <Link
                         isExternal
-                        className="text-xs text-danger"
+                        className="text-xs text-danger-500"
                         href="mailto:urgent@t1gpt.com"
                       >
                         urgent@t1gpt.com
