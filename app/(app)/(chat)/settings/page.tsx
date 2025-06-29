@@ -9,8 +9,8 @@ export default function SettingsPage() {
   return (
     <section className="h-dvh md:ml-24">
       <Button
-        as={Link}
         isIconOnly
+        as={Link}
         className="absolute left-5 top-4 z-20 block bg-transparent md:hidden"
         href="/chat"
       >

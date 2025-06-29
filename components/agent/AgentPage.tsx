@@ -2,7 +2,6 @@
 
 import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
-import { useRouter } from "next/navigation";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { Spinner } from "@heroui/spinner";
 import { memo } from "react";

@@ -11,7 +11,6 @@ import { Select, SelectItem } from "@heroui/select";
 import { useMutation } from "convex/react";
 
 import { api } from "@/convex/_generated/api";
-import { useUser } from "@/hooks/useUser";
 
 interface ProjectFormData {
   title: string;
