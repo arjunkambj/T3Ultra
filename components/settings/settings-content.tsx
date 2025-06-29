@@ -12,9 +12,7 @@ export default function SettingsContent() {
   return (
     <Tabs
       classNames={{
-        base: "",
-        cursor: "bg-content1 dark:bg-content1",
-        panel: "w-full p-0 pt-4 pb-8",
+        panel: "w-full bg-transparent p-0 pt-4 pb-8",
       }}
     >
       <Tab key="account" title="Account">

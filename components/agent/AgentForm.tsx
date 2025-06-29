@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Icon } from "@iconify/react";
@@ -62,7 +62,7 @@ interface AgentFormProps {
   agentId?: string;
 }
 
-export default function AgentForm({ agentId }: AgentFormProps) {
+const AgentForm = React.memo(function AgentForm({ agentId }: AgentFormProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<AgentFormData>({
@@ -108,14 +108,17 @@ export default function AgentForm({ agentId }: AgentFormProps) {
     }
   }, [existingAgent, agentId]);
 
-  const handleInputChange = (field: keyof AgentFormData, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const handleInputChange = useCallback(
+    (field: keyof AgentFormData, value: any) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    },
+    [],
+  );
 
-  const handleAddCapability = () => {
+  const handleAddCapability = useCallback(() => {
     if (
       capabilityInput.trim() &&
       !formData.capabilities.includes(capabilityInput.trim())
@@ -126,135 +129,225 @@ export default function AgentForm({ agentId }: AgentFormProps) {
       }));
       setCapabilityInput("");
     }
-  };
+  }, [capabilityInput, formData.capabilities]);
 
-  const handleRemoveCapability = (capabilityToRemove: string) => {
+  const handleRemoveCapability = useCallback((capabilityToRemove: string) => {
     setFormData((prev) => ({
       ...prev,
       capabilities: prev.capabilities.filter(
         (cap) => cap !== capabilityToRemove,
       ),
     }));
-  };
+  }, []);
 
-  const handleAddCommonCapability = (capability: string) => {
-    if (!formData.capabilities.includes(capability)) {
-      setFormData((prev) => ({
-        ...prev,
-        capabilities: [...prev.capabilities, capability],
-      }));
-    }
-  };
+  const handleAddCommonCapability = useCallback(
+    (capability: string) => {
+      if (!formData.capabilities.includes(capability)) {
+        setFormData((prev) => ({
+          ...prev,
+          capabilities: [...prev.capabilities, capability],
+        }));
+      }
+    },
+    [formData.capabilities],
+  );
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleAddCapability();
+      }
+    },
+    [handleAddCapability],
+  );
+
+  const handleFileUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+
+      if (file) {
+        try {
+          const response = await axios.post(
+            `/api/upload/avatar?filename=${encodeURIComponent(file.name)}`,
+            file,
+            {
+              headers: {
+                "Content-Type": file.type,
+              },
+            },
+          );
+          const avatarUrl = response.data.url;
+
+          setAvatar(avatarUrl);
+          handleInputChange("avatar", avatarUrl);
+        } catch (err) {
+          void err;
+          addToast({
+            title: "Upload Error",
+            description: "Failed to upload avatar. Please try again.",
+            color: "danger",
+            timeout: 3000,
+          });
+        }
+      }
+    },
+    [handleInputChange],
+  );
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      handleAddCapability();
-    }
-  };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!formData.name.trim()) {
-      addToast({
-        title: "Validation Error",
-        description: "Agent name is required",
-        color: "danger",
-        timeout: 3000,
-      });
-
-      return;
-    }
-
-    if (!formData.description.trim()) {
-      addToast({
-        title: "Validation Error",
-        description: "Agent description is required",
-        color: "danger",
-        timeout: 3000,
-      });
-
-      return;
-    }
-
-    if (!formData.systemPrompt.trim()) {
-      addToast({
-        title: "Validation Error",
-        description: "System prompt is required",
-        color: "danger",
-        timeout: 3000,
-      });
-
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      if (agentId) {
-        await updateAgent({
-          agentId: agentId as Id<"agent">,
-          name: formData.name,
-          description: formData.description,
-          avatar: formData.avatar,
-          category: formData.category,
-          instructions: formData.systemPrompt,
-          capabilities: formData.capabilities,
-          isPinned: false,
+      if (!formData.name.trim()) {
+        addToast({
+          title: "Validation Error",
+          description: "Agent name is required",
+          color: "danger",
+          timeout: 3000,
         });
-      } else {
-        await createAgent({
-          name: formData.name,
-          description: formData.description,
-          avatar: formData.avatar,
-          category: formData.category,
-          instructions: formData.systemPrompt,
-          capabilities: formData.capabilities,
-          isPinned: false,
-          userId: user?._id as Id<"users">,
-        });
+
+        return;
       }
 
-      addToast({
-        title: agentId ? "Agent Updated" : "Agent Created",
-        description: `${formData.name} has been ${agentId ? "updated" : "created"} successfully`,
-        color: "success",
-        timeout: 3000,
-      });
-
-      if (!agentId) {
-        setFormData({
-          name: "",
-          description: "",
-          avatar: "",
-          category: "",
-          systemPrompt: "",
-          capabilities: [],
-          isPublic: false,
-          temperature: 0.7,
-          maxTokens: 2000,
+      if (!formData.description.trim()) {
+        addToast({
+          title: "Validation Error",
+          description: "Agent description is required",
+          color: "danger",
+          timeout: 3000,
         });
+
+        return;
       }
 
-      // Navigate to agent detail page if editing, otherwise to agents list
-      router.push(agentId ? `/agent/${agentId}` : "/agent");
-    } catch (error) {
-      void error;
-      addToast({
-        title: "Error",
-        description: "Failed to create agent. Please try again.",
-        color: "danger",
-        timeout: 3000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      if (!formData.systemPrompt.trim()) {
+        addToast({
+          title: "Validation Error",
+          description: "System prompt is required",
+          color: "danger",
+          timeout: 3000,
+        });
 
-  const handleCancel = () => {
+        return;
+      }
+
+      setIsLoading(true);
+
+      try {
+        if (agentId) {
+          await updateAgent({
+            agentId: agentId as Id<"agent">,
+            name: formData.name,
+            description: formData.description,
+            avatar: formData.avatar,
+            category: formData.category,
+            instructions: formData.systemPrompt,
+            capabilities: formData.capabilities,
+            isPinned: false,
+          });
+        } else {
+          await createAgent({
+            name: formData.name,
+            description: formData.description,
+            avatar: formData.avatar,
+            category: formData.category,
+            instructions: formData.systemPrompt,
+            capabilities: formData.capabilities,
+            isPinned: false,
+            userId: user?._id as Id<"users">,
+          });
+        }
+
+        addToast({
+          title: agentId ? "Agent Updated" : "Agent Created",
+          description: `${formData.name} has been ${agentId ? "updated" : "created"} successfully`,
+          color: "success",
+          timeout: 3000,
+        });
+
+        if (!agentId) {
+          setFormData({
+            name: "",
+            description: "",
+            avatar: "",
+            category: "",
+            systemPrompt: "",
+            capabilities: [],
+            isPublic: false,
+            temperature: 0.7,
+            maxTokens: 2000,
+          });
+        }
+
+        // Navigate to agent detail page if editing, otherwise to agents list
+        router.push(agentId ? `/agent/${agentId}` : "/agent");
+      } catch (error) {
+        void error;
+        addToast({
+          title: "Error",
+          description: "Failed to create agent. Please try again.",
+          color: "danger",
+          timeout: 3000,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formData, agentId, updateAgent, createAgent, user, router],
+  );
+
+  const handleCancel = useCallback(() => {
     router.back();
-  };
+  }, [router]);
+
+  const commonCapabilityButtons = useMemo(
+    () =>
+      commonCapabilities.map((capability) => (
+        <button
+          key={capability}
+          className={`rounded-full px-3 py-1 text-sm transition-colors ${
+            formData.capabilities.includes(capability)
+              ? "cursor-not-allowed bg-neutral-700 text-neutral-500"
+              : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
+          }`}
+          disabled={formData.capabilities.includes(capability)}
+          type="button"
+          onClick={() => handleAddCommonCapability(capability)}
+        >
+          {capability}
+        </button>
+      )),
+    [formData.capabilities, handleAddCommonCapability],
+  );
+
+  const selectedCapabilities = useMemo(
+    () =>
+      formData.capabilities.map((capability) => (
+        <div
+          key={capability}
+          className="flex items-center gap-1 rounded-full bg-neutral-700 px-3 py-1 text-sm text-neutral-200"
+        >
+          <span>{capability}</span>
+          <button
+            className="text-neutral-400 hover:text-neutral-200"
+            type="button"
+            onClick={() => handleRemoveCapability(capability)}
+          >
+            <Icon icon="mdi:close" width={14} />
+          </button>
+        </div>
+      )),
+    [formData.capabilities, handleRemoveCapability],
+  );
+
+  const categorySelectItems = useMemo(
+    () =>
+      agentCategories.map((category) => (
+        <SelectItem key={category.key}>{category.label}</SelectItem>
+      )),
+    [],
+  );
 
   // Show loading when submitting or when loading existing agent data for editing
   if (isLoading || (agentId && existingAgent === undefined)) {
@@ -333,36 +426,7 @@ export default function AgentForm({ agentId }: AgentFormProps) {
                   }}
                   label="Upload Avatar"
                   type="file"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-
-                    if (file) {
-                      try {
-                        const response = await axios.post(
-                          `/api/upload/avatar?filename=${encodeURIComponent(file.name)}`,
-                          file,
-                          {
-                            headers: {
-                              "Content-Type": file.type,
-                            },
-                          },
-                        );
-                        const avatarUrl = response.data.url;
-
-                        setAvatar(avatarUrl);
-                        handleInputChange("avatar", avatarUrl);
-                      } catch (err) {
-                        void err;
-                        addToast({
-                          title: "Upload Error",
-                          description:
-                            "Failed to upload avatar. Please try again.",
-                          color: "danger",
-                          timeout: 3000,
-                        });
-                      }
-                    }
-                  }}
+                  onChange={handleFileUpload}
                 />
               </div>
             </div>
@@ -396,9 +460,7 @@ export default function AgentForm({ agentId }: AgentFormProps) {
                 handleInputChange("category", selectedKey || "");
               }}
             >
-              {agentCategories.map((category) => (
-                <SelectItem key={category.key}>{category.label}</SelectItem>
-              ))}
+              {categorySelectItems}
             </Select>
           </div>
 
@@ -464,42 +526,14 @@ export default function AgentForm({ agentId }: AgentFormProps) {
                   Quick add:
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {commonCapabilities.map((capability) => (
-                    <button
-                      key={capability}
-                      className={`rounded-full px-3 py-1 text-sm transition-colors ${
-                        formData.capabilities.includes(capability)
-                          ? "cursor-not-allowed bg-neutral-700 text-neutral-500"
-                          : "bg-neutral-800 text-neutral-300 hover:bg-neutral-700"
-                      }`}
-                      disabled={formData.capabilities.includes(capability)}
-                      type="button"
-                      onClick={() => handleAddCommonCapability(capability)}
-                    >
-                      {capability}
-                    </button>
-                  ))}
+                  {commonCapabilityButtons}
                 </div>
               </div>
 
               {/* Selected Capabilities */}
               {formData.capabilities.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  {formData.capabilities.map((capability) => (
-                    <div
-                      key={capability}
-                      className="flex items-center gap-1 rounded-full bg-neutral-700 px-3 py-1 text-sm text-neutral-200"
-                    >
-                      <span>{capability}</span>
-                      <button
-                        className="text-neutral-400 hover:text-neutral-200"
-                        type="button"
-                        onClick={() => handleRemoveCapability(capability)}
-                      >
-                        <Icon icon="mdi:close" width={14} />
-                      </button>
-                    </div>
-                  ))}
+                  {selectedCapabilities}
                 </div>
               )}
             </div>
@@ -537,4 +571,6 @@ export default function AgentForm({ agentId }: AgentFormProps) {
       </div>
     </div>
   );
-}
+});
+
+export default AgentForm;

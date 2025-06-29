@@ -70,54 +70,12 @@ const socialLinks = [
   },
 ];
 
-const ContactSetting = React.forwardRef<
-  HTMLDivElement,
-  ContactSettingCardProps
->(({ className, ...props }, ref) => {
-  return (
-    <div ref={ref} className={cn("p-2", className)} {...props}>
-      {/* Contact Information */}
-      <div>
-        <p className="text-base font-medium text-default-700">
-          Contact Information
-        </p>
-        <p className="mt-1 text-sm font-normal text-default-400">
-          Get in touch with our support team or find helpful resources.
-        </p>
-
-        <Card className="mt-4 bg-default-100" shadow="none">
-          <CardBody className="p-4">
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                <Icon className="text-primary" icon="mdi:headset" width={24} />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-default-600">
-                  Support Team
-                </p>
-                <p className="text-xs text-default-400">support@t1gpt.com</p>
-                <p className="text-xs text-default-400">
-                  Usually responds within 24 hours
-                </p>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-
-      <Spacer y={6} />
-
-      {/* Support Options */}
-      <div>
-        <p className="text-base font-medium text-default-700">
-          Support Options
-        </p>
-        <p className="mt-1 text-sm font-normal text-default-400">
-          Choose the best way to get help with your questions.
-        </p>
-
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {contactOptions.map((option) => (
+const ContactSetting = React.memo(
+  React.forwardRef<HTMLDivElement, ContactSettingCardProps>(
+    ({ className, ...props }, ref) => {
+      const contactCards = React.useMemo(
+        () =>
+          contactOptions.map((option) => (
             <Card key={option.title} className="bg-default-100" shadow="none">
               <CardBody className="p-4">
                 <div className="flex items-start gap-3">
@@ -149,21 +107,13 @@ const ContactSetting = React.forwardRef<
                 </div>
               </CardBody>
             </Card>
-          ))}
-        </div>
-      </div>
+          )),
+        [],
+      );
 
-      <Spacer y={6} />
-
-      {/* Social Media */}
-      <div>
-        <p className="text-base font-medium text-default-700">Follow Us</p>
-        <p className="mt-1 text-sm font-normal text-default-400">
-          Stay updated with the latest news and updates.
-        </p>
-
-        <div className="mt-4 flex flex-wrap gap-3">
-          {socialLinks.map((social) => (
+      const socialButtons = React.useMemo(
+        () =>
+          socialLinks.map((social) => (
             <Button
               key={social.name}
               isExternal
@@ -177,48 +127,115 @@ const ContactSetting = React.forwardRef<
             >
               {social.name}
             </Button>
-          ))}
-        </div>
-      </div>
+          )),
+        [],
+      );
 
-      <Spacer y={6} />
+      return (
+        <div ref={ref} className={cn("p-2", className)} {...props}>
+          {/* Contact Information */}
+          <div>
+            <p className="text-base font-medium text-default-700">
+              Contact Information
+            </p>
+            <p className="mt-1 text-sm font-normal text-default-400">
+              Get in touch with our support team or find helpful resources.
+            </p>
 
-      {/* Emergency Contact */}
-      <div>
-        <Card
-          className="border-l-4 border-l-warning bg-warning/5"
-          shadow="none"
-        >
-          <CardBody className="p-4">
-            <div className="flex items-start gap-3">
-              <Icon
-                className="text-warning"
-                icon="mdi:alert-circle"
-                width={20}
-              />
-              <div>
-                <p className="text-sm font-medium text-default-600">
-                  Need Urgent Help?
-                </p>
-                <p className="text-xs text-default-400">
-                  For critical issues that require immediate attention, please
-                  email us at{" "}
-                  <Link
-                    isExternal
-                    className="text-xs"
-                    href="mailto:urgent@t1gpt.com"
-                  >
-                    urgent@t1gpt.com
-                  </Link>
-                </p>
-              </div>
+            <Card className="mt-4 bg-default-100" shadow="none">
+              <CardBody className="p-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                    <Icon
+                      className="text-primary"
+                      icon="mdi:headset"
+                      width={24}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-default-600">
+                      Support Team
+                    </p>
+                    <p className="text-xs text-default-400">
+                      support@t1gpt.com
+                    </p>
+                    <p className="text-xs text-default-400">
+                      Usually responds within 24 hours
+                    </p>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+
+          <Spacer y={6} />
+
+          {/* Support Options */}
+          <div>
+            <p className="text-base font-medium text-default-700">
+              Support Options
+            </p>
+            <p className="mt-1 text-sm font-normal text-default-400">
+              Choose the best way to get help with your questions.
+            </p>
+
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {contactCards}
             </div>
-          </CardBody>
-        </Card>
-      </div>
-    </div>
-  );
-});
+          </div>
+
+          <Spacer y={6} />
+
+          {/* Social Media */}
+          <div>
+            <p className="text-base font-medium text-default-700">Follow Us</p>
+            <p className="mt-1 text-sm font-normal text-default-400">
+              Stay updated with the latest news and updates.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-3">{socialButtons}</div>
+          </div>
+
+          <Spacer y={6} />
+
+          {/* Emergency Contact */}
+          <div>
+            <Card
+              className="border-l-4 border-l-warning bg-warning/5"
+              shadow="none"
+            >
+              <CardBody className="p-4">
+                <div className="flex items-start gap-3">
+                  <Icon
+                    className="text-warning"
+                    icon="mdi:alert-circle"
+                    width={20}
+                  />
+                  <div>
+                    <p className="text-sm font-medium text-default-600">
+                      Need Urgent Help?
+                    </p>
+                    <p className="text-xs text-default-400">
+                      For critical issues that require immediate attention,
+                      please email us at{" "}
+                      <Link
+                        isExternal
+                        className="text-xs"
+                        href="mailto:urgent@t1gpt.com"
+                      >
+                        urgent@t1gpt.com
+                      </Link>
+                    </p>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+        </div>
+      );
+    },
+  ),
+);
 
 ContactSetting.displayName = "ContactSetting";
 

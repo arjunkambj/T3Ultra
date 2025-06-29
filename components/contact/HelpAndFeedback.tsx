@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Card, CardBody, CardHeader } from "@heroui/card";
@@ -27,7 +27,7 @@ const feedbackCategories = [
   { key: "other", label: "Other" },
 ];
 
-export default function HelpAndFeedback() {
+const HelpAndFeedback = React.memo(() => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FeedbackFormData>({
     name: "",
@@ -37,78 +37,93 @@ export default function HelpAndFeedback() {
     message: "",
   });
 
-  const handleInputChange = (field: keyof FeedbackFormData, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const handleInputChange = useCallback(
+    (field: keyof FeedbackFormData, value: string) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    },
+    [],
+  );
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
 
-    if (
-      !formData.name.trim() ||
-      !formData.email.trim() ||
-      !formData.message.trim()
-    ) {
-      addToast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
-        color: "danger",
-        timeout: 3000,
-      });
+      if (
+        !formData.name.trim() ||
+        !formData.email.trim() ||
+        !formData.message.trim()
+      ) {
+        addToast({
+          title: "Validation Error",
+          description: "Please fill in all required fields",
+          color: "danger",
+          timeout: 3000,
+        });
 
-      return;
-    }
+        return;
+      }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(formData.email)) {
-      addToast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address",
-        color: "danger",
-        timeout: 3000,
-      });
+      if (!emailRegex.test(formData.email)) {
+        addToast({
+          title: "Invalid Email",
+          description: "Please enter a valid email address",
+          color: "danger",
+          timeout: 3000,
+        });
 
-      return;
-    }
+        return;
+      }
 
-    setIsLoading(true);
+      setIsLoading(true);
 
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      try {
+        // Simulate API call
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      addToast({
-        title: "Feedback Submitted",
-        description: "Thank you for your feedback! We'll get back to you soon.",
-        color: "success",
-        timeout: 3000,
-      });
+        addToast({
+          title: "Feedback Submitted",
+          description:
+            "Thank you for your feedback! We'll get back to you soon.",
+          color: "success",
+          timeout: 3000,
+        });
 
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        category: "",
-        message: "",
-      });
-    } catch (error) {
-      void error;
-      addToast({
-        title: "Error",
-        description: "Failed to submit feedback. Please try again.",
-        color: "danger",
-        timeout: 3000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          category: "",
+          message: "",
+        });
+      } catch (error) {
+        void error;
+        addToast({
+          title: "Error",
+          description: "Failed to submit feedback. Please try again.",
+          color: "danger",
+          timeout: 3000,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formData],
+  );
+
+  const categorySelectItems = useMemo(
+    () =>
+      feedbackCategories.map((category) => (
+        <SelectItem key={category.key}>{category.label}</SelectItem>
+      )),
+    [],
+  );
 
   return (
     <div className="w-full max-w-6xl p-6">
@@ -303,9 +318,7 @@ export default function HelpAndFeedback() {
                     handleInputChange("category", selectedKey || "");
                   }}
                 >
-                  {feedbackCategories.map((category) => (
-                    <SelectItem key={category.key}>{category.label}</SelectItem>
-                  ))}
+                  {categorySelectItems}
                 </Select>
 
                 {/* Message */}
@@ -347,4 +360,8 @@ export default function HelpAndFeedback() {
       </div>
     </div>
   );
-}
+});
+
+HelpAndFeedback.displayName = "HelpAndFeedback";
+
+export default HelpAndFeedback;

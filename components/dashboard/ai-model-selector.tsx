@@ -13,6 +13,7 @@ import { Icon } from "@iconify/react";
 import { useAtom } from "jotai";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useMutation } from "convex/react";
+import React from "react";
 
 import { aiModelAtom } from "@/atoms/aimodel";
 import { models, type Model } from "@/config/ai-model";
@@ -57,7 +58,7 @@ function Badge({
   );
 }
 
-export default function ModelSelector() {
+const ModelSelector = React.memo(() => {
   const [currentModelId, setCurrentModelId] = useAtom(aiModelAtom);
   const [selectedModel, setSelectedModel] = useState<Model>(models[0]);
   const user = useQuery(api.function.users.currentUser);
@@ -81,19 +82,65 @@ export default function ModelSelector() {
         setSelectedModel(model);
       }
     }
-  }, [currentModelId, user]);
+  }, [currentModelId, user, setCurrentModelId]);
 
-  const handleModelChange = (modelId: number) => {
-    setCurrentModelId(modelId);
+  const handleModelChange = React.useCallback(
+    (modelId: number) => {
+      setCurrentModelId(modelId);
 
-    if (user) {
-      updateUserModel({
-        data: {
-          lastUsedModel: modelId.toString(),
-        },
-      });
-    }
-  };
+      if (user) {
+        updateUserModel({
+          data: {
+            lastUsedModel: modelId.toString(),
+          },
+        });
+      }
+    },
+    [setCurrentModelId, user, updateUserModel],
+  );
+
+  const handleMenuAction = React.useCallback(
+    (key: React.Key) => {
+      const modelId = Number(key);
+      const model = models.find((m) => m.id === modelId);
+
+      if (model) {
+        setSelectedModel(model);
+        setCurrentModelId(model.id);
+      }
+    },
+    [setCurrentModelId],
+  );
+
+  const dropdownItems = React.useMemo(
+    () =>
+      models.map((model) => (
+        <DropdownItem
+          key={model.id}
+          endContent={
+            <div className="flex items-center gap-1">
+              {model.isNew && (
+                <Badge color="success" size="sm">
+                  New
+                </Badge>
+              )}
+              {model.isPro && (
+                <Badge color="danger" size="sm">
+                  Pro
+                </Badge>
+              )}
+            </div>
+          }
+          onPress={() => handleModelChange(model.id)}
+        >
+          <div className="flex min-h-6 items-center gap-2">
+            <Icon className="text-neutral-100" icon={model.icon} width={18} />
+            <span>{model.name}</span>
+          </div>
+        </DropdownItem>
+      )),
+    [handleModelChange],
+  );
 
   return (
     <div className="w-full max-w-sm rounded-lg">
@@ -112,49 +159,15 @@ export default function ModelSelector() {
           aria-label="Select AI Model"
           className="shadow-none"
           variant="flat"
-          onAction={(key) => {
-            const modelId = Number(key);
-            const model = models.find((m) => m.id === modelId);
-
-            if (model) {
-              setSelectedModel(model);
-              setCurrentModelId(model.id);
-            }
-          }}
+          onAction={handleMenuAction}
         >
-          <DropdownSection>
-            {models.map((model) => (
-              <DropdownItem
-                key={model.id}
-                endContent={
-                  <div className="flex items-center gap-1">
-                    {model.isNew && (
-                      <Badge color="success" size="sm">
-                        New
-                      </Badge>
-                    )}
-                    {model.isPro && (
-                      <Badge color="danger" size="sm">
-                        Pro
-                      </Badge>
-                    )}
-                  </div>
-                }
-                onPress={() => handleModelChange(model.id)}
-              >
-                <div className="flex min-h-6 items-center gap-2">
-                  <Icon
-                    className="text-neutral-100"
-                    icon={model.icon}
-                    width={18}
-                  />
-                  <span>{model.name}</span>
-                </div>
-              </DropdownItem>
-            ))}
-          </DropdownSection>
+          <DropdownSection>{dropdownItems}</DropdownSection>
         </DropdownMenu>
       </Dropdown>
     </div>
   );
-}
+});
+
+ModelSelector.displayName = "ModelSelector";
+
+export default ModelSelector;

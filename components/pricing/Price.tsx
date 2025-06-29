@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
@@ -13,6 +13,150 @@ import { cn } from "@heroui/theme";
 
 import { FrequencyEnum } from "./pricing-types";
 import { frequencies, tiers } from "./pricing-tiers";
+
+interface PriceCardProps {
+  tier: any; // Using any since the original tier structure is different
+  isPopular?: boolean;
+  onSelect?: (tier: any) => void;
+  isSelected?: boolean;
+  className?: string;
+}
+
+const PriceCard = React.memo<PriceCardProps>(
+  ({ tier, isPopular = false, onSelect, isSelected = false, className }) => {
+    const handleSelect = useCallback(() => {
+      if (onSelect) {
+        onSelect(tier);
+      }
+    }, [onSelect, tier]);
+
+    const featureItems = useMemo(
+      () =>
+        tier.features?.map((feature: string, index: number) => (
+          <div key={index} className="flex items-start gap-2">
+            <Icon
+              className="mt-0.5 text-success"
+              icon="mdi:check-circle"
+              width={16}
+            />
+            <span className="text-sm text-default-600">{feature}</span>
+          </div>
+        )) || [],
+      [tier.features],
+    );
+
+    const cardClasses = useMemo(
+      () =>
+        cn(
+          "relative h-full transition-all duration-200",
+          {
+            "border-2 border-primary shadow-lg": isSelected,
+            "border border-default-200": !isSelected,
+            "scale-105": isPopular,
+          },
+          className,
+        ),
+      [isSelected, isPopular, className],
+    );
+
+    const buttonVariant = useMemo(() => {
+      if (tier.price === 0) return "flat";
+      return isSelected || isPopular ? "solid" : "bordered";
+    }, [tier.price, isSelected, isPopular]);
+
+    const buttonColor = useMemo(() => {
+      if (tier.price === 0) return "default";
+      return isPopular ? "primary" : "default";
+    }, [tier.price, isPopular]);
+
+    return (
+      <Card className={cardClasses}>
+        {isPopular && (
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <Chip
+              className="bg-gradient-to-r from-primary to-secondary text-white"
+              size="sm"
+              startContent={<Icon icon="mdi:star" width={14} />}
+            >
+              Most Popular
+            </Chip>
+          </div>
+        )}
+
+        <CardHeader className="flex flex-col items-start gap-2 pb-4">
+          <div className="flex w-full items-center justify-between">
+            <h3 className="text-lg font-semibold text-default-900">
+              {tier.name}
+            </h3>
+            {tier.badge && (
+              <Chip
+                className="bg-success/10 text-success"
+                size="sm"
+                variant="flat"
+              >
+                {tier.badge}
+              </Chip>
+            )}
+          </div>
+          <p className="text-sm text-default-500">{tier.description}</p>
+        </CardHeader>
+
+        <CardBody className="flex flex-col gap-4 pt-0">
+          <div className="flex items-baseline gap-1">
+            <span className="text-3xl font-bold text-default-900">
+              ${tier.price}
+            </span>
+            <span className="text-sm text-default-500">
+              {tier.price > 0 ? "/month" : "forever"}
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-3">{featureItems}</div>
+
+          {tier.limitations && tier.limitations.length > 0 && (
+            <div className="mt-2 border-t border-default-100 pt-3">
+              <p className="mb-2 text-xs font-medium text-default-400">
+                Limitations:
+              </p>
+              <div className="flex flex-col gap-1">
+                {tier.limitations.map((limitation: string, index: number) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <Icon
+                      className="mt-0.5 text-warning"
+                      icon="mdi:minus-circle"
+                      width={14}
+                    />
+                    <span className="text-xs text-default-400">
+                      {limitation}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </CardBody>
+
+        <CardFooter className="pt-0">
+          <Button
+            fullWidth
+            className={cn({
+              "bg-gradient-to-r from-primary to-secondary text-white":
+                isPopular && !isSelected,
+            })}
+            color={buttonColor}
+            size="lg"
+            variant={buttonVariant}
+            onPress={handleSelect}
+          >
+            {tier.price === 0 ? "Get Started" : "Choose Plan"}
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  },
+);
+
+PriceCard.displayName = "PriceCard";
 
 export default function Component() {
   const [selectedFrequency, setSelectedFrequency] = React.useState(
@@ -76,69 +220,14 @@ export default function Component() {
       <Spacer y={12} />
       <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {tiers.map((tier) => (
-          <Card
+          <PriceCard
             key={tier.key}
-            isBlurred
-            className={cn(
-              "bg-default-100/60 p-3 shadow-none dark:bg-default-100/50",
-              {
-                "!border-small border-primary/50": tier.mostPopular,
-              },
-            )}
-            shadow="md"
-          >
-            {tier.mostPopular ? (
-              <Chip
-                className="absolute right-4 top-4"
-                color="primary"
-                variant="flat"
-              >
-                Most Popular
-              </Chip>
-            ) : null}
-            <CardHeader className="flex flex-col items-start gap-2 pb-6">
-              <h2 className="text-large font-medium text-default-900">
-                {tier.title}
-              </h2>
-              <p className="text-medium text-default-800">{tier.description}</p>
-            </CardHeader>
-            <Divider />
-            <CardBody className="gap-8">
-              <p className="flex items-baseline gap-1 pt-2">
-                <span className="inline bg-clip-text text-4xl font-semibold leading-7 tracking-tight text-default-900">
-                  {typeof tier.price === "string"
-                    ? tier.price
-                    : tier.price[selectedFrequency.key]}
-                </span>
-                {typeof tier.price !== "string" ? (
-                  <span className="text-small font-medium text-default-900">
-                    {tier.priceSuffix
-                      ? `/${tier.priceSuffix}/${selectedFrequency.priceSuffix}`
-                      : `/${selectedFrequency.priceSuffix}`}
-                  </span>
-                ) : null}
-              </p>
-              <ul className="flex flex-col gap-2">
-                {tier.features?.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2">
-                    <Icon className="text-primary" icon="ci:check" width={24} />
-                    <p className="text-default-800">{feature}</p>
-                  </li>
-                ))}
-              </ul>
-            </CardBody>
-            <CardFooter>
-              <Button
-                fullWidth
-                as={Link}
-                color="primary"
-                href={tier.href}
-                variant={tier.buttonVariant}
-              >
-                {tier.buttonText}
-              </Button>
-            </CardFooter>
-          </Card>
+            tier={tier}
+            isPopular={tier.mostPopular}
+            onSelect={(selectedTier) => {
+              // Handle tier selection
+            }}
+          />
         ))}
       </div>
       <Spacer y={12} />

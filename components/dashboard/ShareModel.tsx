@@ -12,7 +12,7 @@ import { useDisclosure } from "@heroui/modal";
 import { Input } from "@heroui/input";
 import { addToast } from "@heroui/toast";
 import { useMutation } from "convex/react";
-import { useState, memo } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Divider } from "@heroui/divider";
 import { RadioGroup, Radio } from "@heroui/radio";
@@ -38,14 +38,15 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
   const [isCopied, setIsCopied] = useState(false);
   const createShare = useMutation(api.function.share.createShareChat);
 
-  if (!user) {
-    return null;
-  }
+  const shareId = useMemo(() => uuidv4(), []);
+  const shareLink = useMemo(
+    () => `${process.env.NEXT_PUBLIC_URL}/share/${shareId}`,
+    [shareId],
+  );
 
-  const shareId = uuidv4();
-  const shareLink = `${process.env.NEXT_PUBLIC_URL}/share/${shareId}`;
+  const handleShare = useCallback(async () => {
+    if (!user) return;
 
-  const handleShare = async () => {
     try {
       setIsLoading(true);
 
@@ -77,12 +78,38 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [
+    user,
+    chatId,
+    selectedExpiration,
+    shareId,
+    shareLink,
+    createShare,
+    onClose,
+  ]);
 
-  const handleCopyLink = () => {
+  const handleCopyLink = useCallback(() => {
     navigator.clipboard.writeText(shareLink);
     setIsCopied(true);
-  };
+  }, [shareLink]);
+
+  const handleExpirationChange = useCallback((value: string) => {
+    setSelectedExpiration(value as "1d" | "2d" | "7d" | "never");
+  }, []);
+
+  const expirationRadios = useMemo(
+    () =>
+      expirationOptions.map((option) => (
+        <Radio key={option.key} value={option.key}>
+          {option.label}
+        </Radio>
+      )),
+    [],
+  );
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <>
@@ -130,17 +157,9 @@ const ShareModel = memo(function ShareModel({ chatId }: { chatId: string }) {
                       defaultValue="1d"
                       orientation="horizontal"
                       value={selectedExpiration}
-                      onValueChange={(value) => {
-                        setSelectedExpiration(
-                          value as "1d" | "2d" | "7d" | "never",
-                        );
-                      }}
+                      onValueChange={handleExpirationChange}
                     >
-                      {expirationOptions.map((option) => (
-                        <Radio key={option.key} value={option.key}>
-                          {option.label}
-                        </Radio>
-                      ))}
+                      {expirationRadios}
                     </RadioGroup>
                   </div>
                   <div className="flex flex-col gap-2">

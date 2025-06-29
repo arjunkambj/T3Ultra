@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Button } from "@heroui/button";
 import { Input, Textarea } from "@heroui/input";
 import { Card, CardBody, CardHeader } from "@heroui/card";
@@ -8,6 +8,10 @@ import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/toast";
 import { Select, SelectItem } from "@heroui/select";
+import { useMutation } from "convex/react";
+
+import { api } from "@/convex/_generated/api";
+import { useUser } from "@/hooks/useUser";
 
 interface ProjectFormData {
   title: string;
@@ -17,35 +21,37 @@ interface ProjectFormData {
 }
 
 const projectCategories = [
-  { key: "web-development", label: "Web Development" },
-  { key: "mobile-development", label: "Mobile Development" },
-  { key: "ai-ml", label: "AI & Machine Learning" },
-  { key: "data-science", label: "Data Science" },
-  { key: "devops", label: "DevOps & Infrastructure" },
-  { key: "design", label: "Design & UI/UX" },
-  { key: "research", label: "Research & Analysis" },
+  { key: "development", label: "Development" },
+  { key: "research", label: "Research" },
+  { key: "design", label: "Design" },
+  { key: "marketing", label: "Marketing" },
+  { key: "education", label: "Education" },
+  { key: "business", label: "Business" },
   { key: "other", label: "Other" },
 ];
 
-export default function ProjectForm() {
+const ProjectForm = React.memo(() => {
   const router = useRouter();
+  const user = useUser();
   const [isLoading, setIsLoading] = useState(false);
+  const [tagInput, setTagInput] = useState("");
   const [formData, setFormData] = useState<ProjectFormData>({
     title: "",
     description: "",
     category: "",
     tags: [],
   });
-  const [tagInput, setTagInput] = useState("");
 
-  const handleInputChange = (field: keyof ProjectFormData, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const createProject = useMutation(api.function.project.createProject);
 
-  const handleAddTag = () => {
+  const handleInputChange = useCallback(
+    (field: keyof ProjectFormData, value: string) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    },
+    [],
+  );
+
+  const handleAddTag = useCallback(() => {
     if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
       setFormData((prev) => ({
         ...prev,
@@ -53,86 +59,121 @@ export default function ProjectForm() {
       }));
       setTagInput("");
     }
-  };
+  }, [tagInput, formData.tags]);
 
-  const handleRemoveTag = (tagToRemove: string) => {
+  const handleRemoveTag = useCallback((tagToRemove: string) => {
     setFormData((prev) => ({
       ...prev,
       tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
-  };
+  }, []);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleAddTag();
+      }
+    },
+    [handleAddTag],
+  );
+
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      handleAddTag();
-    }
-  };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+      if (!formData.title.trim()) {
+        addToast({
+          title: "Validation Error",
+          description: "Project title is required",
+          color: "danger",
+          timeout: 3000,
+        });
 
-    if (!formData.title.trim()) {
-      addToast({
-        title: "Validation Error",
-        description: "Project title is required",
-        color: "danger",
-        timeout: 3000,
-      });
+        return;
+      }
 
-      return;
-    }
+      if (!formData.description.trim()) {
+        addToast({
+          title: "Validation Error",
+          description: "Project description is required",
+          color: "danger",
+          timeout: 3000,
+        });
 
-    if (!formData.description.trim()) {
-      addToast({
-        title: "Validation Error",
-        description: "Project description is required",
-        color: "danger",
-        timeout: 3000,
-      });
+        return;
+      }
 
-      return;
-    }
+      setIsLoading(true);
 
-    setIsLoading(true);
+      try {
+        await createProject({
+          name: formData.title,
+          description: formData.description,
+          instructions: `Project: ${formData.title}\n\nDescription: ${formData.description}\n\nCategory: ${formData.category}\n\nTags: ${formData.tags.join(", ")}`,
+        });
 
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+        addToast({
+          title: "Project Created",
+          description: `${formData.title} has been created successfully`,
+          color: "success",
+          timeout: 3000,
+        });
 
-      addToast({
-        title: "Project Created",
-        description: `${formData.title} has been created successfully`,
-        color: "success",
-        timeout: 3000,
-      });
+        setFormData({
+          title: "",
+          description: "",
+          category: "",
+          tags: [],
+        });
 
-      // Reset form
-      setFormData({
-        title: "",
-        description: "",
-        category: "",
-        tags: [],
-      });
+        router.push("/project");
+      } catch (error) {
+        void error;
+        addToast({
+          title: "Error",
+          description: "Failed to create project. Please try again.",
+          color: "danger",
+          timeout: 3000,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [formData, user, createProject, router],
+  );
 
-      // Navigate to projects page
-      router.push("/project");
-    } catch (error) {
-      void error;
-      addToast({
-        title: "Error",
-        description: "Failed to create project. Please try again.",
-        color: "danger",
-        timeout: 3000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     router.back();
-  };
+  }, [router]);
+
+  const categorySelectItems = useMemo(
+    () =>
+      projectCategories.map((category) => (
+        <SelectItem key={category.key}>{category.label}</SelectItem>
+      )),
+    [],
+  );
+
+  const tagElements = useMemo(
+    () =>
+      formData.tags.map((tag) => (
+        <div
+          key={tag}
+          className="flex items-center gap-1 rounded-full bg-neutral-700 px-3 py-1 text-sm text-neutral-200"
+        >
+          <span>{tag}</span>
+          <button
+            className="text-neutral-400 hover:text-neutral-200"
+            type="button"
+            onClick={() => handleRemoveTag(tag)}
+          >
+            <Icon icon="mdi:close" width={14} />
+          </button>
+        </div>
+      )),
+    [formData.tags, handleRemoveTag],
+  );
 
   return (
     <div className="flex h-full w-full items-center justify-center p-6">
@@ -218,9 +259,7 @@ export default function ProjectForm() {
                   handleInputChange("category", selectedKey || "");
                 }}
               >
-                {projectCategories.map((category) => (
-                  <SelectItem key={category.key}>{category.label}</SelectItem>
-                ))}
+                {categorySelectItems}
               </Select>
             </div>
 
@@ -258,23 +297,7 @@ export default function ProjectForm() {
 
               {/* Display Tags */}
               {formData.tags.length > 0 && (
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {formData.tags.map((tag) => (
-                    <div
-                      key={tag}
-                      className="flex items-center gap-1 rounded-full bg-neutral-800 px-3 py-1 text-sm text-neutral-300"
-                    >
-                      <span>{tag}</span>
-                      <button
-                        className="text-neutral-500 hover:text-neutral-300"
-                        type="button"
-                        onClick={() => handleRemoveTag(tag)}
-                      >
-                        <Icon icon="mdi:close" width={14} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <div className="mt-2 flex flex-wrap gap-2">{tagElements}</div>
               )}
             </div>
 
@@ -305,4 +328,8 @@ export default function ProjectForm() {
       </Card>
     </div>
   );
-}
+});
+
+ProjectForm.displayName = "ProjectForm";
+
+export default ProjectForm;
