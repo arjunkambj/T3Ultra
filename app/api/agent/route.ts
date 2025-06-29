@@ -10,6 +10,10 @@ import { getCurrentTime } from "./tools";
 
 import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
+
+// Enable Edge Runtime
+export const runtime = "edge";
+
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function POST(req: Request) {
