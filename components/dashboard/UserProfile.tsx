@@ -11,11 +11,9 @@ import {
 import { Avatar } from "@heroui/avatar";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useAuthActions } from "@convex-dev/auth/react";
 
 import { useUser } from "@/hooks/useUser";
-import { api } from "@/convex/_generated/api";
 
 const UserProfile = React.memo(() => {
   const router = useRouter();
@@ -23,18 +21,14 @@ const UserProfile = React.memo(() => {
   const [isLoading, setIsLoading] = useState(false);
   const { signOut } = useAuthActions();
 
-  const userCustomizations = useQuery(
-    api.function.customizations.getCustomization,
-    user ? { userId: user._id } : "skip",
-  );
-
   const handleSignOut = useCallback(async () => {
     try {
       setIsLoading(true);
       await signOut();
       router.push("/");
     } catch (error) {
-      console.error("Error signing out:", error);
+      void error;
+      // Error signing out
     } finally {
       setIsLoading(false);
     }
@@ -88,6 +82,7 @@ const UserProfile = React.memo(() => {
   const handleMenuAction = useCallback(
     (key: React.Key) => {
       const item = menuItems.find((item) => item.key === key);
+
       if (item) {
         item.action();
       } else if (key === "logout") {
@@ -131,11 +126,11 @@ const UserProfile = React.memo(() => {
         disabledKeys={isLoading ? ["logout"] : []}
         onAction={handleMenuAction}
       >
-        <DropdownSection aria-label="Profile" showDivider>
+        <DropdownSection showDivider aria-label="Profile">
           <DropdownItem
             key="user-info"
-            className="h-14 gap-2"
             isReadOnly
+            className="h-14 gap-2"
             textValue={userDisplayName}
           >
             <div className="flex items-center gap-2">
@@ -159,9 +154,9 @@ const UserProfile = React.memo(() => {
             color="danger"
             startContent={
               <Icon
+                className={isLoading ? "animate-spin" : ""}
                 icon={isLoading ? "mdi:loading" : "mdi:logout"}
                 width={18}
-                className={isLoading ? "animate-spin" : ""}
               />
             }
           >

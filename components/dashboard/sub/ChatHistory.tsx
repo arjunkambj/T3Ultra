@@ -208,8 +208,8 @@ export default function ChatHistory() {
       <ChatItem
         key={chat.chatId}
         chat={chat}
-        isActive={isChatActive(chat)}
         href={getChatHref(chat)}
+        isActive={isChatActive(chat)}
         onChatClick={handleChatClick}
       />
     ),
@@ -235,51 +235,51 @@ export default function ChatHistory() {
     <div className="w-full space-y-3">
       {/* Pinned Section - Brightest for importance */}
       <ChatSection
-        title="Pinned"
-        icon="solar:pin-bold"
         chats={pinnedChats}
-        renderChatItem={renderChatItem}
         headerColor="text-neutral-200"
+        icon="solar:pin-bold"
+        renderChatItem={renderChatItem}
+        title="Pinned"
       />
 
       {/* Today Section - Bright for most recent */}
       <ChatSection
-        title="Today"
         chats={categorizedChats.today}
-        renderChatItem={renderChatItem}
         headerColor="text-neutral-300"
+        renderChatItem={renderChatItem}
+        title="Today"
       />
 
       {/* Yesterday Section - Medium bright */}
       <ChatSection
-        title="Yesterday"
         chats={categorizedChats.yesterday}
-        renderChatItem={renderChatItem}
         headerColor="text-neutral-300"
+        renderChatItem={renderChatItem}
+        title="Yesterday"
       />
 
       {/* Previous 7 days - Medium */}
       <ChatSection
-        title="Previous 7 days"
         chats={categorizedChats.previous7Days}
-        renderChatItem={renderChatItem}
         headerColor="text-neutral-300"
+        renderChatItem={renderChatItem}
+        title="Previous 7 days"
       />
 
       {/* Previous 30 days - Darker */}
       <ChatSection
-        title="Previous 30 days"
         chats={categorizedChats.previous30Days}
-        renderChatItem={renderChatItem}
         headerColor="text-neutral-300"
+        renderChatItem={renderChatItem}
+        title="Previous 30 days"
       />
 
       {/* Older - Darkest for oldest */}
       <ChatSection
-        title="Older"
         chats={categorizedChats.older}
-        renderChatItem={renderChatItem}
         headerColor="text-neutral-700"
+        renderChatItem={renderChatItem}
+        title="Older"
       />
     </div>
   );

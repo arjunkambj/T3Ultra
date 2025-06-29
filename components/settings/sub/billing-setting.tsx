@@ -12,6 +12,7 @@ import { useMutation } from "convex/react";
 import { addToast } from "@heroui/toast";
 
 import { PlanCustomRadio } from "./plan-custom-radio";
+
 import { useUser } from "@/hooks/useUser";
 import { api } from "@/convex/_generated/api";
 
@@ -71,7 +72,7 @@ const BillingSetting = React.memo(
             timeout: 3000,
           });
         } catch (error) {
-          console.error("Error updating subscription:", error);
+          void error;
           addToast({
             title: "Error",
             description: "Failed to update subscription. Please try again.",
@@ -252,11 +253,11 @@ const BillingSetting = React.memo(
 
           <div className="mt-6 flex justify-end">
             <Button
+              className="px-6"
               color="primary"
+              isDisabled={isCurrentPlan}
               isLoading={isLoading}
               onPress={handleUpgrade}
-              isDisabled={isCurrentPlan}
-              className="px-6"
             >
               {isLoading
                 ? "Updating..."

@@ -1,10 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "@iconify/react/dist/offline";
 import { Avatar } from "@heroui/avatar";
 import { Button } from "@heroui/button";
-import { Badge } from "@heroui/badge";
 import { Card, CardBody } from "@heroui/card";
 import { cn } from "@heroui/theme";
 import { Input, Textarea } from "@heroui/input";
@@ -97,7 +95,7 @@ const ProfileSetting = React.memo(
             timeout: 3000,
           });
         } catch (error) {
-          console.error("Error updating profile:", error);
+          void error;
           addToast({
             title: "Error",
             description: "Failed to update profile. Please try again.",
@@ -202,10 +200,10 @@ const ProfileSetting = React.memo(
 
           <div className="mt-6 flex justify-end">
             <Button
+              className="px-6"
               color="primary"
               isLoading={isLoading}
               onPress={handleSave}
-              className="px-6"
             >
               {isLoading ? "Updating..." : "Update Profile"}
             </Button>

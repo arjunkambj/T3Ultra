@@ -5,8 +5,6 @@ import { Icon } from "@iconify/react";
 import { Button } from "@heroui/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Chip } from "@heroui/chip";
-import { Divider } from "@heroui/divider";
-import { Link } from "@heroui/link";
 import { Spacer } from "@heroui/spacer";
 import { Tab, Tabs } from "@heroui/tabs";
 import { cn } from "@heroui/theme";
@@ -61,11 +59,13 @@ const PriceCard = React.memo<PriceCardProps>(
 
     const buttonVariant = useMemo(() => {
       if (tier.price === 0) return "flat";
+
       return isSelected || isPopular ? "solid" : "bordered";
     }, [tier.price, isSelected, isPopular]);
 
     const buttonColor = useMemo(() => {
       if (tier.price === 0) return "default";
+
       return isPopular ? "primary" : "default";
     }, [tier.price, isPopular]);
 
@@ -159,9 +159,7 @@ const PriceCard = React.memo<PriceCardProps>(
 PriceCard.displayName = "PriceCard";
 
 export default function Component() {
-  const [selectedFrequency, setSelectedFrequency] = React.useState(
-    frequencies[0],
-  );
+  const [, setSelectedFrequency] = React.useState(frequencies[0]);
 
   const onFrequencyChange = (selectedKey: React.Key) => {
     const frequencyIndex = frequencies.findIndex((f) => f.key === selectedKey);
@@ -222,9 +220,9 @@ export default function Component() {
         {tiers.map((tier) => (
           <PriceCard
             key={tier.key}
-            tier={tier}
             isPopular={tier.mostPopular}
-            onSelect={(selectedTier) => {
+            tier={tier}
+            onSelect={(_selectedTier) => {
               // Handle tier selection
             }}
           />

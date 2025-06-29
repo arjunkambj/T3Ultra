@@ -55,7 +55,7 @@ const MemorySetting = React.memo(
               timeout: 3000,
             });
           } catch (error) {
-            console.error("Error deleting memory:", error);
+            void error;
             addToast({
               title: "Error",
               description: "Failed to delete memory. Please try again.",
@@ -124,12 +124,12 @@ const MemorySetting = React.memo(
                 <div className="flex-shrink-0">
                   <Button
                     isIconOnly
+                    className="h-8 min-w-8"
                     color="danger"
+                    isLoading={deletingMemoryId === memory._id}
                     size="sm"
                     variant="light"
-                    isLoading={deletingMemoryId === memory._id}
                     onPress={() => handleDeleteMemory(memory._id)}
-                    className="h-8 min-w-8"
                   >
                     <Icon className="h-4 w-4" icon="mdi:delete" />
                   </Button>

@@ -2,7 +2,6 @@
 
 import React from "react";
 import { useQuery } from "convex-helpers/react/cache/hooks";
-import { Icon } from "@iconify/react";
 
 import SidebarProjectItem from "./sub/SidebarProjectItem";
 
