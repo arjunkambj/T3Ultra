@@ -1,7 +1,5 @@
 import { generateText, type UIMessage } from "ai";
 import { google } from "@ai-sdk/google";
-import dotenv from "dotenv";
-dotenv.config();
 
 export async function generateTitleFromUserMessage({
   message,
