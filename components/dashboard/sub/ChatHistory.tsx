@@ -10,6 +10,7 @@ import ChatHistoryDropdown from "./ChatHistoryDropdown";
 
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import { api } from "@/convex/_generated/api";
+import { useUser } from "@/hooks/useUser";
 
 // Memoized chat item component
 const ChatItem = React.memo(
@@ -102,7 +103,7 @@ const ChatSection = React.memo(
 ChatSection.displayName = "ChatSection";
 
 export default function ChatHistory() {
-  const user = useQuery(api.function.users.currentUser);
+  const user = useUser();
   const chatsIncludingProjectChats = useQuery(
     api.function.chats.getChatsByUserId,
     user ? { userId: user._id } : "skip",

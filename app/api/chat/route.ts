@@ -62,7 +62,7 @@ export async function POST(req: Request) {
 
   USER INFO:
   - userID: ${userId} (use with memory tools)
-  - Call the user: ${customizations?.whattocalluser || "My Lord"}
+  - Call the user: ${customizations?.whattocalluser || ""}
   - What user does: ${customizations?.whatuserdoes || "Not specified"}
   - Traits: ${customizations?.traitsforllm?.join(", ") || "Not specified"}
   - Preferences: ${customizations?.preferencesofuser?.join(", ") || "Not specified"}

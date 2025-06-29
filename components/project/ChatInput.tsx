@@ -16,7 +16,7 @@ interface ChatInputProps {
   status: string;
 }
 
-export default function ChatInput({
+const ChatInput = React.memo(function ChatInput({
   input,
   handleInputChange,
   onSubmit,
@@ -36,4 +36,6 @@ export default function ChatInput({
       />
     </div>
   );
-}
+});
+
+export default ChatInput;

@@ -30,9 +30,34 @@ const projectCategories = [
   { key: "other", label: "Other" },
 ];
 
-const ProjectForm = React.memo(() => {
+// Memoized tag component
+const TagItem = React.memo(function TagItem({
+  tag,
+  onRemove,
+}: {
+  tag: string;
+  onRemove: (tag: string) => void;
+}) {
+  const handleRemove = useCallback(() => {
+    onRemove(tag);
+  }, [onRemove, tag]);
+
+  return (
+    <div className="flex items-center gap-1 rounded-full bg-neutral-700 px-3 py-1 text-sm text-neutral-200">
+      <span>{tag}</span>
+      <button
+        className="text-neutral-400 hover:text-neutral-200"
+        type="button"
+        onClick={handleRemove}
+      >
+        <Icon icon="mdi:close" width={14} />
+      </button>
+    </div>
+  );
+});
+
+const ProjectForm = React.memo(function ProjectForm() {
   const router = useRouter();
-  const user = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [tagInput, setTagInput] = useState("");
   const [formData, setFormData] = useState<ProjectFormData>({
@@ -51,6 +76,13 @@ const ProjectForm = React.memo(() => {
     [],
   );
 
+  const handleRemoveTag = useCallback((tagToRemove: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
+    }));
+  }, []);
+
   const handleAddTag = useCallback(() => {
     if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
       setFormData((prev) => ({
@@ -61,13 +93,6 @@ const ProjectForm = React.memo(() => {
     }
   }, [tagInput, formData.tags]);
 
-  const handleRemoveTag = useCallback((tagToRemove: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    }));
-  }, []);
-
   const handleKeyPress = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "Enter") {
@@ -77,6 +102,10 @@ const ProjectForm = React.memo(() => {
     },
     [handleAddTag],
   );
+
+  const handleCancel = useCallback(() => {
+    router.back();
+  }, [router]);
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -140,12 +169,8 @@ const ProjectForm = React.memo(() => {
         setIsLoading(false);
       }
     },
-    [formData, user, createProject, router],
+    [formData, createProject, router],
   );
-
-  const handleCancel = useCallback(() => {
-    router.back();
-  }, [router]);
 
   const categorySelectItems = useMemo(
     () =>
@@ -158,45 +183,67 @@ const ProjectForm = React.memo(() => {
   const tagElements = useMemo(
     () =>
       formData.tags.map((tag) => (
-        <div
-          key={tag}
-          className="flex items-center gap-1 rounded-full bg-neutral-700 px-3 py-1 text-sm text-neutral-200"
-        >
-          <span>{tag}</span>
-          <button
-            className="text-neutral-400 hover:text-neutral-200"
-            type="button"
-            onClick={() => handleRemoveTag(tag)}
-          >
-            <Icon icon="mdi:close" width={14} />
-          </button>
-        </div>
+        <TagItem key={tag} tag={tag} onRemove={handleRemoveTag} />
       )),
     [formData.tags, handleRemoveTag],
+  );
+
+  const headerSection = useMemo(
+    () => (
+      <CardHeader className="flex flex-col items-start gap-2 pb-4">
+        <div className="flex items-center gap-3">
+          <div className="rounded-full bg-neutral-800 p-2">
+            <Icon
+              className="text-neutral-300"
+              icon="mdi:folder-plus"
+              width={24}
+            />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-neutral-100">
+              Create New Project
+            </h1>
+            <p className="text-sm text-neutral-400">
+              Organize your chats and collaborate more effectively
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+    ),
+    [],
+  );
+
+  const formActions = useMemo(
+    () => (
+      <div className="flex justify-end gap-3 pt-4">
+        <Button
+          className="text-neutral-400"
+          isDisabled={isLoading}
+          type="button"
+          variant="flat"
+          onPress={handleCancel}
+        >
+          Cancel
+        </Button>
+        <Button
+          className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
+          isLoading={isLoading}
+          startContent={
+            !isLoading && <Icon icon="mdi:folder-plus" width={20} />
+          }
+          type="submit"
+        >
+          {isLoading ? "Creating Project..." : "Create Project"}
+        </Button>
+      </div>
+    ),
+    [isLoading, handleCancel],
   );
 
   return (
     <div className="flex h-full w-full items-center justify-center p-6">
       <Card className="w-full max-w-2xl border border-neutral-700 bg-neutral-900">
-        <CardHeader className="flex flex-col items-start gap-2 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full bg-neutral-800 p-2">
-              <Icon
-                className="text-neutral-300"
-                icon="mdi:folder-plus"
-                width={24}
-              />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-neutral-100">
-                Create New Project
-              </h1>
-              <p className="text-sm text-neutral-400">
-                Organize your chats and collaborate more effectively
-              </p>
-            </div>
-          </div>
-        </CardHeader>
+        {headerSection}
 
         <CardBody>
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
@@ -302,27 +349,7 @@ const ProjectForm = React.memo(() => {
             </div>
 
             {/* Form Actions */}
-            <div className="flex justify-end gap-3 pt-4">
-              <Button
-                className="text-neutral-400"
-                isDisabled={isLoading}
-                type="button"
-                variant="flat"
-                onPress={handleCancel}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
-                isLoading={isLoading}
-                startContent={
-                  !isLoading && <Icon icon="mdi:folder-plus" width={20} />
-                }
-                type="submit"
-              >
-                {isLoading ? "Creating Project..." : "Create Project"}
-              </Button>
-            </div>
+            {formActions}
           </form>
         </CardBody>
       </Card>

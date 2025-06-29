@@ -38,7 +38,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
 
   const containerClasses = useMemo(
     () =>
-      `relative flex h-dvh max-w-[250px] flex-1 flex-col overflow-hidden transition-all bg-[#0A0A0A] duration-300 ease-in-out ${
+      `relative flex h-dvh max-w-[250px] flex-1 flex-col overflow-hidden transition-all bg-gradient-to-b from-[#0f0f0f] via-[#131313] to-[#171717] duration-300 ease-in-out ${
         isOpen ? "w-[250px] p-6" : "w-0 p-0"
       }`,
     [isOpen],
@@ -63,7 +63,11 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           variant="light"
           onPress={onClose}
         >
-          <Icon icon="solar:close-circle-line-duotone" width={24} />
+          <Icon
+            className="text-neutral-300"
+            icon="solar:close-circle-line-duotone"
+            width={24}
+          />
         </Button>
       </div>
     ),
@@ -87,7 +91,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
               href="/agent"
               startContent={
                 <Icon
-                  className="text-neutral-400"
+                  className="text-neutral-200"
                   icon="mdi:robot"
                   width={18}
                 />
@@ -124,7 +128,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
               href="/project"
               startContent={
                 <Icon
-                  className="text-neutral-400"
+                  className="text-neutral-200"
                   icon="mdi:folder-plus"
                   width={18}
                 />
@@ -140,6 +144,19 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
     [pathname],
   );
 
+  const newChatButton = useMemo(
+    () => (
+      <Button
+        fullWidth
+        className="rounded-full bg-default-100 py-4"
+        onPress={handleNewChat}
+      >
+        New Chat
+      </Button>
+    ),
+    [handleNewChat],
+  );
+
   const footerButtons = useMemo(
     () => (
       <div className="flex flex-col">
@@ -149,7 +166,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           href="/pricing"
           startContent={
             <Icon
-              className="text-default-800"
+              className="text-neutral-300"
               icon="solar:settings-minimalistic-line-duotone"
               width={24}
             />
@@ -167,6 +184,23 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
     [],
   );
 
+  const scrollableContent = useMemo(
+    () => (
+      <ScrollShadow hideScrollBar className="flex-1 pr-2" size={20}>
+        <div className="space-y-2">
+          {/* Projects Section */}
+          {projectsSection}
+
+          <Spacer y={2} />
+
+          {/* Chat History Section */}
+          <ChatHistory />
+        </div>
+      </ScrollShadow>
+    ),
+    [projectsSection],
+  );
+
   return (
     <div className={containerClasses}>
       {/* Logo and Close Button */}
@@ -175,13 +209,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       <Spacer y={4} />
 
       {/* New Chat Button */}
-      <Button
-        fullWidth
-        className="rounded-full bg-default-100 py-4"
-        onPress={handleNewChat}
-      >
-        New Chat
-      </Button>
+      {newChatButton}
 
       <Spacer y={4} />
 
@@ -198,17 +226,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         </Authenticated>
 
         {/* Projects and Chat History - Scrollable Area */}
-        <ScrollShadow hideScrollBar className="flex-1 pr-2" size={20}>
-          <div className="space-y-2">
-            {/* Projects Section */}
-            {projectsSection}
-
-            <Spacer y={2} />
-
-            {/* Chat History Section */}
-            <ChatHistory />
-          </div>
-        </ScrollShadow>
+        {scrollableContent}
       </div>
 
       <Spacer y={3} />

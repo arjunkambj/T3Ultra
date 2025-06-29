@@ -42,7 +42,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
 
   return (
     <Card
-      className="group relative w-full max-w-sm border border-neutral-700 bg-neutral-900/30 backdrop-blur-sm transition-all duration-300 hover:border-neutral-600 hover:bg-neutral-900/70 hover:shadow-xl hover:shadow-neutral-900/20"
+      className="bg-neutral-900/ group relative w-full max-w-sm border border-neutral-700 transition-all duration-300 hover:border-neutral-600 hover:bg-neutral-900/70 hover:shadow-xl hover:shadow-neutral-900/20"
       shadow="sm"
     >
       <CardBody className="p-6">

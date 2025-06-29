@@ -112,7 +112,7 @@ export function PromptInputFullLineComponent({
 
   return (
     <Form
-      className="flex w-full flex-col items-start gap-0 rounded-2xl border-1 border-default-100 bg-default-50"
+      className="flex w-full flex-col items-start gap-0 rounded-2xl border-1 border-default-200 bg-default-50"
       validationBehavior="native"
       onSubmit={onSubmit}
     >

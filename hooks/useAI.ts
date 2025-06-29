@@ -10,6 +10,7 @@ import { attachmentAtom } from "@/atoms/attachment";
 import { aiModelAtom } from "@/atoms/aimodel";
 import { searchAtom } from "@/atoms/searchState";
 import { api } from "@/convex/_generated/api";
+import { useUser } from "@/hooks/useUser";
 
 export const useAI = ({
   isnewchat,
@@ -18,7 +19,7 @@ export const useAI = ({
   isnewchat: boolean;
   chatId: string;
 }) => {
-  const user = useQuery(api.function.users.currentUser);
+  const user = useUser();
   const [currentModelId] = useAtom(aiModelAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useAtom(searchAtom);

@@ -16,11 +16,13 @@ export default async function ProjectPage({
   const chatId = isAgentOverview ? uuidv4() : chat?.[0] || uuidv4();
 
   return (
-    <AgentChatSection
-      agentId={agentId as Id<"agent">}
-      chatId={chatId}
-      isAgentOverview={isAgentOverview}
-      isnewchat={isnewchat}
-    />
+    <section className="flex w-full flex-col items-center justify-center gap-4 bg-transparent">
+      <AgentChatSection
+        agentId={agentId as Id<"agent">}
+        chatId={chatId}
+        isAgentOverview={isAgentOverview}
+        isnewchat={isnewchat}
+      />
+    </section>
   );
 }

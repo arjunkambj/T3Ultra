@@ -6,9 +6,10 @@ import { useQuery } from "convex-helpers/react/cache/hooks";
 import SidebarProjectItem from "./sub/SidebarProjectItem";
 
 import { api } from "@/convex/_generated/api";
+import { useUser } from "@/hooks/useUser";
 
 const SidebarProjectsList = React.memo(() => {
-  const user = useQuery(api.function.users.currentUser);
+  const user = useUser();
 
   const projects = useQuery(
     api.function.project.getProjectWithChats,

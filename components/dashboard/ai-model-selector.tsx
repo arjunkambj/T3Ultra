@@ -11,13 +11,13 @@ import {
 import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
 import { useAtom } from "jotai";
-import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useMutation } from "convex/react";
 import React from "react";
 
 import { aiModelAtom } from "@/atoms/aimodel";
 import { models, type Model } from "@/config/ai-model";
 import { api } from "@/convex/_generated/api";
+import { useUser } from "@/hooks/useUser";
 
 function Badge({
   children,
@@ -61,7 +61,7 @@ function Badge({
 const ModelSelector = React.memo(() => {
   const [currentModelId, setCurrentModelId] = useAtom(aiModelAtom);
   const [selectedModel, setSelectedModel] = useState<Model>(models[0]);
-  const user = useQuery(api.function.users.currentUser);
+  const user = useUser();
   const updateUserModel = useMutation(api.function.users.updateUserModel);
 
   // Update selected model when currentModelId changes
@@ -147,7 +147,7 @@ const ModelSelector = React.memo(() => {
       <Dropdown shadow="none">
         <DropdownTrigger>
           <Button
-            className="w-fulljustify-between bg-[#0F0F10] px-2 text-neutral-200"
+            className="w-fulljustify-between bg-transparent px-2 text-neutral-200"
             endContent={<Icon icon="solar:alt-arrow-down-linear" width={16} />}
             variant="flat"
           >

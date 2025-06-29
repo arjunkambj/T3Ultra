@@ -3,6 +3,7 @@
 import { Spinner } from "@heroui/spinner";
 import { cn } from "@heroui/theme";
 import { useQuery } from "convex-helpers/react/cache/hooks";
+import { Icon } from "@iconify/react";
 
 import TopMenuBar from "../dashboard/TopMenuBar";
 import MessageUI from "../dashboard/MessageUI";
@@ -53,8 +54,11 @@ export default function AgentChatSection({
   // Early return after all hooks have been called
   if (isLoading) {
     return (
-      <div className="flex h-dvh w-full items-center justify-center">
-        <Spinner color="white" />
+      <div className="flex h-dvh w-full flex-col items-center justify-center gap-4">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-purple-700 shadow-xl">
+          <Spinner color="white" size="lg" />
+        </div>
+        <p className="text-neutral-400">Loading agent...</p>
       </div>
     );
   }
@@ -64,33 +68,69 @@ export default function AgentChatSection({
       {hasMessages && <ShareModel chatId={chatId} />}
       <div
         className={cn(
-          "relative flex h-dvh w-full flex-col items-center justify-center",
+          "relative flex h-dvh w-full flex-col items-center justify-center bg-transparent",
         )}
       >
         {!hasMessages && isAgentOverview ? (
-          <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 bg-[#0F0F10] px-3">
+          <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 bg-transparent py-10">
             <TopMenuBar />
-            <div className="mb-16 flex h-full w-full max-w-3xl flex-col items-center justify-center gap-12 pb-20">
-              <div className="text-center">
-                <h1 className="text-2xl font-bold">{agent?.name}</h1>
-                <p className="mt-2 text-neutral-400">{agent?.description}</p>
+            <div className="mb-10 flex h-full w-full max-w-4xl flex-col items-center justify-center gap-16 px-6 pb-10">
+              {/* Agent Header with Enhanced Design */}
+              <div className="space-y-6 text-center">
+                <div className="relative">
+                  {/* Agent Icon/Avatar */}
+                  <div className="relative mb-6 flex justify-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 shadow-xl">
+                      <Icon
+                        className="text-neutral-200"
+                        icon="mdi:robot"
+                        width={32}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Agent Name */}
+                  <h1 className="relative bg-gradient-to-r from-neutral-100 to-neutral-300 bg-clip-text text-4xl font-bold text-transparent">
+                    {agent?.name || "Loading..."}
+                  </h1>
+                </div>
+
+                {/* Agent Description */}
+                <div className="mx-auto max-w-2xl">
+                  <p className="text-lg leading-relaxed text-neutral-400">
+                    {agent?.description || "Getting agent details..."}
+                  </p>
+                </div>
+
+                {/* Subtle divider */}
+                <div className="flex justify-center pt-4">
+                  <div className="h-px w-24 bg-gradient-to-r from-transparent via-neutral-600 to-transparent" />
+                </div>
               </div>
 
-              <ChatInput
-                handleInputChange={handleInputChange}
-                handleKeyDown={handleKeyDown}
-                input={input}
-                isLoading={isLoading}
-                isnewchat={isnewchat}
-                setInput={setInput}
-                status={status}
-                stop={stop}
-                onSubmit={onSubmit}
-              />
+              {/* Chat Input Section */}
+              <div className="w-full max-w-3xl">
+                <div className="mb-4 text-center">
+                  <p className="text-sm text-neutral-500">
+                    Start a conversation with this agent
+                  </p>
+                </div>
+                <ChatInput
+                  handleInputChange={handleInputChange}
+                  handleKeyDown={handleKeyDown}
+                  input={input}
+                  isLoading={isLoading}
+                  isnewchat={isnewchat}
+                  setInput={setInput}
+                  status={status}
+                  stop={stop}
+                  onSubmit={onSubmit}
+                />
+              </div>
             </div>
           </div>
         ) : (
-          <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 bg-[#0F0F10]">
+          <div className="flex h-dvh w-full flex-col items-center justify-center gap-4">
             <TopMenuBar />
             <div className="flex h-full w-full flex-col items-center justify-center">
               {/* TODO: Implement AgentChatSection component similar to ChatSection */}

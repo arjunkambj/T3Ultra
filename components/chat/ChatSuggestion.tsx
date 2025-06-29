@@ -8,11 +8,7 @@ const suggestions = [
     label: "Write Code For",
     icon: "solar:code-linear",
   },
-  {
-    id: "btc-price",
-    label: "Check BTC Price",
-    icon: "lucide:bitcoin",
-  },
+
   {
     id: "search",
     label: "Search",
@@ -57,7 +53,7 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
       {/* Main heading */}
       <div className="flex flex-col items-start gap-5">
         <div className="flex flex-col gap-5">
-          <h1 className="text-3xl font-bold text-neutral-300">
+          <h1 className="text-3xl font-bold text-neutral-200">
             Welcome to the T1 GPT.
           </h1>
 
@@ -66,7 +62,7 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
             {suggestions.map((suggestion) => (
               <Button
                 key={suggestion.id}
-                className="border border-neutral-800 bg-neutral-900"
+                className="border border-default-200 bg-neutral-900 text-neutral-300"
                 radius="full"
                 size="sm"
                 variant="flat"
@@ -83,13 +79,13 @@ export default function ChatSuggestions({ setPrompt }: ChatSuggestionsProps) {
         <div className="w-full max-w-3xl space-y-3 pl-2">
           {features.map((feature) => (
             <div key={feature.id}>
-              <div className="mb-2 px-2 text-sm text-neutral-400">
+              <div className="mb-2 px-2 text-sm text-neutral-300/80">
                 {feature.label}
               </div>
-              <Divider className="bg-neutral-800" />
+              <Divider className="bg-neutral-700" />
             </div>
           ))}
-          <div className="mb-2 px-2 text-sm text-neutral-400">
+          <div className="mb-2 px-2 text-sm text-neutral-300/80">
             - Auto Memory, Source & Context
           </div>
         </div>

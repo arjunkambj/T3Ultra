@@ -13,7 +13,7 @@ export default async function ChatPage({
   const chatId = isNewChat ? uuidv4() : chat[0];
 
   return (
-    <section className="flex w-full flex-col items-center justify-center gap-4 bg-[#0F0F10]">
+    <section className="flex w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-neutral-950 via-[#141414] to-neutral-950">
       <TopMenuBar />
       <ChatSection key={chatId} chatId={chatId} isnewchat={isNewChat} />
     </section>

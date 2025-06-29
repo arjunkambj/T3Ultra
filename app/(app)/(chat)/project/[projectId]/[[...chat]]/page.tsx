@@ -15,12 +15,14 @@ export default async function ProjectPage({
   const chatId = isProjectOverview ? uuidv4() : chat?.[0] || uuidv4();
 
   return (
-    <ProjectChatSection
-      key={`${projectId}-${chatId}`}
-      chatId={chatId}
-      isProjectOverview={isProjectOverview}
-      isnewchat={isnewchat}
-      projectId={projectId}
-    />
+    <section className="flex w-full flex-col items-center justify-center gap-4 bg-transparent">
+      <ProjectChatSection
+        key={`${projectId}-${chatId}`}
+        chatId={chatId}
+        isProjectOverview={isProjectOverview}
+        isnewchat={isnewchat}
+        projectId={projectId}
+      />
+    </section>
   );
 }

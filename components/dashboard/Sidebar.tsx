@@ -53,7 +53,7 @@ const Sidebar = React.memo(() => {
 
   return (
     <>
-      <section className="h-full border-default-100 bg-[#0A0A0A]">
+      <section className="h-full border-default-100 bg-gradient-to-b from-[#0f0f0f] via-[#131313] to-[#171717]">
         {!isMobile && (
           <div className="border-r border-neutral-800">{sidebarContent}</div>
         )}
@@ -64,7 +64,7 @@ const Sidebar = React.memo(() => {
             backdrop="transparent"
             className={drawerClasses}
             classNames={{
-              base: "bg-[#0A0A0A]",
+              base: "bg-gradient-to-b from-[#0f0f0f] via-[#131313] to-[#171717]",
             }}
             isOpen={isOpen}
             placement="left"
