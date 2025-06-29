@@ -8,13 +8,13 @@ import { addToMemory } from "./tools";
 import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
 
+export const runtime = "edge";
+
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
 });
-
-export const runtime = "edge";
 
 export async function POST(req: Request) {
   const {
