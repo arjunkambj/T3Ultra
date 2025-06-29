@@ -65,6 +65,30 @@ export default function MessageUI({
     }
   }, [hasSentMessage, scrollToBottom]);
 
+  useEffect(() => {
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === "user") {
+        // Scroll immediately when user sends a message
+        setTimeout(() => {
+          scrollToBottom("smooth");
+        }, 100);
+      }
+    }
+  }, [messages, scrollToBottom]);
+
+  useEffect(() => {
+    if (status === "streaming" && messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage.role === "assistant") {
+        // Scroll when assistant starts responding
+        setTimeout(() => {
+          scrollToBottom("smooth");
+        }, 100);
+      }
+    }
+  }, [status, messages.length, scrollToBottom]);
+
   return (
     <div
       ref={messagesContainerRef}

@@ -5,12 +5,16 @@ import { Icon } from "@iconify/react";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useQuery } from "convex-helpers/react/cache/hooks";
 
 import SidebarProjectChat from "./SidebarProjectChat";
 
-import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+
+interface Chat {
+  _id: string;
+  chatId: string;
+  title: string;
+}
 
 interface Project {
   _id: Id<"projects">;
@@ -19,19 +23,21 @@ interface Project {
   description: string;
   instructions: string;
   userId: Id<"users">;
+  chats?: Chat[];
 }
 
 interface ProjectItemProps {
   project: Project;
 }
 
-const SidebarProjectItem = React.memo(({ project }: ProjectItemProps) => {
+const SidebarProjectItem = React.memo(function SidebarProjectItem({
+  project,
+}: ProjectItemProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const chats = useQuery(api.function.chats.getChatsByProjectId, {
-    projectId: project.projectId,
-  });
+  // Use pre-fetched chats from the project object instead of making separate query
+  const chats = project.chats || [];
 
   const [expandedProject, setExpandedProject] = useState<boolean>(false);
 
@@ -48,7 +54,32 @@ const SidebarProjectItem = React.memo(({ project }: ProjectItemProps) => {
     return pathname === `/project/${project.projectId}`;
   }, [pathname, project.projectId]);
 
-  const chatCount = chats?.length || 0;
+  const chatCount = chats.length;
+
+  const chatElements = useMemo(
+    () =>
+      chats.map((chat) => (
+        <SidebarProjectChat
+          key={chat._id}
+          chatId={chat.chatId}
+          projectId={project.projectId || ""}
+          title={chat.title}
+        />
+      )),
+    [chats, project.projectId],
+  );
+
+  const emptyState = useMemo(
+    () => (
+      <div className="ml-6 mt-2 border-l border-neutral-800/30 pl-3">
+        <div className="flex items-center gap-2 py-2 text-xs text-neutral-600">
+          <Icon icon="mdi:chat-plus" width={12} />
+          <span>No chats yet</span>
+        </div>
+      </div>
+    ),
+    [],
+  );
 
   return (
     <div className="w-full">
@@ -97,32 +128,16 @@ const SidebarProjectItem = React.memo(({ project }: ProjectItemProps) => {
       </div>
 
       {/* Expanded Chat List */}
-      {expandedProject && chats && chats.length > 0 && (
+      {expandedProject && chatCount > 0 && (
         <div className="ml-4 mt-2 flex flex-col gap-1 border-l border-neutral-800/30 pl-3">
-          {chats.map((chat) => (
-            <SidebarProjectChat
-              key={chat._id}
-              chatId={chat.chatId}
-              projectId={project.projectId || ""}
-              title={chat.title}
-            />
-          ))}
+          {chatElements}
         </div>
       )}
 
       {/* Empty State for Expanded Project */}
-      {expandedProject && chatCount === 0 && (
-        <div className="ml-6 mt-2 border-l border-neutral-800/30 pl-3">
-          <div className="flex items-center gap-2 py-2 text-xs text-neutral-600">
-            <Icon icon="mdi:chat-plus" width={12} />
-            <span>No chats yet</span>
-          </div>
-        </div>
-      )}
+      {expandedProject && chatCount === 0 && emptyState}
     </div>
   );
 });
-
-SidebarProjectItem.displayName = "SidebarProjectItem";
 
 export default SidebarProjectItem;
