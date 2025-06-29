@@ -253,8 +253,7 @@ const BillingSetting = React.memo(
 
           <div className="mt-6 flex justify-end">
             <Button
-              className="px-6"
-              color="primary"
+              className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
               isDisabled={isCurrentPlan}
               isLoading={isLoading}
               onPress={handleUpgrade}

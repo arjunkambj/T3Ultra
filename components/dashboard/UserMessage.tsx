@@ -20,7 +20,8 @@ const UserMessage = memo(function UserMessage({
   const [isHovering, setIsHovering] = useState(false);
   const [edit, setEdit] = useState(false);
 
-  const attachments = message.experimental_attachments || [];
+  const attachments =
+    message.experimental_attachments || message.attachments || [];
   const hasAttachments = attachments.length > 0;
 
   return (

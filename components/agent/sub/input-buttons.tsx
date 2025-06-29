@@ -3,9 +3,10 @@ import { Button } from "@heroui/button";
 import { Tooltip } from "@heroui/tooltip";
 import { Icon } from "@iconify/react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { attachmentAtom } from "@/atoms/attachment";
 import { useSetAtom } from "jotai";
 import { upload } from "@vercel/blob/client";
+
+import { attachmentAtom } from "@/atoms/attachment";
 export default function InputButtons({
   prompt,
   stop,

@@ -14,13 +14,6 @@ interface ContactSettingCardProps {
 
 const contactOptions = [
   {
-    title: "Email Support",
-    description: "Get help via email",
-    icon: "mdi:email",
-    action: "mailto:support@t1gpt.com",
-    actionText: "Send Email",
-  },
-  {
     title: "Documentation",
     description: "Browse our comprehensive guides",
     icon: "mdi:book-open",
@@ -33,13 +26,6 @@ const contactOptions = [
     icon: "mdi:forum",
     action: "/community",
     actionText: "Join Forum",
-  },
-  {
-    title: "Bug Report",
-    description: "Report issues and bugs",
-    icon: "mdi:bug",
-    action: "/feedback",
-    actionText: "Report Bug",
   },
 ];
 
@@ -79,9 +65,9 @@ const ContactSetting = React.memo(
             <Card key={option.title} className="bg-default-100" shadow="none">
               <CardBody className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-800/50">
                     <Icon
-                      className="text-primary"
+                      className="text-neutral-300"
                       icon={option.icon}
                       width={20}
                     />
@@ -95,8 +81,7 @@ const ContactSetting = React.memo(
                     </p>
                     <Button
                       as={Link}
-                      className="mt-2"
-                      color="primary"
+                      className="mt-2 bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
                       href={option.action}
                       size="sm"
                       variant="flat"
@@ -145,9 +130,9 @@ const ContactSetting = React.memo(
             <Card className="mt-4 bg-default-100" shadow="none">
               <CardBody className="p-4">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-800/50">
                     <Icon
-                      className="text-primary"
+                      className="text-neutral-300"
                       icon="mdi:headset"
                       width={24}
                     />
@@ -201,13 +186,13 @@ const ContactSetting = React.memo(
           {/* Emergency Contact */}
           <div>
             <Card
-              className="border-l-4 border-l-warning bg-warning/5"
+              className="border-l-4 border-l-neutral-500 bg-neutral-800/20"
               shadow="none"
             >
               <CardBody className="p-4">
                 <div className="flex items-start gap-3">
                   <Icon
-                    className="text-warning"
+                    className="text-neutral-400"
                     icon="mdi:alert-circle"
                     width={20}
                   />
@@ -220,7 +205,7 @@ const ContactSetting = React.memo(
                       please email us at{" "}
                       <Link
                         isExternal
-                        className="text-xs"
+                        className="text-xs text-danger"
                         href="mailto:urgent@t1gpt.com"
                       >
                         urgent@t1gpt.com

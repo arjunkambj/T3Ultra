@@ -8,10 +8,11 @@ import { cn } from "@heroui/theme";
 import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
 import { useAtom } from "jotai";
-import { attachmentAtom } from "@/atoms/attachment";
+
 import PromptInput from "./prompt-input";
 import InputButtons from "./input-buttons";
 
+import { attachmentAtom } from "@/atoms/attachment";
 interface PromptInputProps {
   input: string;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -22,11 +23,10 @@ interface PromptInputProps {
 }
 
 interface PromptInputAssetsProps {
-  assets: string[];
-  onRemoveAsset: (index: number) => void;
+  isLoading?: boolean;
 }
 
-const PromptInputAssets = ({ isLoading }: PromptInputAssetsProps) => {
+const PromptInputAssets = ({}: PromptInputAssetsProps) => {
   const [attachments, setAttachments] = useAtom(attachmentAtom);
 
   const handleRemoveAsset = useCallback(
@@ -83,11 +83,13 @@ export function PromptInputFullLineComponent({
   const [isLoading, setIsLoading] = useState(false);
   const [attachments] = useAtom(attachmentAtom);
 
-  const inputRef = React.useRef<HTMLTextAreaElement>(null);
-
   useEffect(() => {
-    inputRef.current?.focus();
-  }, [inputRef]);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [attachments]);
+
+  const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
   const handlePaste = useCallback(
     async (e: React.ClipboardEvent) => {
@@ -101,11 +103,6 @@ export function PromptInputFullLineComponent({
 
           const reader = new FileReader();
 
-          reader.onload = () => {
-            const base64data = reader.result as string;
-
-            setAssets((prev) => [...prev, base64data]);
-          };
           reader.readAsDataURL(blob);
         }
       }
@@ -115,14 +112,14 @@ export function PromptInputFullLineComponent({
 
   return (
     <Form
-      className="dark:bg[#141415] flex w-full max-w-3xl flex-col items-start gap-0 rounded-2xl border border-neutral-300/20 bg-[#141415]"
+      className="flex w-full flex-col items-start gap-0 rounded-2xl border-1 border-default-100 bg-default-50"
       validationBehavior="native"
       onSubmit={onSubmit}
     >
       <div
         className={cn(
-          "group flex gap-2 pl-[20px] pr-3",
-          assets.length > 0 ? "pt-4" : "",
+          "group relative flex gap-2 rounded-2xl pl-[20px] pr-3",
+          attachments.length > 0 ? "pt-4" : "",
         )}
       >
         <PromptInputAssets isLoading={isLoading} />
@@ -133,12 +130,12 @@ export function PromptInputFullLineComponent({
           innerWrapper: "relative",
           input: "text-medium h-auto w-full",
           inputWrapper:
-            "!bg-transparent shadow-none group-data-[focus-visible=true]:ring-0 group-data-[focus-visible=true]:ring-offset-0 pr-3 pl-[20px] pt-4 pb-0",
+            "!bg-transparent shadow-none group-data-[focus-visible=true]:ring-0 group-data-[focus-visible=true]:ring-offset-0 pr-3 pl-[20px] pt-4 pb-0 ",
         }}
         maxRows={16}
         minRows={2}
         name="content"
-        radius="lg"
+        spellCheck={false as any}
         value={input}
         variant="flat"
         onChange={handleInputChange}
@@ -152,5 +149,26 @@ export function PromptInputFullLineComponent({
         stop={stop}
       />
     </Form>
+  );
+}
+
+export default function PromptInputFullLine({
+  input,
+
+  onSubmit,
+  handleInputChange,
+  handleKeyDown,
+  stop,
+  status,
+}: PromptInputProps) {
+  return (
+    <PromptInputFullLineComponent
+      handleInputChange={handleInputChange}
+      handleKeyDown={handleKeyDown}
+      input={input}
+      status={status}
+      stop={stop}
+      onSubmit={onSubmit}
+    />
   );
 }

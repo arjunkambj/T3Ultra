@@ -10,8 +10,6 @@ import { useSetAtom } from "jotai";
 import { upload } from "@vercel/blob/client";
 
 import { attachmentAtom } from "@/atoms/attachment";
-// Removed @vercel/blob/client import since we're using custom API route
-
 import { searchAtom } from "@/atoms/searchState";
 
 export default function InputButtons({
@@ -21,6 +19,7 @@ export default function InputButtons({
   setIsLoading,
 }: {
   prompt: string;
+
   stop: () => void;
   status: string;
   setIsLoading: (isLoading: boolean) => void;

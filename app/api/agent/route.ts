@@ -1,7 +1,6 @@
 import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
-import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
 import { openai } from "@ai-sdk/openai";
 import { xai } from "@ai-sdk/xai";
 
@@ -16,9 +15,7 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 export async function POST(req: Request) {
   const { messages, chatId, userId, modelId, agentId } = await req.json();
 
-  const isAuthenticated = await isAuthenticatedNextjs();
-
-  if (!chatId && !userId && !isAuthenticated) {
+  if (!chatId && !userId) {
     return new Response(JSON.stringify({ error: "Please login to continue" }), {
       status: 400,
     });
@@ -35,14 +32,14 @@ export async function POST(req: Request) {
 
     if (lastMessage.role === "user") {
       try {
-        await convex.mutation(api.function.messages.addMessageToChat, {
+        convex.mutation(api.function.messages.addMessageToChat, {
           chatId,
           content: lastMessage.content,
           role: "user",
           experimental_attachments: lastMessage.experimental_attachments,
           parts: lastMessage.parts,
         });
-        await convex.mutation(api.function.chats.updateChatUpdatedAt, {
+        convex.mutation(api.function.chats.updateChatUpdatedAt, {
           chatId,
         });
       } catch (error) {
@@ -115,26 +112,35 @@ You are a helpful AI assistant 🤖
     },
     onFinish: async (result) => {
       try {
-        // Save assistant message to database
-        await convex.mutation(api.function.messages.addMessageToChat, {
-          chatId,
-          content: result.text,
-          role: "assistant",
-        });
+        // Run database operations in parallel for better performance
+        const operations: Promise<any>[] = [
+          // Save assistant message to database
+          convex.mutation(api.function.messages.addMessageToChat, {
+            chatId,
+            content: result.text,
+            role: "assistant",
+          }),
+        ];
 
         if (messages.length === 1 && messages[0].role === "user") {
-          const title = await generateTitleFromUserMessage({
+          const titleOperation = generateTitleFromUserMessage({
             message: messages[0],
-          });
+          }).then((title) =>
+            convex.mutation(api.function.chats.updateChatTitle, {
+              chatId,
+              title,
+            }),
+          );
 
-          await convex.mutation(api.function.chats.updateChatTitle, {
-            chatId,
-            title,
-          });
+          operations.push(titleOperation);
         }
+
+        // Execute all operations in parallel
+        await Promise.allSettled(operations);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error("Error saving assistant message:", error);
+        console.error("Error in onFinish callback:", error);
+        // Don't throw here to avoid breaking the stream
       }
     },
   });

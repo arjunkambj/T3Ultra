@@ -23,10 +23,10 @@ interface PromptInputProps {
 }
 
 interface PromptInputAssetsProps {
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
-const PromptInputAssets = ({ isLoading }: PromptInputAssetsProps) => {
+const PromptInputAssets = ({}: PromptInputAssetsProps) => {
   const [attachments, setAttachments] = useAtom(attachmentAtom);
 
   const handleRemoveAsset = useCallback(

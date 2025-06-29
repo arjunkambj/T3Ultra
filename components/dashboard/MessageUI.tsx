@@ -29,6 +29,8 @@ export default function MessageUI({
     endRef: messagesEndRef,
     onViewportEnter,
     onViewportLeave,
+    scrollToBottom,
+    hasSentMessage,
   } = useMessages({
     chatId,
     status,
@@ -57,37 +59,66 @@ export default function MessageUI({
     }
   }, [messages, memory]);
 
+  useEffect(() => {
+    if (hasSentMessage) {
+      scrollToBottom("smooth");
+    }
+  }, [hasSentMessage, scrollToBottom]);
+
   return (
     <div
       ref={messagesContainerRef}
       className="flex h-full w-full max-w-3xl flex-col px-3 pt-16"
     >
-      {messages?.map((message) => (
-        <div key={isShared ? message._id : message.id} className="pb-12">
-          {message.role === "user" ? (
-            <div className="flex w-full justify-end">
-              <UserMessage
+      {messages?.map((message, index) => {
+        const isLastMessage = index === messages.length - 1;
+        const isAssistantWithoutContent =
+          message.role === "assistant" &&
+          (!message.content || message.content.trim().length === 0);
+
+        // Skip rendering empty assistant messages that are still processing
+        if (
+          isAssistantWithoutContent &&
+          isLastMessage &&
+          (status === "streaming" || status === "submitted")
+        ) {
+          return null;
+        }
+
+        return (
+          <div key={isShared ? message._id : message.id} className="pb-12">
+            {message.role === "user" ? (
+              <div className="flex w-full justify-end">
+                <UserMessage
+                  isShared={isShared}
+                  message={message}
+                  messageId={message.id}
+                  reload={reload}
+                />
+              </div>
+            ) : message.content.length > 0 ? (
+              <AssistanceMessage
+                allmessages={messages}
+                chatId={chatId}
                 isShared={isShared}
                 message={message}
-                messageId={message.id}
-                reload={reload}
               />
-            </div>
-          ) : message.content.length > 0 ? (
-            <AssistanceMessage
-              allmessages={messages}
-              chatId={chatId}
-              isShared={isShared}
-              message={message}
-            />
-          ) : null}
-        </div>
-      ))}
-      {status === "submitted" &&
+            ) : null}
+          </div>
+        );
+      })}
+      {((status === "submitted" &&
         messages.length > 0 &&
-        messages[messages.length - 1].role === "user" && (
+        messages[messages.length - 1].role === "user") ||
+        (status === "streaming" &&
+          messages.length > 0 &&
+          messages[messages.length - 1].role === "assistant" &&
+          (!messages[messages.length - 1].content ||
+            messages[messages.length - 1].content.trim().length === 0))) && (
+        <div className="pb-12">
           <AIThinkingSpinner messages={messages} status={status} />
-        )}
+        </div>
+      )}
       <motion.div
         ref={messagesEndRef}
         className="min-h-[24px] min-w-[24px] shrink-0"

@@ -151,13 +151,12 @@ const CustomizationSetting = React.memo(
           traitOptions.map((trait) => (
             <Chip
               key={trait}
-              className="cursor-pointer px-2 transition-colors"
-              color={
-                formData.traitsforllm.includes(trait) ? "primary" : "default"
-              }
-              variant={
-                formData.traitsforllm.includes(trait) ? "solid" : "bordered"
-              }
+              className={`cursor-pointer px-2 transition-colors ${
+                formData.traitsforllm.includes(trait)
+                  ? "bg-neutral-100 text-neutral-800"
+                  : "border-neutral-600 bg-transparent text-neutral-400 hover:border-neutral-500"
+              }`}
+              variant="bordered"
               onClick={() => toggleTrait(trait)}
             >
               {trait}
@@ -171,17 +170,12 @@ const CustomizationSetting = React.memo(
           preferenceOptions.map((preference) => (
             <Chip
               key={preference}
-              className="cursor-pointer px-2 transition-colors"
-              color={
+              className={`cursor-pointer px-2 transition-colors ${
                 formData.preferencesofuser.includes(preference)
-                  ? "secondary"
-                  : "default"
-              }
-              variant={
-                formData.preferencesofuser.includes(preference)
-                  ? "solid"
-                  : "bordered"
-              }
+                  ? "bg-neutral-100 text-neutral-800"
+                  : "border-neutral-600 bg-transparent text-neutral-400 hover:border-neutral-500"
+              }`}
+              variant="bordered"
               onClick={() => togglePreference(preference)}
             >
               {preference}
@@ -365,10 +359,11 @@ const CustomizationSetting = React.memo(
           {/* Save Button */}
           <div className="flex justify-end">
             <Button
-              color="primary"
+              className="bg-neutral-100 text-neutral-900 hover:bg-neutral-200"
               isLoading={isLoading}
               size="md"
               startContent={<Icon icon="mdi:content-save" width={18} />}
+              variant="flat"
               onPress={handleSave}
             >
               Save Customization

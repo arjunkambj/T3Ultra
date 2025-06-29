@@ -110,10 +110,9 @@ const MemorySetting = React.memo(
                     </p>
                     {memory.category && (
                       <Chip
-                        className="mt-3 px-3"
-                        color="primary"
+                        className="mt-3 bg-neutral-300 px-3 text-neutral-800"
                         size="sm"
-                        variant="flat"
+                        variant="bordered"
                       >
                         {memoryCategories.find((c) => c.key === memory.category)
                           ?.label || memory.category}
@@ -124,8 +123,7 @@ const MemorySetting = React.memo(
                 <div className="flex-shrink-0">
                   <Button
                     isIconOnly
-                    className="h-8 min-w-8"
-                    color="danger"
+                    className="h-8 min-w-8 text-neutral-400 hover:bg-red-400/10 hover:text-red-400"
                     isLoading={deletingMemoryId === memory._id}
                     size="sm"
                     variant="light"
@@ -150,7 +148,7 @@ const MemorySetting = React.memo(
               <CardBody className="p-4">
                 <div className="flex items-start gap-3">
                   <Icon
-                    className="mt-0.5 flex-shrink-0 text-primary-500"
+                    className="mt-0.5 flex-shrink-0 text-neutral-400"
                     icon="mdi:information"
                     width={16}
                   />

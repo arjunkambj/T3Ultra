@@ -23,10 +23,10 @@ interface PromptInputProps {
 }
 
 interface PromptInputAssetsProps {
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
-const PromptInputAssets = ({ isLoading }: PromptInputAssetsProps) => {
+const PromptInputAssets = ({}: PromptInputAssetsProps) => {
   const [attachments, setAttachments] = useAtom(attachmentAtom);
 
   const handleRemoveAsset = useCallback(
@@ -91,21 +91,24 @@ export function PromptInputFullLineComponent({
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
-  const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
-    const items = Array.from(e.clipboardData.items);
+  const handlePaste = useCallback(
+    async (e: React.ClipboardEvent) => {
+      const items = Array.from(e.clipboardData.items);
 
-    for (const item of items) {
-      if (item.type.indexOf("image") !== -1) {
-        const blob = item.getAsFile();
+      for (const item of items) {
+        if (item.type.indexOf("image") !== -1) {
+          const blob = item.getAsFile();
 
-        if (!blob) continue;
+          if (!blob) continue;
 
-        const reader = new FileReader();
+          const reader = new FileReader();
 
-        reader.readAsDataURL(blob);
+          reader.readAsDataURL(blob);
+        }
       }
-    }
-  }, []);
+    },
+    [attachments],
+  );
 
   return (
     <Form

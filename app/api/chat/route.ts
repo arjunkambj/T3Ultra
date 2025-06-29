@@ -1,6 +1,5 @@
 import { streamText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
-import { isAuthenticatedNextjs } from "@convex-dev/auth/nextjs/server";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 
 import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
@@ -19,11 +18,7 @@ export async function POST(req: Request) {
   const { messages, chatId, userId, modelId, isSearchEnabled } =
     await req.json();
 
-  console.log(messages);
-
-  const isAuthenticated = await isAuthenticatedNextjs();
-
-  if (!chatId && !userId && !isAuthenticated) {
+  if (!chatId && !userId) {
     return new Response(JSON.stringify({ error: "Please login to continue" }), {
       status: 400,
     });
@@ -34,14 +29,14 @@ export async function POST(req: Request) {
 
     if (lastMessage.role === "user") {
       try {
-        await convex.mutation(api.function.messages.addMessageToChat, {
+        convex.mutation(api.function.messages.addMessageToChat, {
           chatId,
           content: lastMessage.content,
           role: "user",
           experimental_attachments: lastMessage.experimental_attachments,
           parts: lastMessage.parts,
         });
-        await convex.mutation(api.function.chats.updateChatUpdatedAt, {
+        convex.mutation(api.function.chats.updateChatUpdatedAt, {
           chatId,
         });
       } catch (error) {
@@ -51,16 +46,14 @@ export async function POST(req: Request) {
     }
   }
 
-  const customizations = await convex.query(
-    api.function.customizations.getCustomization,
-    {
+  const [customizations, memory] = await Promise.all([
+    convex.query(api.function.customizations.getCustomization, {
       userId: userId as any,
-    },
-  );
-
-  const memory = await convex.query(api.function.memory.getMemory, {
-    userId: userId as any,
-  });
+    }),
+    convex.query(api.function.memory.getMemory, {
+      userId: userId as any,
+    }),
+  ]);
 
   const systemPrompt = `
   You are a helpful assistant who speaks in a human-like way. Add 1 emoji per message for engagement, no more.
@@ -81,7 +74,7 @@ export async function POST(req: Request) {
   MEMORY RULES:
   - Personalize using existing memory
   - Only call addToMemory if new info is shared
-  - Don’t duplicate or re-add what's already stored
+  - Don't duplicate or re-add what's already stored
    `;
 
   const userModel = [
@@ -118,28 +111,37 @@ export async function POST(req: Request) {
     },
     onFinish: async (result) => {
       try {
-        // Save assistant message to database
-        await convex.mutation(api.function.messages.addMessageToChat, {
-          chatId,
-          content: result.text,
-          role: "assistant",
-          modelUsed: modelId.toString(),
-        });
+        // Run database operations in parallel for better performance
+        const operations: Promise<any>[] = [
+          // Save assistant message to database
+          convex.mutation(api.function.messages.addMessageToChat, {
+            chatId,
+            content: result.text,
+            role: "assistant",
+            modelUsed: modelId.toString(),
+          }),
+        ];
 
         // Update chat title if this is the first exchange
         if (messages.length === 1 && messages[0].role === "user") {
-          const title = await generateTitleFromUserMessage({
+          const titleOperation = generateTitleFromUserMessage({
             message: messages[0],
-          });
+          }).then((title) =>
+            convex.mutation(api.function.chats.updateChatTitle, {
+              chatId,
+              title: title as any,
+            }),
+          );
 
-          await convex.mutation(api.function.chats.updateChatTitle, {
-            chatId,
-            title: title as any,
-          });
+          operations.push(titleOperation);
         }
+
+        // Execute all operations in parallel
+        await Promise.allSettled(operations);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.error("Error saving assistant message:", error);
+        console.error("Error in onFinish callback:", error);
+        // Don't throw here to avoid breaking the stream
       }
     },
   });

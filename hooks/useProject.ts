@@ -62,28 +62,25 @@ export const useProject = ({
   });
 
   useEffect(() => {
-    // Only show loading for existing chats when we're waiting for messages
-    if (!isnewchat && !getMessages) {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-      // Set messages for existing chats
-      if (getMessages && !isnewchat && messages.length === 0) {
-        setMessages(
-          getMessages.map((message) => ({
-            id: message.id,
-            role: message.role,
-            content: message.content,
-            attachments: message.experimental_attachments,
-            parts: message.parts,
-            modelUsed: message.modelUsed,
-            updatedAt: message.updatedAt,
-            annotations: message.annotations,
-          })),
-        );
-      }
+    // Set messages for existing chats when they load
+    if (getMessages && !isnewchat && messages.length === 0) {
+      setMessages(
+        getMessages.map((message) => ({
+          id: message.id,
+          role: message.role,
+          content: message.content,
+          attachments: message.experimental_attachments,
+          parts: message.parts,
+          modelUsed: message.modelUsed,
+          updatedAt: message.updatedAt,
+          annotations: message.annotations,
+        })),
+      );
     }
-  }, [getMessages, isnewchat, setMessages]);
+
+    // Update loading state
+    setIsLoading(!isnewchat && !getMessages);
+  }, [getMessages, isnewchat, messages.length, setMessages]);
 
   // Reset messages when starting a new chat (project overview)
   useEffect(() => {

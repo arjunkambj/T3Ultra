@@ -1,9 +1,9 @@
 "use client";
 
+import React, { useState, useCallback, useMemo } from "react";
 import { Icon } from "@iconify/react";
 import { Button } from "@heroui/button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 
@@ -25,7 +25,7 @@ interface ProjectItemProps {
   project: Project;
 }
 
-export default function SidebarProjectItem({ project }: ProjectItemProps) {
+const SidebarProjectItem = React.memo(({ project }: ProjectItemProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -35,33 +35,35 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
 
   const [expandedProject, setExpandedProject] = useState<boolean>(false);
 
-  const handleToggleExpansion = () => {
-    setExpandedProject(!expandedProject);
-  };
+  const handleToggleExpansion = useCallback(() => {
+    setExpandedProject((prev) => !prev);
+  }, []);
 
-  const handleProjectClick = () => {
+  const handleProjectClick = useCallback(() => {
     setExpandedProject(true);
     router.push(`/project/${project.projectId}`);
-  };
+  }, [router, project.projectId]);
 
-  const isProjectActive = (projectId: string) => {
-    return pathname === `/project/${projectId}`;
-  };
+  const isProjectActive = useMemo(() => {
+    return pathname === `/project/${project.projectId}`;
+  }, [pathname, project.projectId]);
+
+  const chatCount = chats?.length || 0;
 
   return (
     <div className="w-full">
       {/* Project Header */}
       <div
-        className={`group relative flex h-8 w-full items-center rounded-medium p-0 hover:bg-neutral-800/50 ${
-          isProjectActive(project.projectId || "")
-            ? "rounded-xl bg-default-100 text-default-200"
+        className={`group relative flex h-8 w-full items-center rounded-lg transition-colors hover:bg-neutral-800/30 ${
+          isProjectActive
+            ? "bg-neutral-800/50 text-neutral-100"
             : "text-neutral-400"
         }`}
       >
         <Button
           aria-expanded={expandedProject}
           aria-label={`${expandedProject ? "Collapse" : "Expand"} project ${project.title}`}
-          className="group relative flex h-8 w-full cursor-pointer items-center justify-between rounded-medium bg-transparent pl-3 pr-0 text-small outline-none transition-colors duration-100 hover:bg-transparent hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-neutral-600 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
+          className="group relative flex h-8 w-full cursor-pointer items-center justify-between rounded-lg bg-transparent pl-3 pr-1 text-sm outline-none transition-colors duration-150 hover:bg-transparent hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-neutral-600 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900"
           type="button"
           onPress={handleProjectClick}
         >
@@ -69,29 +71,35 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
             <Icon
               className="flex-shrink-0 text-neutral-500"
               icon="mdi:folder"
-              width={16}
+              width={14}
             />
-            <span className="truncate">{project.title}</span>
+            <span className="truncate text-xs">{project.title}</span>
+            {chatCount > 0 && (
+              <span className="ml-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-neutral-700 px-1 text-xs text-neutral-300">
+                {chatCount}
+              </span>
+            )}
           </div>
         </Button>
         <Button
           isIconOnly
-          className="grroup h-8 bg-transparent px-0 py-0 hover:bg-transparent"
-          variant="flat"
+          className="h-6 w-6 bg-transparent p-0 hover:bg-neutral-700/50"
+          size="sm"
+          variant="light"
           onPress={handleToggleExpansion}
         >
           <Icon
-            className="text-neutral-400"
+            className="text-neutral-500 transition-transform duration-150"
             icon={expandedProject ? "mdi:chevron-down" : "mdi:chevron-right"}
-            width={18}
+            width={14}
           />
         </Button>
       </div>
 
       {/* Expanded Chat List */}
       {expandedProject && chats && chats.length > 0 && (
-        <div className="ml-4 mt-1 flex flex-col gap-0.5 border-l border-neutral-800 pl-1">
-          {chats?.map((chat) => (
+        <div className="ml-4 mt-2 flex flex-col gap-1 border-l border-neutral-800/30 pl-3">
+          {chats.map((chat) => (
             <SidebarProjectChat
               key={chat._id}
               chatId={chat.chatId}
@@ -103,14 +111,18 @@ export default function SidebarProjectItem({ project }: ProjectItemProps) {
       )}
 
       {/* Empty State for Expanded Project */}
-      {expandedProject && chats?.length === 0 && (
-        <div className="ml-6 mt-1 border-l border-neutral-800 pl-3">
-          <div className="flex items-center gap-2 py-2 text-xs text-neutral-500">
-            <Icon icon="mdi:chat-plus" width={14} />
-            No chats in this project
+      {expandedProject && chatCount === 0 && (
+        <div className="ml-6 mt-2 border-l border-neutral-800/30 pl-3">
+          <div className="flex items-center gap-2 py-2 text-xs text-neutral-600">
+            <Icon icon="mdi:chat-plus" width={12} />
+            <span>No chats yet</span>
           </div>
         </div>
       )}
     </div>
   );
-}
+});
+
+SidebarProjectItem.displayName = "SidebarProjectItem";
+
+export default SidebarProjectItem;

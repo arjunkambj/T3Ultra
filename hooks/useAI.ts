@@ -57,31 +57,28 @@ export const useAI = ({
   });
 
   useEffect(() => {
-    // Only show loading for existing chats when we're waiting for messages
-    if (!isnewchat && !getMessages) {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-      // Set messages for existing chats
-      if (getMessages && !isnewchat && messages.length === 0) {
-        setMessages(
-          getMessages.map((message) => ({
-            id: message.id,
-            role: message.role,
-            content: message.content,
-            attachments: message.experimental_attachments,
-            parts: message.parts,
-            modelUsed: message.modelUsed,
-            updatedAt: message.updatedAt,
-            annotations: message.annotations,
-          })),
-        );
-      }
+    // Set messages for existing chats when they load
+    if (getMessages && !isnewchat && messages.length === 0) {
+      setMessages(
+        getMessages.map((message) => ({
+          id: message.id,
+          role: message.role,
+          content: message.content,
+          attachments: message.experimental_attachments,
+          parts: message.parts,
+          modelUsed: message.modelUsed,
+          updatedAt: message.updatedAt,
+          annotations: message.annotations,
+        })),
+      );
     }
-  }, [getMessages, isnewchat, setMessages]);
+
+    // Update loading state
+    setIsLoading(!isnewchat && !getMessages);
+  }, [getMessages, isnewchat, messages.length, setMessages]);
 
   const onSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (!input.trim()) return;
 
@@ -93,9 +90,10 @@ export const useAI = ({
       }
 
       try {
+        // Create chat first for new chats to avoid race conditions
         if (isnewchat) {
           window.history.replaceState({}, "", `/chat/${chatId}`);
-          createChat({
+          await createChat({
             userId: user._id,
             chatId,
           });
@@ -116,11 +114,23 @@ export const useAI = ({
         });
       }
     },
-    [handleSubmit, isnewchat, chatId, user, createChat, onLoginModalOpen],
+    [
+      handleSubmit,
+      isnewchat,
+      chatId,
+      user,
+      createChat,
+      onLoginModalOpen,
+      input,
+      attachments,
+      setSearch,
+      setAttachments,
+      setInput,
+    ],
   );
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
+    async (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         if (!user) {
@@ -131,9 +141,10 @@ export const useAI = ({
         }
 
         try {
+          // Create chat first for new chats to avoid race conditions
           if (isnewchat && user) {
             window.history.replaceState({}, "", `/chat/${chatId}`);
-            createChat({
+            await createChat({
               userId: user._id,
               chatId,
             });
@@ -153,7 +164,18 @@ export const useAI = ({
         }
       }
     },
-    [handleSubmit, isnewchat, chatId, user, createChat, onLoginModalOpen],
+    [
+      handleSubmit,
+      isnewchat,
+      chatId,
+      user,
+      createChat,
+      onLoginModalOpen,
+      attachments,
+      setSearch,
+      setAttachments,
+      setInput,
+    ],
   );
 
   return {

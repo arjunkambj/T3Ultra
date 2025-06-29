@@ -200,9 +200,9 @@ const ProfileSetting = React.memo(
 
           <div className="mt-6 flex justify-end">
             <Button
-              className="px-6"
-              color="primary"
+              className="bg-neutral-100 px-6 text-neutral-900 hover:bg-neutral-200"
               isLoading={isLoading}
+              variant="flat"
               onPress={handleSave}
             >
               {isLoading ? "Updating..." : "Update Profile"}
