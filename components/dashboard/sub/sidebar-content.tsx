@@ -36,20 +36,6 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
     }
   }, [router, onClose]);
 
-  const handleCustomModels = useCallback(() => {
-    router.push(`/agent`);
-    if (onClose) {
-      onClose();
-    }
-  }, [router, onClose]);
-
-  const handleCreateProject = useCallback(() => {
-    router.push(`/project`);
-    if (onClose) {
-      onClose();
-    }
-  }, [router, onClose]);
-
   const containerClasses = useMemo(
     () =>
       `relative flex h-dvh max-w-[250px] flex-1 flex-col overflow-hidden transition-all bg-[#0A0A0A] duration-300 ease-in-out ${
@@ -96,6 +82,8 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           >
             <Button
               fullWidth
+              as={Link}
+              href="/agent"
               className="mb-1 flex h-9 justify-start rounded-lg bg-transparent px-3 text-neutral-300 transition-colors hover:bg-neutral-800/50 hover:text-neutral-100"
               startContent={
                 <Icon
@@ -104,7 +92,6 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
                   width={18}
                 />
               }
-              onPress={handleCustomModels}
             >
               <span className="text-sm">Manage Agents</span>
             </Button>
@@ -113,7 +100,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         </div>
       </Authenticated>
     ),
-    [handleCustomModels],
+    [],
   );
 
   const projectsSection = useMemo(
@@ -128,6 +115,8 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
           >
             <Button
               fullWidth
+              as={Link}
+              href="/project"
               className={`mb-2 flex h-9 justify-start rounded-lg bg-transparent px-3 text-neutral-300 transition-colors hover:bg-neutral-800/50 hover:text-neutral-100 ${
                 pathname === "/project"
                   ? "bg-neutral-800/50 text-neutral-100"
@@ -140,7 +129,6 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
                   width={18}
                 />
               }
-              onPress={handleCreateProject}
             >
               <span className="text-sm">Create Project</span>
             </Button>
@@ -149,7 +137,7 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
         </div>
       </Authenticated>
     ),
-    [handleCreateProject, pathname],
+    [pathname],
   );
 
   const footerButtons = useMemo(

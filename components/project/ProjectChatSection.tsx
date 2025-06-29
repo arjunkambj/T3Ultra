@@ -50,7 +50,7 @@ export default function ProjectChatSection({
   if (isLoading) {
     return (
       <div className="flex h-dvh w-full items-center justify-center">
-        <Spinner color="secondary" />
+        <Spinner color="white" />
       </div>
     );
   }

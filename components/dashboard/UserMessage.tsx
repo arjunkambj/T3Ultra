@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 
 import UserToolkit from "./sub/UserToolkit";
 import EditInput from "./EditInputMessage";
 
-export default function UserMessage({
+const UserMessage = memo(function UserMessage({
   message,
   reload,
   isShared,
@@ -49,4 +49,6 @@ export default function UserMessage({
       )}
     </div>
   );
-}
+});
+
+export default UserMessage;

@@ -4,6 +4,8 @@ import { Button } from "@heroui/button";
 import { Icon } from "@iconify/react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "convex-helpers/react/cache/hooks";
+import { Spinner } from "@heroui/spinner";
+import { memo } from "react";
 
 import AgentCard from "./sub/AgentCard";
 
@@ -11,7 +13,7 @@ import { useUser } from "@/hooks/useUser";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 
-export default function AgentPage() {
+const AgentPage = memo(function AgentPage() {
   const router = useRouter();
   const user = useUser();
   const agents = useQuery(api.function.agent.getAgentByUserId, {
@@ -21,6 +23,15 @@ export default function AgentPage() {
   const handleCreateAgent = () => {
     router.push("/agent/create");
   };
+
+  // Show spinner while user or agents are loading
+  if (!user || agents === undefined) {
+    return (
+      <div className="flex h-dvh w-full items-center justify-center">
+        <Spinner color="white" />
+      </div>
+    );
+  }
 
   return (
     <div className="mt-10 flex h-full max-w-4xl flex-col items-center gap-6 p-6 pt-10">
@@ -65,4 +76,6 @@ export default function AgentPage() {
       </div>
     </div>
   );
-}
+});
+
+export default AgentPage;

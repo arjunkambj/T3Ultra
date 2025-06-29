@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Markdown } from "./sub/markdown";
 import AssistanceToolkit from "./sub/AssistanceToolkit";
 
-export default function AssistanceMessage({
+const AssistanceMessage = memo(function AssistanceMessage({
   message,
   allmessages,
   chatId,
@@ -28,4 +29,6 @@ export default function AssistanceMessage({
       </div>
     </div>
   );
-}
+});
+
+export default AssistanceMessage;
