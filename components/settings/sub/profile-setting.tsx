@@ -10,8 +10,10 @@ import { cn } from "@heroui/theme";
 import { Input, Textarea } from "@heroui/input";
 import { Spacer } from "@heroui/spacer";
 import { addToast } from "@heroui/toast";
+import { useMutation, useQuery } from "convex/react";
 
 import { useUser } from "@/hooks/useUser";
+import { api } from "@/convex/_generated/api";
 
 interface ProfileSettingCardProps {
   className?: string;
@@ -30,24 +32,64 @@ const ProfileSetting = React.forwardRef<
     biography: "",
   });
 
+  // Get user customizations
+  const customizations = useQuery(
+    api.function.customizations.getCustomization,
+    user?._id ? { userId: user._id } : "skip",
+  );
+
+  // Mutations
+  const updateProfile = useMutation(api.function.users.updateProfile);
+  const addCustomization = useMutation(
+    api.function.customizations.addCustomization,
+  );
+  const updateCustomization = useMutation(
+    api.function.customizations.updateCustomization,
+  );
+
   React.useEffect(() => {
     if (user) {
       setFormData({
         name: user.name || "",
-        title: "",
+        title: customizations?.whatuserdoes || "",
         location: "",
-        biography: "",
+        biography: customizations?.anythingelse || "",
       });
     }
-  }, [user]);
+  }, [user, customizations]);
 
   const handleSave = async () => {
     if (!user?._id) return;
 
     setIsLoading(true);
     try {
-      // Here you would typically update the user profile
-      // For now, we'll just show a success message
+      // Update user name in users table
+      if (formData.name !== user.name) {
+        await updateProfile({
+          data: {
+            name: formData.name,
+          },
+        });
+      }
+
+      // Update or create customizations
+      if (customizations?._id) {
+        await updateCustomization({
+          customizationId: customizations._id,
+          whattocalluser: customizations.whattocalluser,
+          whatuserdoes: formData.title,
+          traitsforllm: customizations.traitsforllm,
+          anythingelse: formData.biography,
+          preferencesofuser: customizations.preferencesofuser,
+        });
+      } else {
+        await addCustomization({
+          userId: user._id,
+          whatuserdoes: formData.title,
+          anythingelse: formData.biography,
+        });
+      }
+
       addToast({
         title: "Profile Updated",
         description: "Your profile has been updated successfully.",
@@ -55,7 +97,7 @@ const ProfileSetting = React.forwardRef<
         timeout: 3000,
       });
     } catch (error) {
-      void error;
+      console.error("Error updating profile:", error);
       addToast({
         title: "Error",
         description: "Failed to update profile. Please try again.",
@@ -65,6 +107,10 @@ const ProfileSetting = React.forwardRef<
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -97,17 +143,11 @@ const ProfileSetting = React.forwardRef<
                 placement="bottom-right"
                 shape="circle"
               >
-                <Avatar
-                  className="h-16 w-16"
-                  src="https://nextuipro.nyc3.cdn.digitaloceanspaces.com/components-images/avatars/e1b8ec120710c09589a12c0004f85825.jpg"
-                />
+                <Avatar className="h-16 w-16" src={user?.image || ""} />
               </Badge>
               <div>
                 <p className="text-sm font-medium text-default-600">
                   {user?.name || "User Name"}
-                </p>
-                <p className="text-xs text-default-400">
-                  {formData.title || "No title set"}
                 </p>
                 <p className="mt-1 text-xs text-default-400">
                   {user?.email || "No email"}
@@ -118,65 +158,64 @@ const ProfileSetting = React.forwardRef<
         </Card>
       </div>
       <Spacer y={4} />
+
+      {/* Name */}
+      <div>
+        <p className="text-base font-medium text-default-700">Display Name</p>
+        <p className="mt-1 text-sm font-normal text-default-400">
+          This is your display name that others will see.
+        </p>
+        <Input
+          className="mt-2"
+          placeholder="Enter your display name"
+          value={formData.name}
+          onChange={(e) => handleInputChange("name", e.target.value)}
+        />
+      </div>
+      <Spacer y={4} />
+
       {/* Title */}
       <div>
         <p className="text-base font-medium text-default-700">Title</p>
         <p className="mt-1 text-sm font-normal text-default-400">
-          Set your current role.
+          Set your current role or what you do.
         </p>
         <Input
           className="mt-2"
-          placeholder="e.g Customer Support"
+          placeholder="e.g. Software Developer, Designer, Student"
           value={formData.title}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, title: e.target.value }))
-          }
-        />
-      </div>
-      <Spacer y={2} />
-      {/* Location */}
-      <div>
-        <p className="text-base font-medium text-default-700">Location</p>
-        <p className="mt-1 text-sm font-normal text-default-400">
-          Set your current location.
-        </p>
-        <Input
-          className="mt-2"
-          placeholder="e.g Buenos Aires, Argentina"
-          value={formData.location}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, location: e.target.value }))
-          }
+          onChange={(e) => handleInputChange("title", e.target.value)}
         />
       </div>
       <Spacer y={4} />
+
       {/* Biography */}
       <div>
         <p className="text-base font-medium text-default-700">Biography</p>
         <p className="mt-1 text-sm font-normal text-default-400">
-          Specify your present whereabouts.
+          Tell us a bit about yourself. This helps the AI understand you better.
         </p>
         <Textarea
           className="mt-2"
           classNames={{
             input: cn("min-h-[115px]"),
           }}
-          placeholder="e.g., 'Kate Moore - Acme.com Support Specialist. Passionate about solving tech issues, loves hiking and volunteering."
+          placeholder="e.g., 'I'm a passionate developer who loves building innovative solutions. I enjoy working with modern technologies and solving complex problems.'"
           value={formData.biography}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, biography: e.target.value }))
-          }
+          onChange={(e) => handleInputChange("biography", e.target.value)}
         />
       </div>
-      <Button
-        className="mt-4"
-        color="primary"
-        isLoading={isLoading}
-        size="sm"
-        onPress={handleSave}
-      >
-        Update Profile
-      </Button>
+
+      <div className="mt-6 flex justify-end">
+        <Button
+          color="primary"
+          isLoading={isLoading}
+          onPress={handleSave}
+          className="px-6"
+        >
+          {isLoading ? "Updating..." : "Update Profile"}
+        </Button>
+      </div>
     </div>
   );
 });

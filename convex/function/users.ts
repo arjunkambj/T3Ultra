@@ -22,6 +22,25 @@ export const currentUser = query({
   },
 });
 
+export const updateProfile = mutation({
+  args: {
+    data: v.object({
+      name: v.optional(v.string()),
+    }),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error("User not authenticated");
+    }
+
+    return await ctx.db.patch(userId, {
+      name: args.data.name,
+    });
+  },
+});
+
 export const updateSubscribtion = mutation({
   args: {
     data: v.object({

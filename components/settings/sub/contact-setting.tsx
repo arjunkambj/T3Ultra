@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Icon } from "@iconify/react/dist/offline";
+import { Icon } from "@iconify/react";
 import { Button } from "@heroui/button";
 import { Card, CardBody } from "@heroui/card";
 import { Link } from "@heroui/link";
@@ -179,51 +179,6 @@ const ContactSetting = React.forwardRef<
             </Button>
           ))}
         </div>
-      </div>
-
-      <Spacer y={6} />
-
-      {/* System Information */}
-      <div>
-        <p className="text-base font-medium text-default-700">
-          System Information
-        </p>
-        <p className="mt-1 text-sm font-normal text-default-400">
-          Information about your current setup for troubleshooting.
-        </p>
-
-        <Card className="mt-4 bg-default-100" shadow="none">
-          <CardBody className="p-4">
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-default-500">Version:</span>
-                <span className="text-default-600">1.0.0</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-default-500">Browser:</span>
-                <span className="text-default-600">
-                  {typeof window !== "undefined"
-                    ? navigator.userAgent.split(" ").slice(-1)[0]
-                    : "Unknown"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-default-500">Platform:</span>
-                <span className="text-default-600">
-                  {typeof window !== "undefined"
-                    ? navigator.platform
-                    : "Unknown"}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-default-500">Last Updated:</span>
-                <span className="text-default-600">
-                  {new Date().toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-          </CardBody>
-        </Card>
       </div>
 
       <Spacer y={6} />
