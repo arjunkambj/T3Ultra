@@ -15,8 +15,14 @@ const openrouter = createOpenRouter({
 });
 
 export async function POST(req: Request) {
-  const { messages, chatId, userId, modelId, isSearchEnabled } =
-    await req.json();
+  const {
+    messages,
+    chatId,
+    userId,
+    modelId,
+    isSearchEnabled,
+    systemPromptData,
+  } = await req.json();
 
   if (!chatId && !userId) {
     return new Response(JSON.stringify({ error: "Please login to continue" }), {
@@ -46,15 +52,6 @@ export async function POST(req: Request) {
     }
   }
 
-  const [customizations, memory] = await Promise.all([
-    convex.query(api.function.customizations.getCustomization, {
-      userId: userId as any,
-    }),
-    convex.query(api.function.memory.getMemory, {
-      userId: userId as any,
-    }),
-  ]);
-
   const systemPrompt = `
   You are a helpful assistant who speaks in a human-like way. Add 1 emoji per message for engagement, no more.
 
@@ -62,14 +59,14 @@ export async function POST(req: Request) {
 
   USER INFO:
   - userID: ${userId} (use with memory tools)
-  - Call the user: ${customizations?.whattocalluser || ""}
-  - What user does: ${customizations?.whatuserdoes || "Not specified"}
-  - Traits: ${customizations?.traitsforllm?.join(", ") || "Not specified"}
-  - Preferences: ${customizations?.preferencesofuser?.join(", ") || "Not specified"}
-  - Extra notes: ${customizations?.anythingelse || "Not specified"}
+  - Call the user: ${systemPromptData?.whattocalluser || ""}
+  - What user does: ${systemPromptData?.whatuserdoes || "Not specified"}
+  - Traits: ${systemPromptData?.traitsforllm?.join(", ") || "Not specified"}
+  - Preferences: ${systemPromptData?.preferencesofuser?.join(", ") || "Not specified"}
+  - Extra notes: ${systemPromptData?.anythingelse || "Not specified"}
 
   EXISTING MEMORY:
-  ${memory || "No existing memories found."}
+  ${systemPromptData?.memory || "No existing memories found."}
 
   MEMORY RULES:
   - Personalize using existing memory

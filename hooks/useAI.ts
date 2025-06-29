@@ -11,6 +11,7 @@ import { aiModelAtom } from "@/atoms/aimodel";
 import { searchAtom } from "@/atoms/searchState";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@/hooks/useUser";
+import { useUserContext } from "@/hooks/useUserContext";
 
 export const useAI = ({
   isnewchat,
@@ -20,6 +21,7 @@ export const useAI = ({
   chatId: string;
 }) => {
   const user = useUser();
+  const { systemPromptData } = useUserContext(user?._id);
   const [currentModelId] = useAtom(aiModelAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useAtom(searchAtom);
@@ -53,7 +55,8 @@ export const useAI = ({
       chatId,
       userId: user?._id,
       modelId: currentModelId,
-      search,
+      isSearchEnabled: search,
+      systemPromptData,
     },
   });
 

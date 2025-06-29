@@ -166,10 +166,10 @@ export default function AIThinkingSpinner({
                     minWidth: char === " " ? "0.25em" : "auto",
                   }}
                   transition={{
-                    duration: 0.4,
+                    duration: 0.45,
                     delay: index * 0.03,
                     repeat: Infinity,
-                    repeatDelay: 0.1,
+                    repeatDelay: 0.15,
                     ease: "easeInOut",
                   }}
                 >
