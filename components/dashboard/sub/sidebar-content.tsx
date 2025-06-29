@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import { Button } from "@heroui/button";
 import { Spacer } from "@heroui/spacer";
 import { Icon } from "@iconify/react";
@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Unauthenticated, Authenticated } from "convex/react";
 import { usePathname } from "next/navigation";
 import { Tooltip } from "@heroui/tooltip";
+import { Divider } from "@heroui/divider";
 
 import ChatHistory from "./ChatHistory";
 
@@ -27,29 +28,27 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
   const { isOpen } = useSidebarToggle();
   const router = useRouter();
   const pathname = usePathname();
-  const handleNewChat = () => {
+
+  const handleNewChat = useCallback(() => {
     router.push(`/chat`);
-
     if (onClose) {
       onClose();
     }
-  };
+  }, [router, onClose]);
 
-  const handleCustomModels = () => {
+  const handleCustomModels = useCallback(() => {
     router.push(`/agent`);
-
     if (onClose) {
       onClose();
     }
-  };
+  }, [router, onClose]);
 
-  const handleCreateProject = () => {
+  const handleCreateProject = useCallback(() => {
     router.push(`/project`);
-
     if (onClose) {
       onClose();
     }
-  };
+  }, [router, onClose]);
 
   const containerClasses = useMemo(
     () =>
@@ -83,6 +82,74 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
       </div>
     ),
     [onClose],
+  );
+
+  const agentsSection = useMemo(
+    () => (
+      <Authenticated>
+        <div className="space-y-2">
+          <Tooltip
+            showArrow
+            closeDelay={0}
+            content="Create and manage your AI agents"
+            placement="right"
+          >
+            <Button
+              fullWidth
+              className="mb-1 flex h-9 justify-start rounded-lg bg-transparent px-3 text-neutral-300 transition-colors hover:bg-neutral-800/50 hover:text-neutral-100"
+              startContent={
+                <Icon
+                  className="text-neutral-400"
+                  icon="mdi:robot"
+                  width={18}
+                />
+              }
+              onPress={handleCustomModels}
+            >
+              <span className="text-sm">Manage Agents</span>
+            </Button>
+          </Tooltip>
+          <SidebarAgentsList />
+        </div>
+      </Authenticated>
+    ),
+    [handleCustomModels],
+  );
+
+  const projectsSection = useMemo(
+    () => (
+      <Authenticated>
+        <div className="space-y-1">
+          <Tooltip
+            showArrow
+            closeDelay={0}
+            content="Keep Chat organized with Projects"
+            placement="right"
+          >
+            <Button
+              fullWidth
+              className={`mb-2 flex h-9 justify-start rounded-lg bg-transparent px-3 text-neutral-300 transition-colors hover:bg-neutral-800/50 hover:text-neutral-100 ${
+                pathname === "/project"
+                  ? "bg-neutral-800/50 text-neutral-100"
+                  : ""
+              }`}
+              startContent={
+                <Icon
+                  className="text-neutral-400"
+                  icon="mdi:folder-plus"
+                  width={18}
+                />
+              }
+              onPress={handleCreateProject}
+            >
+              <span className="text-sm">Create Project</span>
+            </Button>
+          </Tooltip>
+          <SidebarProjectsList />
+        </div>
+      </Authenticated>
+    ),
+    [handleCreateProject, pathname],
   );
 
   const footerButtons = useMemo(
@@ -130,70 +197,31 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
 
       <Spacer y={4} />
 
-      <div className="flex flex-col gap-0">
+      {/* Middle Section - Agents, Projects, and Chat History */}
+      <div className="flex min-h-0 flex-1 flex-col">
+        {/* Agents Section */}
+        {agentsSection}
+
+        {/* Divider - only show if we have agents */}
         <Authenticated>
-          <Tooltip
-            showArrow
-            closeDelay={0}
-            content="Create and manage your AI agents"
-            placement="right"
-          >
-            <Button
-              fullWidth
-              className="mb-1 flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:bg-default-100 hover:text-neutral-100"
-              startContent={
-                <Icon
-                  className="text-neutral-300"
-                  icon="token:xai"
-                  width={22}
-                />
-              }
-              onPress={handleCustomModels}
-            >
-              Manage Agents
-            </Button>
-          </Tooltip>
+          <div className="py-2">
+            <Divider className="bg-neutral-800/50" />
+          </div>
         </Authenticated>
-        <SidebarAgentsList />
+
+        {/* Projects and Chat History - Scrollable Area */}
+        <ScrollShadow hideScrollBar className="flex-1 pr-2" size={20}>
+          <div className="space-y-2">
+            {/* Projects Section */}
+            {projectsSection}
+
+            <Spacer y={2} />
+
+            {/* Chat History Section */}
+            <ChatHistory />
+          </div>
+        </ScrollShadow>
       </div>
-
-      {/* Chat History */}
-
-      <ScrollShadow hideScrollBar size={10} visibility="auto">
-        <Spacer y={3} />
-
-        <Authenticated>
-          <Tooltip
-            showArrow
-            closeDelay={0}
-            content="Keep Chat orgnized with Projects"
-            placement="right"
-          >
-            <Button
-              fullWidth
-              className={`mb-1 flex h-8 justify-start rounded-full bg-transparent px-2 text-neutral-300 hover:bg-default-100 hover:text-neutral-100 ${
-                pathname === "/project" ? "bg-default-100 text-neutral-100" : ""
-              }`}
-              startContent={
-                <Icon
-                  className="text-neutral-300"
-                  icon="mdi:folder-plus"
-                  width={20}
-                />
-              }
-              onPress={handleCreateProject}
-            >
-              Create Project
-            </Button>
-          </Tooltip>
-        </Authenticated>
-
-        <SidebarProjectsList />
-
-        <Spacer y={4} />
-
-        <ChatHistory />
-      </ScrollShadow>
 
       <Spacer y={3} />
 

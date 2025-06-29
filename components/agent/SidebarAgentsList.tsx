@@ -1,6 +1,8 @@
 "use client";
 
+import React from "react";
 import { useQuery } from "convex-helpers/react/cache/hooks";
+import { Icon } from "@iconify/react";
 
 import SidebarAgent from "./SidebarAgent";
 
@@ -8,7 +10,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useUser } from "@/hooks/useUser";
 
-export default function SidebarAgentsList() {
+const SidebarAgentsList = React.memo(() => {
   const user = useUser();
   const allAgents = useQuery(api.function.agent.getAgentByUserId, {
     userId: user?._id as Id<"users">,
@@ -16,10 +18,19 @@ export default function SidebarAgentsList() {
 
   const agents = allAgents?.filter((agent) => agent.isPinned);
 
+  if (!agents?.length) {
+    return null;
+  }
+
   return (
     <div className="flex w-full flex-col gap-1">
-      {agents &&
-        agents.map((agent) => <SidebarAgent key={agent._id} agent={agent} />)}
+      {agents.map((agent) => (
+        <SidebarAgent key={agent._id} agent={agent} />
+      ))}
     </div>
   );
-}
+});
+
+SidebarAgentsList.displayName = "SidebarAgentsList";
+
+export default SidebarAgentsList;

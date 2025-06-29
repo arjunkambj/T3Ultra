@@ -2,10 +2,13 @@ import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { ToastProvider } from "@heroui/toast";
+import { Inter } from "next/font/google";
 
 import { Providers } from "../components/providers";
 
 import { siteConfig } from "@/config/site";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
@@ -32,7 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <ConvexAuthNextjsServerProvider>
-      <html suppressHydrationWarning lang="en">
+      <html suppressHydrationWarning lang="en" className={inter.className}>
         <head />
         <body>
           <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>

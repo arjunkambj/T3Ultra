@@ -41,7 +41,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
 
   return (
     <Card
-      className={`group relative max-w-sm border px-2 py-1 transition-all duration-200 hover:shadow-lg ${"border-neutral-700 bg-neutral-900 hover:border-neutral-600"}`}
+      className={`group relative max-w-sm border px-2 py-1 transition-all duration-200 hover:shadow-lg ${"border-neutral-700 bg-neutral-900/30 hover:border-neutral-600"}`}
       shadow="none"
     >
       <CardBody className="">
@@ -51,7 +51,7 @@ export default function AgentCard({ agent }: AgentCardProps) {
               <Avatar size="lg" src={agent.avatar} />
             ) : (
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-800 text-neutral-300">
-                <Icon icon="token:xai" width={30} />
+                <Icon icon="mdi:robot" width={24} />
               </div>
             )}
           </div>

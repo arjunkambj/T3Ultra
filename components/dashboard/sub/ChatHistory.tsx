@@ -1,14 +1,105 @@
 "use client";
+
+import React, { useMemo, useCallback } from "react";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { Icon } from "@iconify/react";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 
 import ChatHistoryDropdown from "./ChatHistoryDropdown";
 
 import { useSidebarToggle } from "@/atoms/sidebarState";
 import { api } from "@/convex/_generated/api";
+
+// Memoized chat item component
+const ChatItem = React.memo(
+  ({
+    chat,
+    isActive,
+    href,
+    onChatClick,
+  }: {
+    chat: any;
+    isActive: boolean;
+    href: string;
+    onChatClick: () => void;
+  }) => (
+    <div className="group relative flex w-full items-center rounded-lg transition-colors hover:bg-neutral-800/30">
+      <Link
+        className={`group relative flex h-8 w-full cursor-pointer items-center justify-start rounded-lg px-3 text-sm outline-none transition-colors duration-150 hover:bg-neutral-800/30 hover:text-neutral-200 focus-visible:ring-2 focus-visible:ring-neutral-600 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-900 ${
+          isActive ? "bg-neutral-800/50 text-neutral-100" : "text-neutral-400"
+        }`}
+        href={href}
+        onClick={onChatClick}
+      >
+        <div className="flex w-full items-center justify-between">
+          <div className="flex min-w-0 flex-1 items-center gap-2 truncate">
+            {chat.isAgentChat && (
+              <Icon
+                className="flex-shrink-0 text-neutral-500"
+                height={12}
+                icon="mdi:robot"
+                width={12}
+              />
+            )}
+            {chat.isBranchChat && (
+              <Icon
+                className="flex-shrink-0 text-neutral-500"
+                height={12}
+                icon="solar:branch-bold"
+                width={12}
+              />
+            )}
+            <span className="truncate text-left text-xs">{chat.title}</span>
+          </div>
+        </div>
+      </Link>
+
+      <div className="absolute right-1 z-10 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        <ChatHistoryDropdown chatId={chat.chatId} isPinned={chat.isPinned} />
+      </div>
+    </div>
+  ),
+);
+
+ChatItem.displayName = "ChatItem";
+
+// Memoized section component with color-coded headers
+const ChatSection = React.memo(
+  ({
+    title,
+    icon,
+    chats,
+    renderChatItem,
+    headerColor = "text-neutral-400",
+  }: {
+    title: string;
+    icon?: string;
+    chats: any[];
+    renderChatItem: (chat: any) => React.ReactNode;
+    headerColor?: string;
+  }) => {
+    if (chats.length === 0) return null;
+
+    return (
+      <div className="mb-3">
+        <div className="mb-2 flex items-center gap-2 px-1 py-0">
+          {icon && (
+            <Icon className={headerColor} height={12} icon={icon} width={12} />
+          )}
+          <span
+            className={`text-xs font-medium uppercase tracking-wider ${headerColor}`}
+          >
+            {title}
+          </span>
+        </div>
+        <div className="flex flex-col gap-1">{chats.map(renderChatItem)}</div>
+      </div>
+    );
+  },
+);
+
+ChatSection.displayName = "ChatSection";
 
 export default function ChatHistory() {
   const user = useQuery(api.function.users.currentUser);
@@ -19,66 +110,65 @@ export default function ChatHistory() {
 
   const pathname = usePathname();
   const { setIsOpen } = useSidebarToggle();
-  const [isMobile, setIsMobile] = useState(false);
 
-  const chats = chatsIncludingProjectChats?.filter(
-    (chat) => !chat.isProjectChat,
+  // Memoize filtered chats
+  const chats = useMemo(
+    () =>
+      chatsIncludingProjectChats?.filter((chat) => !chat.isProjectChat) || [],
+    [chatsIncludingProjectChats],
   );
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+  // Memoize helper functions
+  const isChatActive = useCallback(
+    (chat: any) => {
+      if (chat.isAgentChat && chat.agentId) {
+        return pathname === `/agent/${chat.agentId}/${chat.chatId}`;
+      } else {
+        return pathname === `/chat/${chat.chatId}`;
+      }
+    },
+    [pathname],
+  );
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const isChatActive = (chat: any) => {
-    if (chat.isAgentChat && chat.agentId) {
-      // For agent chats, check if current path matches /agent/[agentId]/[chatId]
-      return pathname === `/agent/${chat.agentId}/${chat.chatId}`;
-    } else {
-      // For regular chats, check if current path matches /chat/[chatId]
-      return pathname === `/chat/${chat.chatId}`;
-    }
-  };
-
-  const getChatHref = (chat: any) => {
+  const getChatHref = useCallback((chat: any) => {
     if (chat.isAgentChat && chat.agentId) {
       return `/agent/${chat.agentId}/${chat.chatId}`;
     } else {
       return `/chat/${chat.chatId}`;
     }
-  };
+  }, []);
 
-  const handleChatClick = () => {
-    if (isMobile) {
+  const handleChatClick = useCallback(() => {
+    if (window.innerWidth < 768) {
       setIsOpen(false);
     }
-  };
+  }, [setIsOpen]);
 
-  // Early return after all hooks have been called
-  if (!chats) {
-    return null;
-  }
+  // Memoize categorized chats
+  const { pinnedChats, categorizedChats } = useMemo(() => {
+    if (!chats.length) {
+      return {
+        pinnedChats: [],
+        categorizedChats: {
+          today: [],
+          yesterday: [],
+          previous7Days: [],
+          previous30Days: [],
+          older: [],
+        },
+      };
+    }
 
-  // Separate pinned and unpinned chats
-  const pinnedChats = chats.filter((chat) => chat.isPinned);
-  const recentChats = chats
-    .filter((chat) => !chat.isPinned)
-    .sort(
-      (a, b) =>
-        (b.updatedAt ?? b._creationTime ?? 0) -
-        (a.updatedAt ?? a._creationTime ?? 0),
-    );
+    const pinned = chats.filter((chat) => chat.isPinned);
+    const recent = chats
+      .filter((chat) => !chat.isPinned)
+      .sort(
+        (a, b) =>
+          (b.updatedAt ?? b._creationTime ?? 0) -
+          (a.updatedAt ?? a._creationTime ?? 0),
+      );
 
-  // Helper function to categorize chats by time
-  const categorizeChats = (chats: any[]) => {
+    // Categorize chats by time
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
@@ -93,7 +183,7 @@ export default function ChatHistory() {
       older: [] as any[],
     };
 
-    chats.forEach((chat) => {
+    recent.forEach((chat) => {
       const chatDate = new Date(chat.updatedAt ?? chat._creationTime);
 
       if (chatDate >= today) {
@@ -109,133 +199,88 @@ export default function ChatHistory() {
       }
     });
 
-    return categories;
-  };
+    return { pinnedChats: pinned, categorizedChats: categories };
+  }, [chats]);
 
-  const categorizedChats = categorizeChats(recentChats);
-
-  const renderChatItem = (chat: any) => (
-    <div
-      key={chat.chatId}
-      className="group relative flex w-full items-center rounded-medium hover:bg-default-100"
-    >
-      <Link
-        className={`group relative flex h-9 w-full cursor-pointer items-center justify-start rounded-medium px-3 text-small outline-none transition-colors duration-100 hover:bg-default-100 hover:text-default-700 focus-visible:ring-2 focus-visible:ring-default-200 focus-visible:ring-offset-2 focus-visible:ring-offset-default-100 ${
-          isChatActive(chat)
-            ? "rounded-xl bg-default-100 text-default-800"
-            : "text-default-600"
-        }`}
+  // Memoize render function
+  const renderChatItem = useCallback(
+    (chat: any) => (
+      <ChatItem
+        key={chat.chatId}
+        chat={chat}
+        isActive={isChatActive(chat)}
         href={getChatHref(chat)}
-        onClick={handleChatClick}
-      >
-        <div className="flex w-full items-center justify-between">
-          <div className="flex min-w-0 flex-1 items-center gap-2 truncate">
-            {chat.isAgentChat && (
-              <Icon
-                className="flex-shrink-0 text-default-500"
-                height={14}
-                icon="solar:user-speak-rounded-bold"
-                width={14}
-              />
-            )}
-            {chat.isBranchChat && (
-              <Icon
-                className="flex-shrink-0 text-default-500"
-                height={14}
-                icon="solar:branch-bold"
-                width={14}
-              />
-            )}
-            <span className="truncate text-left">{chat.title}</span>
-          </div>
-        </div>
-      </Link>
-
-      <div className="absolute right-2 z-10 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        <ChatHistoryDropdown chatId={chat.chatId} isPinned={chat.isPinned} />
-      </div>
-    </div>
+        onChatClick={handleChatClick}
+      />
+    ),
+    [isChatActive, getChatHref, handleChatClick],
   );
 
+  // Early return if no chats
+  if (!chats.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-8 text-center">
+        <Icon
+          className="mb-2 text-neutral-600"
+          height={24}
+          icon="mdi:chat-outline"
+          width={24}
+        />
+        <span className="text-xs text-neutral-500">No chats yet</span>
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full">
-      {/* Pinned Section */}
-      {pinnedChats.length > 0 && (
-        <div className="mb-3">
-          <div className="mb-1 flex items-center gap-2 py-0 pl-[6px] text-small text-neutral-100">
-            <Icon
-              className="text-neutral-100"
-              height={14}
-              icon="solar:pin-bold"
-              width={14}
-            />
-            Pinned
-          </div>
-          <div className="flex flex-col gap-1">
-            {pinnedChats.map(renderChatItem)}
-          </div>
-        </div>
-      )}
+    <div className="w-full space-y-3">
+      {/* Pinned Section - Brightest for importance */}
+      <ChatSection
+        title="Pinned"
+        icon="solar:pin-bold"
+        chats={pinnedChats}
+        renderChatItem={renderChatItem}
+        headerColor="text-neutral-200"
+      />
 
-      {/* Today Section */}
-      {categorizedChats.today.length > 0 && (
-        <div className="mb-3">
-          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
-            Today
-          </div>
-          <div className="flex flex-col gap-1">
-            {categorizedChats.today.map(renderChatItem)}
-          </div>
-        </div>
-      )}
+      {/* Today Section - Bright for most recent */}
+      <ChatSection
+        title="Today"
+        chats={categorizedChats.today}
+        renderChatItem={renderChatItem}
+        headerColor="text-neutral-300"
+      />
 
-      {/* Yesterday Section */}
-      {categorizedChats.yesterday.length > 0 && (
-        <div className="mb-3">
-          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
-            Yesterday
-          </div>
-          <div className="flex flex-col gap-1">
-            {categorizedChats.yesterday.map(renderChatItem)}
-          </div>
-        </div>
-      )}
+      {/* Yesterday Section - Medium bright */}
+      <ChatSection
+        title="Yesterday"
+        chats={categorizedChats.yesterday}
+        renderChatItem={renderChatItem}
+        headerColor="text-neutral-300"
+      />
 
-      {/* Previous 7 Days Section */}
-      {categorizedChats.previous7Days.length > 0 && (
-        <div className="mb-3">
-          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
-            Previous 7 days
-          </div>
-          <div className="flex flex-col gap-1">
-            {categorizedChats.previous7Days.map(renderChatItem)}
-          </div>
-        </div>
-      )}
+      {/* Previous 7 days - Medium */}
+      <ChatSection
+        title="Previous 7 days"
+        chats={categorizedChats.previous7Days}
+        renderChatItem={renderChatItem}
+        headerColor="text-neutral-300"
+      />
 
-      {/* Previous 30 Days Section */}
-      {categorizedChats.previous30Days.length > 0 && (
-        <div className="mb-3">
-          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
-            Previous 30 days
-          </div>
-          <div className="flex flex-col gap-1">
-            {categorizedChats.previous30Days.map(renderChatItem)}
-          </div>
-        </div>
-      )}
+      {/* Previous 30 days - Darker */}
+      <ChatSection
+        title="Previous 30 days"
+        chats={categorizedChats.previous30Days}
+        renderChatItem={renderChatItem}
+        headerColor="text-neutral-300"
+      />
 
-      {/* Older Section */}
-      {categorizedChats.older.length > 0 && (
-        <div className="mb-3">
-          <div className="mb-1 py-0 pl-[6px] text-small text-neutral-100">
-            Older
-          </div>
-          <div className="flex flex-col gap-1">
-            {categorizedChats.older.map(renderChatItem)}
-          </div>
-        </div>
-      )}
+      {/* Older - Darkest for oldest */}
+      <ChatSection
+        title="Older"
+        chats={categorizedChats.older}
+        renderChatItem={renderChatItem}
+        headerColor="text-neutral-700"
+      />
     </div>
   );
 }
