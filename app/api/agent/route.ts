@@ -1,5 +1,5 @@
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { streamText, generateText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { openai } from "@ai-sdk/openai";
 import { xai } from "@ai-sdk/xai";
@@ -8,8 +8,9 @@ import { addToMemory } from "../chat/tools";
 
 import { getCurrentTime } from "./tools";
 
-import { generateTitleFromUserMessage } from "@/actions/ai-action";
 import { api } from "@/convex/_generated/api";
+
+export const runtime = "edge";
 
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -124,12 +125,18 @@ You are a helpful AI assistant 🤖
         ];
 
         if (messages.length === 1 && messages[0].role === "user") {
-          const titleOperation = generateTitleFromUserMessage({
-            message: messages[0],
-          }).then((title) =>
+          const titleOperation = generateText({
+            model: openai("gpt-4o-mini"),
+            system: `\n
+              - you will generate a short title based on the first message a user begins a conversation with
+              - ensure it is not more than 3 words long and capitalize the first letter
+              - the title should be a summary of the user's message
+              - do not use quotes or colons`,
+            prompt: messages[0].content,
+          }).then((result) =>
             convex.mutation(api.function.chats.updateChatTitle, {
               chatId,
-              title,
+              title: result.text,
             }),
           );
 
