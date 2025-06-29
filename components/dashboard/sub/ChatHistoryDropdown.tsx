@@ -66,7 +66,8 @@ export default function ChatHistoryDropdown({
     addToast({
       title: "Add to project",
       description: "Coming soon",
-      color: "default",
+      color: "warning",
+      variant: "bordered",
       timeout: 2000,
     });
   };

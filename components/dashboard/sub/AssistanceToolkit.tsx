@@ -92,7 +92,7 @@ export default function AssistanceToolkit({
           size="sm"
           onPress={handleCopy}
         >
-          <Icon icon="mynaui:copy" width={18} />
+          <Icon icon="solar:copy-linear" width={18} />
         </Button>
       </Tooltip>
 
