@@ -68,7 +68,7 @@ export default function MessageUI({
             <div className="flex w-full justify-end">
               <UserMessage
                 isShared={isShared}
-                message={message.content}
+                message={message}
                 messageId={message.id}
                 reload={reload}
               />

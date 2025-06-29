@@ -96,16 +96,8 @@ const schema = defineSchema({
     ),
     updatedAt: v.optional(v.number()),
     annotations: v.optional(v.array(v.any())),
-    parts: v.optional(v.array(v.any())),
-    experimental_attachments: v.optional(
-      v.array(
-        v.object({
-          name: v.optional(v.string()),
-          contentType: v.optional(v.string()),
-          url: v.string(),
-        }),
-      ),
-    ),
+    parts: v.optional(v.any()),
+    experimental_attachments: v.optional(v.any()),
   }).index("byChatId", ["chatId"]),
 
   sharedChats: defineTable({

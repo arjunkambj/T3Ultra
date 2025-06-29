@@ -6,52 +6,64 @@ import { Tooltip } from "@heroui/tooltip";
 import { Icon } from "@iconify/react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
+import { upload } from "@vercel/blob/client";
 
+import { attachmentAtom } from "@/atoms/attachment";
 // Removed @vercel/blob/client import since we're using custom API route
 
 import { searchAtom } from "@/atoms/searchState";
 
 export default function InputButtons({
-  setAssets,
   prompt,
   stop,
   status,
+  setIsLoading,
 }: {
   prompt: string;
-  setAssets: React.Dispatch<React.SetStateAction<string[]>>;
   stop: () => void;
   status: string;
+  setIsLoading: (isLoading: boolean) => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useAtom(searchAtom);
+  const setAttachment = useSetAtom(attachmentAtom);
 
   const handleStop = useCallback(() => {
     stop();
   }, [stop]);
 
   const handleFileUpload = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || []);
 
       files.forEach((file) => {
         if (file.type.startsWith("image/")) {
           const reader = new FileReader();
 
-          reader.onload = () => {
-            const base64data = reader.result as string;
-
-            setAssets((prev) => [...prev, base64data]);
-          };
           reader.readAsDataURL(file);
         }
       });
 
-      // Reset input value to allow uploading the same file again
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      if (files.length === 0) return;
+
+      setIsLoading(true);
+
+      const uploaded = await Promise.all(
+        files.map(async (file) => {
+          const result = await upload(file.name, file, {
+            access: "public",
+            handleUploadUrl: "/api/upload",
+          });
+
+          return result;
+        }),
+      );
+
+      setAttachment((prev) => [...prev, ...uploaded]);
+      setIsLoading(false);
     },
-    [],
+    [setAttachment],
   );
 
   const handleSearch = useCallback(() => {
@@ -78,7 +90,7 @@ export default function InputButtons({
               <input
                 ref={fileInputRef}
                 multiple
-                accept="image/jpeg,image/png,application/pdf,text/csv"
+                accept="image/jpeg,image/png"
                 type="file"
                 onChange={handleFileUpload}
               />

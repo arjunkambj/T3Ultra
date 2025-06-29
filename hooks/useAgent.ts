@@ -5,7 +5,7 @@ import { addToast } from "@heroui/toast";
 import { useQuery } from "convex-helpers/react/cache/hooks";
 import { useDisclosure } from "@heroui/modal";
 import { useAtom } from "jotai";
-
+import { attachmentAtom } from "@/atoms/attachment";
 import { aiModelAtom } from "@/atoms/aimodel";
 import { searchAtom } from "@/atoms/searchState";
 import { api } from "@/convex/_generated/api";
@@ -24,6 +24,7 @@ export const useAgent = ({
   const [currentModelId] = useAtom(aiModelAtom);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useAtom(searchAtom);
+  const [attachments, setAttachments] = useAtom(attachmentAtom);
   const {
     isOpen: isLoginModalOpen,
     onOpen: onLoginModalOpen,
@@ -73,6 +74,11 @@ export const useAgent = ({
             id: message.id,
             role: message.role,
             content: message.content,
+            attachments: message.experimental_attachments,
+            parts: message.parts,
+            modelUsed: message.modelUsed,
+            updatedAt: message.updatedAt,
+            annotations: message.annotations,
           })),
         );
       }
@@ -103,8 +109,11 @@ export const useAgent = ({
           });
         }
 
-        handleSubmit();
+        handleSubmit(e, {
+          experimental_attachments: attachments,
+        });
         setSearch(false);
+        setAttachments([]);
       } catch (error) {
         void error;
         addToast({
@@ -150,8 +159,11 @@ export const useAgent = ({
               agentId,
             });
           }
-          handleSubmit();
+          handleSubmit(e, {
+            experimental_attachments: attachments,
+          });
           setSearch(false);
+          setAttachments([]);
         } catch (error) {
           void error;
           addToast({

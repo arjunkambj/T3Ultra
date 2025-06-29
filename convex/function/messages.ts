@@ -15,16 +15,8 @@ export const addMessageToChat = mutation({
     ),
     modelUsed: v.optional(v.string()),
     annotations: v.optional(v.array(v.any())),
-    parts: v.optional(v.array(v.any())),
-    experimental_attachments: v.optional(
-      v.array(
-        v.object({
-          name: v.optional(v.string()),
-          contentType: v.optional(v.string()),
-          url: v.string(),
-        }),
-      ),
-    ),
+    parts: v.optional(v.any()),
+    experimental_attachments: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     const messageId = await ctx.db.insert("messages", {
@@ -54,16 +46,8 @@ export const addUIMessageToChat = mutation({
     ),
     modelUsed: v.optional(v.string()),
     annotations: v.optional(v.array(v.any())),
-    parts: v.optional(v.array(v.any())),
-    experimental_attachments: v.optional(
-      v.array(
-        v.object({
-          name: v.optional(v.string()),
-          contentType: v.optional(v.string()),
-          url: v.string(),
-        }),
-      ),
-    ),
+    parts: v.optional(v.any()),
+    experimental_attachments: v.optional(v.any()),
   },
   handler: async (ctx, args) => {
     if (!args.content.trim()) {

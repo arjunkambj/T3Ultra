@@ -39,6 +39,8 @@ export async function POST(req: Request) {
           chatId,
           content: lastMessage.content,
           role: "user",
+          experimental_attachments: lastMessage.experimental_attachments,
+          parts: lastMessage.parts,
         });
         await convex.mutation(api.function.chats.updateChatUpdatedAt, {
           chatId,

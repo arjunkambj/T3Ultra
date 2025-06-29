@@ -11,6 +11,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useUser } from "@/hooks/useUser";
 import { Id } from "@/convex/_generated/dataModel";
+import { models } from "@/config/ai-model";
 
 export default function AssistanceToolkit({
   message,
@@ -30,15 +31,9 @@ export default function AssistanceToolkit({
     return null;
   }
 
-  const models = {
-    1: "GPT-4o Mini",
-    2: "GPT-4.1 Mini",
-    3: "GPT-4.1",
-    4: "Gemini 2.0 Flash",
-    5: "Gemini 2.5 Flash",
-    6: "Grook 3 mini",
-    7: "Grook 3.5",
-  };
+  const model = models.find(
+    (model) => model.id === parseInt(message.modelUsed),
+  );
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
@@ -117,7 +112,7 @@ export default function AssistanceToolkit({
 
       {message.modelUsed !== undefined ? (
         <div className="rounded-md bg-default-100 px-2 py-1 text-xs text-neutral-300">
-          {models[parseInt(message.modelUsed) as keyof typeof models]}
+          {model?.name}
         </div>
       ) : null}
     </div>

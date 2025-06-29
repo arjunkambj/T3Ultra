@@ -19,6 +19,8 @@ export async function POST(req: Request) {
   const { messages, chatId, userId, modelId, isSearchEnabled } =
     await req.json();
 
+  console.log(messages);
+
   const isAuthenticated = await isAuthenticatedNextjs();
 
   if (!chatId && !userId && !isAuthenticated) {
@@ -36,6 +38,8 @@ export async function POST(req: Request) {
           chatId,
           content: lastMessage.content,
           role: "user",
+          experimental_attachments: lastMessage.experimental_attachments,
+          parts: lastMessage.parts,
         });
         await convex.mutation(api.function.chats.updateChatUpdatedAt, {
           chatId,
@@ -130,7 +134,7 @@ export async function POST(req: Request) {
 
           await convex.mutation(api.function.chats.updateChatTitle, {
             chatId,
-            title,
+            title: title as any,
           });
         }
       } catch (error) {

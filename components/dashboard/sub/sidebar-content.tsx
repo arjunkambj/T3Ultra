@@ -83,8 +83,8 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
             <Button
               fullWidth
               as={Link}
-              href="/agent"
               className="mb-1 flex h-9 justify-start rounded-lg bg-transparent px-3 text-neutral-300 transition-colors hover:bg-neutral-800/50 hover:text-neutral-100"
+              href="/agent"
               startContent={
                 <Icon
                   className="text-neutral-400"
@@ -116,12 +116,12 @@ const SidebarContent = React.memo(({ onClose }: SidebarContentProps) => {
             <Button
               fullWidth
               as={Link}
-              href="/project"
               className={`mb-2 flex h-9 justify-start rounded-lg bg-transparent px-3 text-neutral-300 transition-colors hover:bg-neutral-800/50 hover:text-neutral-100 ${
                 pathname === "/project"
                   ? "bg-neutral-800/50 text-neutral-100"
                   : ""
               }`}
+              href="/project"
               startContent={
                 <Icon
                   className="text-neutral-400"

@@ -1,5 +1,7 @@
 import { generateText, type UIMessage } from "ai";
 import { google } from "@ai-sdk/google";
+import dotenv from "dotenv";
+dotenv.config();
 
 export async function generateTitleFromUserMessage({
   message,
@@ -7,7 +9,7 @@ export async function generateTitleFromUserMessage({
   message: UIMessage;
 }) {
   const { text: title } = await generateText({
-    model: google("gemini-2.0-flash"),
+    model: google("gemini-2.5-flash-preview-04-17"),
     system: `\n
       - you will generate a short title based on the first message a user begins a conversation with
       - ensure it is not more than 3 words long and capitalize the first letter

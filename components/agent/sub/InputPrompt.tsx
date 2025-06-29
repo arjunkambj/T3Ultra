@@ -7,7 +7,8 @@ import { Button } from "@heroui/button";
 import { cn } from "@heroui/theme";
 import { Form } from "@heroui/form";
 import { Image } from "@heroui/image";
-
+import { useAtom } from "jotai";
+import { attachmentAtom } from "@/atoms/attachment";
 import PromptInput from "./prompt-input";
 import InputButtons from "./input-buttons";
 
@@ -25,15 +26,21 @@ interface PromptInputAssetsProps {
   onRemoveAsset: (index: number) => void;
 }
 
-const PromptInputAssets = ({
-  assets,
-  onRemoveAsset,
-}: PromptInputAssetsProps) => {
-  if (assets.length === 0) return null;
+const PromptInputAssets = ({ isLoading }: PromptInputAssetsProps) => {
+  const [attachments, setAttachments] = useAtom(attachmentAtom);
+
+  const handleRemoveAsset = useCallback(
+    (index: number) => {
+      setAttachments((prev) => prev.filter((_, i) => i !== index));
+    },
+    [setAttachments],
+  );
+
+  if (attachments.length < 1) return null;
 
   return (
     <>
-      {assets.map((asset, index) => (
+      {attachments.map((attachment, index) => (
         <Badge
           key={index}
           isOneChar
@@ -44,7 +51,7 @@ const PromptInputAssets = ({
               radius="full"
               size="sm"
               variant="light"
-              onPress={() => onRemoveAsset(index)}
+              onPress={() => handleRemoveAsset(index)}
             >
               <Icon
                 className="text-foreground"
@@ -57,7 +64,7 @@ const PromptInputAssets = ({
           <Image
             alt="uploaded image"
             className="h-14 w-14 rounded-small border-small border-default-200/50 object-cover"
-            src={asset}
+            src={attachment.url}
           />
         </Badge>
       ))}
@@ -73,7 +80,8 @@ export function PromptInputFullLineComponent({
   stop,
   status,
 }: PromptInputProps) {
-  const [assets, setAssets] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [attachments] = useAtom(attachmentAtom);
 
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -81,26 +89,29 @@ export function PromptInputFullLineComponent({
     inputRef.current?.focus();
   }, [inputRef]);
 
-  const handlePaste = useCallback(async (e: React.ClipboardEvent) => {
-    const items = Array.from(e.clipboardData.items);
+  const handlePaste = useCallback(
+    async (e: React.ClipboardEvent) => {
+      const items = Array.from(e.clipboardData.items);
 
-    for (const item of items) {
-      if (item.type.indexOf("image") !== -1) {
-        const blob = item.getAsFile();
+      for (const item of items) {
+        if (item.type.indexOf("image") !== -1) {
+          const blob = item.getAsFile();
 
-        if (!blob) continue;
+          if (!blob) continue;
 
-        const reader = new FileReader();
+          const reader = new FileReader();
 
-        reader.onload = () => {
-          const base64data = reader.result as string;
+          reader.onload = () => {
+            const base64data = reader.result as string;
 
-          setAssets((prev) => [...prev, base64data]);
-        };
-        reader.readAsDataURL(blob);
+            setAssets((prev) => [...prev, base64data]);
+          };
+          reader.readAsDataURL(blob);
+        }
       }
-    }
-  }, []);
+    },
+    [attachments],
+  );
 
   return (
     <Form
@@ -114,12 +125,7 @@ export function PromptInputFullLineComponent({
           assets.length > 0 ? "pt-4" : "",
         )}
       >
-        <PromptInputAssets
-          assets={assets}
-          onRemoveAsset={(index) => {
-            setAssets((prev) => prev.filter((_, i) => i !== index));
-          }}
-        />
+        <PromptInputAssets isLoading={isLoading} />
       </div>
       <PromptInput
         ref={inputRef}
@@ -141,7 +147,7 @@ export function PromptInputFullLineComponent({
       />
       <InputButtons
         prompt={input}
-        setAssets={setAssets}
+        setIsLoading={setIsLoading}
         status={status}
         stop={stop}
       />

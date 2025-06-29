@@ -1,4 +1,4 @@
-import { type PutBlobResult } from "@vercel/blob";
 import { atom } from "jotai";
+import { type PutBlobResult } from "@vercel/blob";
 
-export const AttachmentsAtom = atom<PutBlobResult[]>([]);
+export const attachmentAtom = atom<PutBlobResult[]>([]);
