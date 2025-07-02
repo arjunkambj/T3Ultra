@@ -130,7 +130,7 @@ export async function POST(req: Request) {
               - ensure it is not more than 3 words long and capitalize the first letter
               - the title should be a summary of the user's message
               - do not use quotes or colons`,
-            prompt: JSON.stringify(messages[0]),
+            prompt: messages[0].content,
           }).then((result) =>
             convex.mutation(api.function.chats.updateChatTitle, {
               chatId,

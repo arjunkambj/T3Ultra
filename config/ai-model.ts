@@ -70,4 +70,10 @@ export const models: Model[] = [
     icon: "simple-icons:deepl",
     isNew: true,
   },
+  {
+    id: 13,
+    name: "OpenAI o4",
+    icon: "streamline-logos:openai-logo-solid",
+    isPro: true,
+  },
 ];

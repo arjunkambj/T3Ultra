@@ -1,6 +1,7 @@
 import { streamText, generateText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { openai } from "@ai-sdk/openai";
 
 import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
 import { addToMemory } from "./tools";
@@ -87,6 +88,7 @@ export async function POST(req: Request) {
     openrouter("deepseek/deepseek-chat-v3-0324"),
     openrouter("deepseek/deepseek-r1-0528"),
     openrouter("qwen/qwen3-235b-a22b"),
+    openai("gpt-4o-2024-11-20"),
   ];
 
   // Ensure modelId is within valid range
