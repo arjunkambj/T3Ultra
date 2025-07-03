@@ -72,7 +72,7 @@ export const models: Model[] = [
   },
   {
     id: 13,
-    name: "OpenAI o4",
+    name: "OpenAI 4o",
     icon: "streamline-logos:openai-logo-solid",
     isPro: true,
   },

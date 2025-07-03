@@ -2,7 +2,6 @@ import { streamText, generateText } from "ai";
 import { ConvexHttpClient } from "convex/browser";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { openai } from "@ai-sdk/openai";
-
 import { getCurrentTime, InteractWithGoogleSearch } from "./tools";
 import { addToMemory } from "./tools";
 
